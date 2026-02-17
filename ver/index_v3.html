@@ -1,0 +1,2511 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shimba's Cyber Intelligence Dashboard v3.0</title>
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-card: #1a2332;
+            --bg-input: #0d1520;
+            --border-color: #1e3a5f;
+            --text-primary: #e0e8f0;
+            --text-secondary: #8899aa;
+            --text-muted: #556677;
+            --neon-blue: #00d4ff;
+            --neon-green: #00ff88;
+            --neon-purple: #a855f7;
+            --neon-orange: #ff6b35;
+            --neon-red: #ff3366;
+            --neon-yellow: #ffd600;
+            --neon-cyan: #06b6d4;
+            --neon-pink: #ec4899;
+            --accent-gradient: linear-gradient(135deg, #00d4ff, #00ff88);
+            --danger-gradient: linear-gradient(135deg, #ff3366, #ff6b35);
+            --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --glow-blue: 0 0 20px rgba(0, 212, 255, 0.3);
+            --glow-green: 0 0 20px rgba(0, 255, 136, 0.3);
+            --scrollbar-thumb: #1e3a5f;
+            --scrollbar-track: #0a0e17;
+            --overlay-bg: rgba(0, 0, 0, 0.75);
+            --transition-speed: 0.3s;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f0f4f8;
+            --bg-secondary: #e2e8f0;
+            --bg-card: #ffffff;
+            --bg-input: #edf2f7;
+            --border-color: #cbd5e0;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --text-muted: #a0aec0;
+            --neon-blue: #0077cc;
+            --neon-green: #00a854;
+            --neon-purple: #7c3aed;
+            --neon-orange: #e05500;
+            --neon-red: #dc2626;
+            --neon-yellow: #ca8a04;
+            --neon-cyan: #0891b2;
+            --neon-pink: #db2777;
+            --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            --glow-blue: 0 0 15px rgba(0, 119, 204, 0.15);
+            --glow-green: 0 0 15px rgba(0, 168, 84, 0.15);
+            --scrollbar-thumb: #cbd5e0;
+            --scrollbar-track: #f0f4f8;
+            --overlay-bg: rgba(0, 0, 0, 0.4);
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: background .3s, color .3s;
+            overflow-x: hidden
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--scrollbar-track)
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 4px
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-blue)
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0
+        }
+
+        [data-theme="light"] body::before {
+            opacity: 0
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.7rem 1.3rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.6rem
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #0a0e17;
+            box-shadow: var(--glow-blue);
+            animation: lp 3s ease-in-out infinite;
+            flex-shrink: 0
+        }
+
+        @keyframes lp {
+
+            0%,
+            100% {
+                box-shadow: var(--glow-blue);
+                transform: scale(1)
+            }
+
+            50% {
+                box-shadow: 0 0 35px rgba(0, 212, 255, 0.6);
+                transform: scale(1.05)
+            }
+        }
+
+        .header-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .header-sub {
+            font-size: 0.62rem;
+            color: var(--text-muted);
+            letter-spacing: 2.5px;
+            text-transform: uppercase
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-wrap: wrap
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.15rem;
+            background: var(--bg-input);
+            border-radius: 10px;
+            padding: 0.15rem;
+            border: 1px solid var(--border-color);
+            overflow-x: auto
+        }
+
+        .nav-tab {
+            padding: 0.35rem 0.65rem;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .3s;
+            font-family: inherit;
+            white-space: nowrap
+        }
+
+        .nav-tab:hover {
+            color: var(--text-primary);
+            background: var(--bg-card)
+        }
+
+        .nav-tab.active {
+            background: var(--accent-gradient);
+            color: #0a0e17;
+            box-shadow: var(--glow-blue)
+        }
+
+        .hdr-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.35rem 0.65rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all .3s;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-family: inherit
+        }
+
+        .hdr-btn:hover {
+            border-color: var(--neon-blue);
+            box-shadow: var(--glow-blue);
+            color: var(--neon-green)
+        }
+
+        .main {
+            max-width: 1480px;
+            margin: 0 auto;
+            padding: 1rem;
+            position: relative;
+            z-index: 1
+        }
+
+        .tp {
+            display: none
+        }
+
+        .tp.active {
+            display: block;
+            animation: fi .4s ease
+        }
+
+        @keyframes fi {
+            from {
+                opacity: 0;
+                transform: translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .g2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.1rem
+        }
+
+        .g3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.1rem
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.2rem;
+            box-shadow: var(--card-shadow);
+            transition: all .3s;
+            position: relative;
+            overflow: hidden
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity .3s
+        }
+
+        .card:hover {
+            border-color: rgba(0, 212, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow), var(--glow-blue)
+        }
+
+        .card:hover::before {
+            opacity: 1
+        }
+
+        .card.ga::before {
+            background: linear-gradient(135deg, #00ff88, #06b6d4)
+        }
+
+        .card.pa::before {
+            background: linear-gradient(135deg, #a855f7, #ec4899)
+        }
+
+        .card.oa::before {
+            background: linear-gradient(135deg, #ff6b35, #ffd600)
+        }
+
+        .card.ra::before {
+            background: var(--danger-gradient)
+        }
+
+        .ch {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.9rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid var(--border-color)
+        }
+
+        .ci {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            flex-shrink: 0
+        }
+
+        .ci.bl {
+            background: rgba(0, 212, 255, 0.12);
+            color: var(--neon-blue)
+        }
+
+        .ci.gr {
+            background: rgba(0, 255, 136, 0.12);
+            color: var(--neon-green)
+        }
+
+        .ci.pu {
+            background: rgba(168, 85, 247, 0.12);
+            color: var(--neon-purple)
+        }
+
+        .ci.or {
+            background: rgba(255, 107, 53, 0.12);
+            color: var(--neon-orange)
+        }
+
+        .ci.rd {
+            background: rgba(255, 51, 102, 0.12);
+            color: var(--neon-red)
+        }
+
+        .ci.yl {
+            background: rgba(255, 214, 0, 0.12);
+            color: var(--neon-yellow)
+        }
+
+        .ci.cy {
+            background: rgba(6, 182, 212, 0.12);
+            color: var(--neon-cyan)
+        }
+
+        .ci.pk {
+            background: rgba(236, 72, 153, 0.12);
+            color: var(--neon-pink)
+        }
+
+        .ct {
+            font-size: 0.88rem;
+            font-weight: 700
+        }
+
+        .cd {
+            font-size: 0.68rem;
+            color: var(--text-muted)
+        }
+
+        .ig {
+            margin-bottom: 0.8rem
+        }
+
+        .il {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.74rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem
+        }
+
+        .inf {
+            width: 100%;
+            padding: 0.55rem 0.8rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.84rem;
+            font-family: inherit;
+            transition: all .3s;
+            outline: none
+        }
+
+        .inf:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.12)
+        }
+
+        .inf::placeholder {
+            color: var(--text-muted)
+        }
+
+        textarea.inf {
+            resize: vertical;
+            min-height: 55px;
+            font-family: 'Consolas', 'Courier New', monospace
+        }
+
+        select.inf {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238899aa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 2rem
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            padding: 0.48rem 0.9rem;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all .3s;
+            white-space: nowrap
+        }
+
+        .btn:active {
+            transform: scale(0.97)
+        }
+
+        .bp {
+            background: var(--accent-gradient);
+            color: #0a0e17;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.25)
+        }
+
+        .bp:hover {
+            box-shadow: 0 6px 25px rgba(0, 212, 255, 0.45);
+            transform: translateY(-1px)
+        }
+
+        .bs {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary)
+        }
+
+        .bs:hover {
+            border-color: var(--neon-blue);
+            color: var(--neon-blue)
+        }
+
+        .bd {
+            background: var(--danger-gradient);
+            color: #fff;
+            border: none
+        }
+
+        .bgr {
+            background: rgba(0, 255, 136, 0.12);
+            border: 1px solid rgba(0, 255, 136, 0.25);
+            color: var(--neon-green)
+        }
+
+        .bgr:hover {
+            background: rgba(0, 255, 136, 0.22);
+            box-shadow: var(--glow-green)
+        }
+
+        .bbl {
+            background: rgba(0, 212, 255, 0.12);
+            border: 1px solid rgba(0, 212, 255, 0.25);
+            color: var(--neon-blue)
+        }
+
+        .bbl:hover {
+            background: rgba(0, 212, 255, 0.22);
+            box-shadow: var(--glow-blue)
+        }
+
+        .bpu {
+            background: rgba(168, 85, 247, 0.12);
+            border: 1px solid rgba(168, 85, 247, 0.25);
+            color: var(--neon-purple)
+        }
+
+        .bpu:hover {
+            background: rgba(168, 85, 247, 0.22)
+        }
+
+        .bor {
+            background: rgba(255, 107, 53, 0.12);
+            border: 1px solid rgba(255, 107, 53, 0.25);
+            color: var(--neon-orange)
+        }
+
+        .bor:hover {
+            background: rgba(255, 107, 53, 0.22)
+        }
+
+        .byl {
+            background: rgba(255, 214, 0, 0.12);
+            border: 1px solid rgba(255, 214, 0, 0.25);
+            color: var(--neon-yellow)
+        }
+
+        .bcy {
+            background: rgba(6, 182, 212, 0.12);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            color: var(--neon-cyan)
+        }
+
+        .bpk {
+            background: rgba(236, 72, 153, 0.12);
+            border: 1px solid rgba(236, 72, 153, 0.25);
+            color: var(--neon-pink)
+        }
+
+        .bsm {
+            padding: 0.35rem 0.65rem;
+            font-size: 0.72rem;
+            border-radius: 8px
+        }
+
+        .bxs {
+            padding: 0.24rem 0.45rem;
+            font-size: 0.66rem;
+            border-radius: 6px
+        }
+
+        .bg {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem
+        }
+
+        .qp {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+            font-family: 'Consolas', monospace;
+            font-size: 0.82rem;
+            color: var(--neon-green);
+            word-break: break-all;
+            min-height: 40px;
+            transition: all .3s;
+            line-height: 1.8
+        }
+
+        .qp:hover {
+            border-color: var(--neon-green)
+        }
+
+        .qp .op {
+            color: var(--neon-blue);
+            font-weight: 700
+        }
+
+        .qp .vl {
+            color: var(--neon-green)
+        }
+
+        .qp .em {
+            color: var(--text-muted);
+            font-style: italic;
+            font-family: inherit
+        }
+
+        .fr {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.55rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 0.35rem;
+            flex-wrap: wrap;
+            animation: si .3s ease
+        }
+
+        @keyframes si {
+            from {
+                opacity: 0;
+                transform: translateY(-8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .fr select,
+        .fr input {
+            padding: 0.3rem 0.45rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.76rem;
+            font-family: inherit;
+            outline: none
+        }
+
+        .fr select:focus,
+        .fr input:focus {
+            border-color: var(--neon-blue)
+        }
+
+        .fr input {
+            flex: 1;
+            min-width: 90px
+        }
+
+        .fr .rf {
+            background: rgba(255, 51, 102, 0.12);
+            border: none;
+            color: var(--neon-red);
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0
+        }
+
+        .fr .rf:hover {
+            background: rgba(255, 51, 102, 0.3)
+        }
+
+        .ftg {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+            gap: 0.25rem
+        }
+
+        .ftc {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.45rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            user-select: none;
+            transition: all .3s
+        }
+
+        .ftc:hover {
+            border-color: var(--neon-blue)
+        }
+
+        .ftc input {
+            display: none
+        }
+
+        .ftc.ac {
+            border-color: var(--neon-blue);
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--neon-blue)
+        }
+
+        .pg {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 0.4rem
+        }
+
+        .pb {
+            padding: 0.5rem 0.7rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            font-size: 0.76rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all .3s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem
+        }
+
+        .pb:hover {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            background: rgba(0, 255, 136, 0.04);
+            transform: translateY(-1px)
+        }
+
+        .hi {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.45rem 0.65rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 0.3rem;
+            font-size: 0.76rem;
+            transition: all .3s;
+            gap: 0.4rem
+        }
+
+        .hi:hover {
+            border-color: var(--neon-blue)
+        }
+
+        .hq {
+            font-family: 'Consolas', monospace;
+            color: var(--neon-green);
+            word-break: break-all;
+            flex: 1;
+            cursor: pointer
+        }
+
+        .hq:hover {
+            text-decoration: underline
+        }
+
+        .ht {
+            color: var(--text-muted);
+            font-size: 0.66rem;
+            flex-shrink: 0
+        }
+
+        .ha {
+            display: flex;
+            gap: 0.2rem;
+            flex-shrink: 0
+        }
+
+        .ql {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem
+        }
+
+        .qc {
+            padding: 0.22rem 0.5rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--neon-blue);
+            font-size: 0.7rem;
+            font-family: 'Consolas', monospace;
+            cursor: pointer;
+            transition: all .3s
+        }
+
+        .qc:hover {
+            border-color: var(--neon-blue);
+            background: rgba(0, 212, 255, 0.1)
+        }
+
+        .ab {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            padding: 0.35rem 0;
+            margin-bottom: 0.35rem
+        }
+
+        .sc {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.28rem 0.6rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: var(--text-secondary)
+        }
+
+        .sc .sv {
+            font-weight: 700;
+            color: var(--neon-blue)
+        }
+
+        .tc {
+            position: fixed;
+            top: 65px;
+            right: 12px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem
+        }
+
+        .toast {
+            padding: 0.6rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.78rem;
+            box-shadow: var(--card-shadow);
+            animation: ti .35s ease, to .35s ease 2.6s forwards;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            max-width: 320px
+        }
+
+        .toast.success {
+            border-left: 3px solid var(--neon-green)
+        }
+
+        .toast.error {
+            border-left: 3px solid var(--neon-red)
+        }
+
+        .toast.info {
+            border-left: 3px solid var(--neon-blue)
+        }
+
+        @keyframes ti {
+            from {
+                opacity: 0;
+                transform: translateX(40px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0)
+            }
+        }
+
+        @keyframes to {
+            from {
+                opacity: 1
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(40px)
+            }
+        }
+
+        .mo {
+            position: fixed;
+            inset: 0;
+            background: var(--overlay-bg);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            backdrop-filter: blur(6px)
+        }
+
+        .mo.active {
+            display: flex
+        }
+
+        .mc {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            max-width: 700px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: var(--card-shadow);
+            animation: mi .3s ease
+        }
+
+        @keyframes mi {
+            from {
+                opacity: 0;
+                transform: scale(0.95)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1)
+            }
+        }
+
+        .mh {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid var(--border-color)
+        }
+
+        .mt {
+            font-size: 1rem;
+            font-weight: 700
+        }
+
+        .mx {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.3rem;
+            cursor: pointer
+        }
+
+        .mx:hover {
+            color: var(--neon-red)
+        }
+
+        .st {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem
+        }
+
+        .st::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color)
+        }
+
+        .sg {
+            margin-top: 1.1rem
+        }
+
+        /* CHEAT SHEET SPECIFIC */
+        .cs-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.9rem;
+            margin-bottom: 0.6rem;
+            transition: all .3s;
+            cursor: default
+        }
+
+        .cs-card:hover {
+            border-color: rgba(0, 212, 255, 0.25)
+        }
+
+        .cs-title {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem
+        }
+
+        .cs-card p {
+            font-size: 0.76rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+            line-height: 1.55
+        }
+
+        .cs-card code {
+            background: rgba(0, 212, 255, 0.08);
+            color: var(--neon-green);
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.74rem
+        }
+
+        .cs-card ul {
+            margin: 0.25rem 0 0.25rem 1rem;
+            font-size: 0.76rem;
+            color: var(--text-secondary)
+        }
+
+        .cs-card ul li {
+            margin-bottom: 0.15rem
+        }
+
+        /* DORK ROW - Clickable */
+        .dork-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.55rem 0.75rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 0.4rem;
+            transition: all .3s;
+            flex-wrap: wrap
+        }
+
+        .dork-row:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            background: rgba(0, 212, 255, 0.03)
+        }
+
+        .dork-code {
+            font-family: 'Consolas', monospace;
+            color: var(--neon-green);
+            font-size: 0.78rem;
+            font-weight: 600;
+            flex-shrink: 0;
+            min-width: 180px
+        }
+
+        .dork-desc {
+            font-size: 0.76rem;
+            color: var(--text-secondary);
+            flex: 1;
+            min-width: 150px
+        }
+
+        .dork-actions {
+            display: flex;
+            gap: 0.25rem;
+            flex-shrink: 0
+        }
+
+        /* BASH COMMAND ROW */
+        .bash-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.7rem;
+            background: rgba(0, 255, 136, 0.03);
+            border: 1px solid rgba(0, 255, 136, 0.12);
+            border-radius: 10px;
+            margin-bottom: 0.35rem;
+            transition: all .3s;
+            flex-wrap: wrap
+        }
+
+        .bash-row:hover {
+            border-color: rgba(0, 255, 136, 0.3)
+        }
+
+        .bash-cmd {
+            font-family: 'Consolas', monospace;
+            color: var(--neon-green);
+            font-size: 0.78rem;
+            font-weight: 600;
+            flex-shrink: 0;
+            min-width: 170px
+        }
+
+        .bash-cmd::before {
+            content: '$ ';
+            color: var(--neon-blue);
+            font-weight: 400
+        }
+
+        .bash-desc {
+            font-size: 0.76rem;
+            color: var(--text-secondary);
+            flex: 1;
+            min-width: 150px
+        }
+
+        /* RULE ROW */
+        .rule-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            padding: 0.65rem 0.85rem;
+            background: rgba(255, 51, 102, 0.04);
+            border: 1px solid rgba(255, 51, 102, 0.15);
+            border-radius: 10px;
+            margin-bottom: 0.4rem
+        }
+
+        .rule-icon {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            margin-top: 0.1rem
+        }
+
+        .rule-text {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.55
+        }
+
+        .rule-text strong {
+            color: var(--neon-red)
+        }
+
+        /* EXAMPLE CARD */
+        .ex-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.06), rgba(0, 255, 136, 0.04));
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 14px;
+            padding: 1rem;
+            margin-bottom: 0.8rem
+        }
+
+        .ex-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            margin-bottom: 0.45rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem
+        }
+
+        .ex-desc {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 0.5rem
+        }
+
+        .stp {
+            display: flex;
+            gap: 0.6rem;
+            margin-bottom: 0.5rem;
+            align-items: flex-start
+        }
+
+        .sn {
+            background: var(--accent-gradient);
+            color: #0a0e17;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 800;
+            flex-shrink: 0;
+            margin-top: 2px
+        }
+
+        .stx {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            line-height: 1.6
+        }
+
+        .stx strong {
+            color: var(--text-primary)
+        }
+
+        .stx code {
+            background: rgba(0, 212, 255, 0.08);
+            color: var(--neon-green);
+            padding: 0.08rem 0.3rem;
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.76rem
+        }
+
+        .tip {
+            background: rgba(0, 255, 136, 0.06);
+            border: 1px solid rgba(0, 255, 136, 0.15);
+            border-radius: 10px;
+            padding: 0.55rem 0.8rem;
+            font-size: 0.76rem;
+            color: var(--neon-green);
+            margin: 0.4rem 0;
+            display: flex;
+            gap: 0.35rem;
+            align-items: flex-start
+        }
+
+        .warn {
+            background: rgba(255, 51, 102, 0.06);
+            border: 1px solid rgba(255, 51, 102, 0.15);
+            border-radius: 10px;
+            padding: 0.55rem 0.8rem;
+            font-size: 0.76rem;
+            color: var(--neon-red);
+            margin: 0.4rem 0
+        }
+
+        .ref-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.76rem
+        }
+
+        .ref-table th,
+        .ref-table td {
+            text-align: left;
+            padding: 0.4rem 0.55rem;
+            border-bottom: 1px solid var(--border-color)
+        }
+
+        .ref-table th {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px
+        }
+
+        .ref-table td {
+            color: var(--text-secondary)
+        }
+
+        .ref-table code {
+            background: rgba(0, 212, 255, 0.08);
+            color: var(--neon-blue);
+            padding: 0.08rem 0.25rem;
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.74rem
+        }
+
+        .hp {
+            animation: hp 2s ease-in-out 3
+        }
+
+        @keyframes hp {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 212, 255, 0)
+            }
+
+            50% {
+                box-shadow: 0 0 0 6px rgba(0, 212, 255, 0.3)
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 1.3rem 1rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.74rem;
+            margin-top: 1rem;
+            position: relative;
+            z-index: 1
+        }
+
+        .footer .disc {
+            display: inline-block;
+            padding: 0.38rem 1.2rem;
+            border: 1px solid rgba(255, 51, 102, 0.25);
+            border-radius: 8px;
+            background: rgba(255, 51, 102, 0.04);
+            color: var(--neon-red);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.35rem
+        }
+
+        .sy {
+            max-height: 240px;
+            overflow-y: auto;
+            padding-right: 0.2rem
+        }
+
+        .syl {
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 0.2rem
+        }
+
+        .mt1 {
+            margin-top: 0.5rem
+        }
+
+        .mt2 {
+            margin-top: 1rem
+        }
+
+        .mb1 {
+            margin-bottom: 0.5rem
+        }
+
+        .fb {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.4rem
+        }
+
+        kbd {
+            background: var(--bg-input);
+            padding: 0.08rem 0.3rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            font-size: 0.7rem;
+            font-family: 'Consolas', monospace;
+            color: var(--text-secondary)
+        }
+
+        @media(max-width:1100px) {
+            .g2 {
+                grid-template-columns: 1fr
+            }
+
+            .g3 {
+                grid-template-columns: 1fr 1fr
+            }
+        }
+
+        @media(max-width:768px) {
+            .header {
+                padding: 0.55rem 0.7rem
+            }
+
+            .header-title {
+                font-size: 0.9rem
+            }
+
+            .main {
+                padding: 0.6rem
+            }
+
+            .g3 {
+                grid-template-columns: 1fr
+            }
+
+            .pg {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .nav-tabs {
+                overflow-x: auto
+            }
+        }
+
+        @media(max-width:480px) {
+            .pg {
+                grid-template-columns: 1fr
+            }
+
+            .bg {
+                flex-direction: column
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: center
+            }
+
+            .ab {
+                flex-direction: column
+            }
+
+            .nav-tab {
+                padding: 0.28rem 0.48rem;
+                font-size: 0.68rem
+            }
+
+            .dork-row {
+                flex-direction: column;
+                align-items: flex-start
+            }
+
+            .bash-row {
+                flex-direction: column;
+                align-items: flex-start
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tc" id="tc"></div>
+
+    <!-- MODALS -->
+    <div class="mo" id="saveM">
+        <div class="mc">
+            <div class="mh"><span class="mt">💾 Save Preset</span><button class="mx"
+                    onclick="closeM('saveM')">&times;</button></div>
+            <div class="ig"><label class="il">Name</label><input type="text" class="inf" id="pnI"
+                    placeholder="e.g., Java Notes Search"></div>
+            <div class="ig"><label class="il">Query</label><textarea class="inf" id="pqI" rows="3" readonly></textarea>
+            </div>
+            <div class="bg mt1"><button class="btn bp" onclick="confirmSave()">💾 Save</button><button class="btn bs"
+                    onclick="closeM('saveM')">Cancel</button></div>
+        </div>
+    </div>
+
+    <div class="mo" id="ioM">
+        <div class="mc">
+            <div class="mh"><span class="mt">📦 Import / Export</span><button class="mx"
+                    onclick="closeM('ioM')">&times;</button></div>
+            <div class="ig"><label class="il">Export JSON</label><textarea class="inf" id="expA" rows="4"
+                    readonly></textarea><button class="btn bbl bsm mt1" onclick="copyExp()">📋 Copy</button></div>
+            <div class="ig mt2"><label class="il">Import JSON</label><textarea class="inf" id="impA" rows="4"
+                    placeholder="Paste JSON here..."></textarea><button class="btn bgr bsm mt1" onclick="impData()">📥
+                    Import</button></div>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-icon">S</div>
+            <div>
+                <div class="header-title">Shimba's Cyber Intelligence Dashboard</div>
+                <div class="header-sub">Advanced OSINT &amp; Dorking Suite v3.0</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <nav class="nav-tabs">
+                <button class="nav-tab active" onclick="swTab('dorking',this)">🔍 Dorking</button>
+                <button class="nav-tab" onclick="swTab('howto',this)">📖 How-To</button>
+                <button class="nav-tab" onclick="swTab('cheatsheet',this)">💀 Cheat Sheet</button>
+                <button class="nav-tab" onclick="swTab('osint',this)">🌐 OSINT</button>
+                <button class="nav-tab" onclick="swTab('tools',this)">🛠️ Tools</button>
+                <button class="nav-tab" onclick="swTab('history',this)">🕒 History</button>
+            </nav>
+            <button class="hdr-btn" onclick="openM('ioM')">📦</button>
+            <button class="hdr-btn" onclick="togTheme()"><span id="tI">🌙</span><span id="tL">Dark</span></button>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="ab">
+            <div class="sc">🔍 Filters: <span class="sv" id="sF">0</span></div>
+            <div class="sc">📄 Types: <span class="sv" id="sT">0</span></div>
+            <div class="sc">📝 Len: <span class="sv" id="sL">0</span></div>
+            <div class="sc">🕒 History: <span class="sv" id="sH">0</span></div>
+            <div class="sc">💾 Saved: <span class="sv" id="sS">0</span></div>
+            <div class="sc">🔧 <span class="sv" id="sE">Google</span></div>
+        </div>
+
+        <!-- ═══════════ TAB: DORKING ═══════════ -->
+        <div class="tp active" id="panel-dorking">
+            <div class="g2">
+                <div class="card">
+                    <div class="ch">
+                        <div class="ci bl">🔍</div>
+                        <div>
+                            <div class="ct">Advanced Dorking Engine</div>
+                            <div class="cd">Keywords likho → Filters add karo → Search dabao!</div>
+                        </div>
+                    </div>
+                    <div class="ig"><label class="il">🔑 Main Keywords</label><input type="text" class="inf" id="kw"
+                            placeholder='e.g., java dsa handwritten notes' autocomplete="off"></div>
+                    <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.8rem">
+                        <div style="flex:1;min-width:145px"><label class="il">🔧 Engine</label><select class="inf"
+                                id="eng">
+                                <option value="google">Google</option>
+                                <option value="bing">Bing</option>
+                                <option value="duckduckgo">DuckDuckGo</option>
+                            </select></div>
+                        <div style="flex:1;min-width:145px"><label class="il">💬 Phrase</label><select class="inf"
+                                id="pm">
+                                <option value="normal">Normal</option>
+                                <option value="exact">Exact "..."</option>
+                            </select></div>
+                    </div>
+                    <div class="st">⚡ Quick Operators</div>
+                    <div class="ql mb1">
+                        <span class="qc" onclick="qOp('&quot;index of&quot;')">"index of"</span>
+                        <span class="qc" onclick="qOp('inurl:admin')">inurl:admin</span>
+                        <span class="qc" onclick="qOp('inurl:backup')">inurl:backup</span>
+                        <span class="qc" onclick="qOp('site:edu')">site:edu</span>
+                        <span class="qc" onclick="qOp('site:gov')">site:gov</span>
+                        <span class="qc" onclick="qOp('site:drive.google.com')">site:drive.google.com</span>
+                        <span class="qc" onclick="qOp('intitle:&quot;index of&quot;')">intitle:"index of"</span>
+                        <span class="qc" onclick="qOp('inurl:login')">inurl:login</span>
+                        <span class="qc" onclick="qOp('inurl:wp-login.php')">inurl:wp-login.php</span>
+                        <span class="qc" onclick="qOp('ext:sql')">ext:sql</span>
+                        <span class="qc" onclick="qOp('AROUND(3)')">AROUND(3)</span>
+                        <span class="qc" onclick="qOp('cache:')">cache:</span>
+                    </div>
+                    <div class="bg mt2">
+                        <button class="btn bp" onclick="doSearch()">🔍 Search</button>
+                        <button class="btn bs" onclick="copyQ()">📋 Copy</button>
+                        <button class="btn bs" onclick="dupQ()">📑 Duplicate</button>
+                        <button class="btn bd bsm" onclick="clrAll()">🗑️ Clear</button>
+                        <button class="btn bgr bsm" onclick="openSaveM()">💾 Save</button>
+                    </div>
+                </div>
+                <div class="card ga">
+                    <div class="ch">
+                        <div class="ci gr">🛠️</div>
+                        <div>
+                            <div class="ct">Dynamic Filter Builder</div>
+                            <div class="cd">➕ click karo → operator choose → value likho</div>
+                        </div>
+                    </div>
+                    <div class="fb mb1"><button class="btn bbl bsm" onclick="addF()">➕ Add Filter</button><button
+                            class="btn bs bxs" onclick="clrF()">Clear</button></div>
+                    <div class="sy" id="fC"></div>
+                    <div class="st sg">📄 File Types</div>
+                    <div class="ftg" id="ftG"></div>
+                    <div class="st sg">📅 Date Range</div>
+                    <div style="display:flex;gap:0.6rem;flex-wrap:wrap">
+                        <div style="flex:1;min-width:125px"><label class="il">After</label><input type="date"
+                                class="inf" id="dA"></div>
+                        <div style="flex:1;min-width:125px"><label class="il">Before</label><input type="date"
+                                class="inf" id="dB"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="card pa" style="margin-top:1.1rem">
+                <div class="ch">
+                    <div class="ci pu">📡</div>
+                    <div>
+                        <div class="ct">Real-Time Query Preview</div>
+                        <div class="cd">Auto-update hota hai — niche edit bhi kar sakte ho</div>
+                    </div>
+                </div>
+                <div class="qp" id="qP"><span class="em">Keywords likho upar... query yahan dikhega</span></div>
+                <div class="ig mt1"><label class="il">✏️ Manual Edit</label><textarea class="inf" id="mQ" rows="2"
+                        placeholder="Ya yahan directly likho..."></textarea></div>
+                <div class="fb mt1"><span style="font-size:0.7rem;color:var(--text-muted)"><kbd>Enter</kbd> =
+                        search</span><button class="btn bp bsm" onclick="doSearch()">🚀 Search</button></div>
+            </div>
+            <div class="card oa" style="margin-top:1.1rem">
+                <div class="ch">
+                    <div class="ci yl">📚</div>
+                    <div>
+                        <div class="ct">Preset Categories</div>
+                        <div class="cd">Ek click = ready-made query</div>
+                    </div>
+                </div>
+                <div class="pg">
+                    <button class="pb" onclick="ldP('cyber')"><span>🔒</span> Cybersecurity</button>
+                    <button class="pb" onclick="ldP('prog')"><span>💻</span> Programming</button>
+                    <button class="pb" onclick="ldP('research')"><span>📄</span> Research Papers</button>
+                    <button class="pb" onclick="ldP('public')"><span>📂</span> Public Docs</button>
+                    <button class="pb" onclick="ldP('index')"><span>📁</span> Index Listings</button>
+                    <button class="pb" onclick="ldP('gov')"><span>🏛️</span> Government</button>
+                    <button class="pb" onclick="ldP('edu')"><span>🎓</span> Educational</button>
+                    <button class="pb" onclick="ldP('tech')"><span>📘</span> Tech Docs</button>
+                </div>
+                <div class="st sg">⭐ Saved Presets</div>
+                <div class="sy" id="spC">
+                    <div style="color:var(--text-muted);font-size:0.76rem;text-align:center;padding:0.6rem">No saved
+                        presets</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════ TAB: HOW-TO ═══════════ -->
+        <div class="tp" id="panel-howto">
+            <div class="card" style="border-color:rgba(0,212,255,0.3);margin-bottom:1.1rem">
+                <div class="ch">
+                    <div class="ci cy">🎓</div>
+                    <div>
+                        <div class="ct">📖 Kaise Use Kare? — Step-by-Step Guide</div>
+                        <div class="cd">Har feature samjho practical examples ke saath</div>
+                    </div>
+                </div>
+                <div class="tip">💡 Ye tool Google mein advanced queries banata hai. Buttons click karo → Query banta
+                    hai → New tab mein results!</div>
+            </div>
+
+            <div class="ex-card">
+                <div class="ex-title">🎯 Example: "Java DSA Handwritten Notes PDF chahiye"</div>
+                <div class="stp">
+                    <div class="sn">1</div>
+                    <div class="stx"><strong>Keywords:</strong> <code>java dsa handwritten notes</code></div>
+                </div>
+                <div class="stp">
+                    <div class="sn">2</div>
+                    <div class="stx"><strong>Phrase Mode:</strong> "Exact Phrase" select karo</div>
+                </div>
+                <div class="stp">
+                    <div class="sn">3</div>
+                    <div class="stx"><strong>File Type:</strong> PDF pe click karo (blue = selected)</div>
+                </div>
+                <div class="stp">
+                    <div class="sn">4</div>
+                    <div class="stx"><strong>➕ Filter:</strong> <code>site:</code> → <code>drive.google.com</code></div>
+                </div>
+                <div class="stp">
+                    <div class="sn">5</div>
+                    <div class="stx"><strong>Query preview:</strong>
+                        <code>"java dsa handwritten notes" site:drive.google.com filetype:pdf</code></div>
+                </div>
+                <div class="stp">
+                    <div class="sn">6</div>
+                    <div class="stx"><strong>🔍 Search dabao</strong> → New tab mein Google results!</div>
+                </div>
+                <button class="btn bp" onclick="tryEx('javadsa')">🚀 Try This Example!</button>
+            </div>
+
+            <div class="g3" style="margin-top:1rem">
+                <div class="ex-card" style="cursor:pointer" onclick="tryEx('python')">
+                    <div class="ex-title" style="font-size:0.8rem">💻 Python Tutorial PDF</div>
+                    <div class="stx"><code>python tutorial beginner filetype:pdf</code></div>
+                </div>
+                <div class="ex-card" style="cursor:pointer" onclick="tryEx('cyber')">
+                    <div class="ex-title" style="font-size:0.8rem">🔒 Cyber Notes (edu)</div>
+                    <div class="stx"><code>cybersecurity site:edu filetype:pdf</code></div>
+                </div>
+                <div class="ex-card" style="cursor:pointer" onclick="tryEx('gate')">
+                    <div class="ex-title" style="font-size:0.8rem">🎓 GATE Notes</div>
+                    <div class="stx"><code>"gate" "computer science" filetype:pdf</code></div>
+                </div>
+                <div class="ex-card" style="cursor:pointer" onclick="tryEx('gdrive')">
+                    <div class="ex-title" style="font-size:0.8rem">📁 Drive Books</div>
+                    <div class="stx"><code>site:drive.google.com "data structures" filetype:pdf</code></div>
+                </div>
+                <div class="ex-card" style="cursor:pointer" onclick="tryEx('cheat')">
+                    <div class="ex-title" style="font-size:0.8rem">📋 Cheat Sheet</div>
+                    <div class="stx"><code>"cheat sheet" javascript filetype:pdf</code></div>
+                </div>
+                <div class="ex-card" style="cursor:pointer" onclick="tryEx('ebook')">
+                    <div class="ex-title" style="font-size:0.8rem">📚 Free eBooks</div>
+                    <div class="stx"><code>intitle:"index of" ebook filetype:pdf</code></div>
+                </div>
+            </div>
+
+            <div class="g2" style="margin-top:1.1rem">
+                <div class="card">
+                    <div class="ch">
+                        <div class="ci yl">🔘</div>
+                        <div>
+                            <div class="ct">Har Button Kya Karta Hai</div>
+                        </div>
+                    </div>
+                    <div class="syl">
+                        <table class="ref-table">
+                            <tbody>
+                                <tr>
+                                    <td><strong>🔍 Search</strong></td>
+                                    <td>Query encode karke new tab mein search karta hai</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>📋 Copy</strong></td>
+                                    <td>Query clipboard mein copy</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>📑 Duplicate</strong></td>
+                                    <td>Query ko edit box mein paste karta hai</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>🗑️ Clear</strong></td>
+                                    <td>Sab fields clear</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>💾 Save</strong></td>
+                                    <td>Query ko naam dekar save (localStorage)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>➕ Add Filter</strong></td>
+                                    <td>Naya operator row add karta hai</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Quick Chips</strong></td>
+                                    <td>Click = operator keyword mein add</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>File Type</strong></td>
+                                    <td>Click = select (blue), phir click = deselect</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Presets</strong></td>
+                                    <td>Pre-made query template load karta hai</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>📦 I/O</strong></td>
+                                    <td>JSON export/import</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="ch">
+                        <div class="ci bl">📝</div>
+                        <div>
+                            <div class="ct">Operators — Hindi mein</div>
+                        </div>
+                    </div>
+                    <div class="syl">
+                        <table class="ref-table">
+                            <tbody>
+                                <tr>
+                                    <td><code>intitle:</code></td>
+                                    <td>Page ke <strong>title</strong> mein dhundho</td>
+                                </tr>
+                                <tr>
+                                    <td><code>inurl:</code></td>
+                                    <td>Page ke <strong>URL</strong> mein dhundho</td>
+                                </tr>
+                                <tr>
+                                    <td><code>intext:</code></td>
+                                    <td>Page ke <strong>body</strong> mein dhundho</td>
+                                </tr>
+                                <tr>
+                                    <td><code>site:</code></td>
+                                    <td>Sirf <strong>is website</strong> pe dhundho</td>
+                                </tr>
+                                <tr>
+                                    <td><code>filetype:</code></td>
+                                    <td>Sirf <strong>is type ki file</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><code>"quotes"</code></td>
+                                    <td><strong>Exact match</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><code>-minus</code></td>
+                                    <td>Ye word <strong>hatao</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><code>OR</code></td>
+                                    <td><strong>Ya ye ya woh</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><code>AROUND(n)</code></td>
+                                    <td>Do words <strong>n words ke andar</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><code>cache:</code></td>
+                                    <td>Google ki <strong>saved copy</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════ TAB: CHEAT SHEET ═══════════ -->
+        <div class="tp" id="panel-cheatsheet">
+
+            <!-- SECTION 1: GOOGLE DORKING -->
+            <div class="card" style="margin-bottom:1.1rem">
+                <div class="ch">
+                    <div class="ci bl">🔍</div>
+                    <div>
+                        <div class="ct">Google Dorking & Search Tricks</div>
+                        <div class="cd">Click 🔍 to load into Dorking Engine, 📋 to copy</div>
+                    </div>
+                </div>
+                <div id="dorkList"></div>
+            </div>
+
+            <!-- SECTION 2: ACCESS & BYPASS -->
+            <div class="card" style="margin-bottom:1.1rem">
+                <div class="ch">
+                    <div class="ci or">🔓</div>
+                    <div>
+                        <div class="ct">Access & Bypass Tricks (Educational Only)</div>
+                        <div class="cd">Cached pages, archives, paywall removal</div>
+                    </div>
+                </div>
+                <div id="accessList"></div>
+                <div class="warn mt1">⚠️ These techniques are for educational purposes. Never attempt unauthorized
+                    access to any system.</div>
+            </div>
+
+            <!-- SECTION 3: OSINT -->
+            <div class="card" style="margin-bottom:1.1rem">
+                <div class="ch">
+                    <div class="ci pu">🌐</div>
+                    <div>
+                        <div class="ct">OSINT (Information Gathering) Tricks</div>
+                        <div class="cd">Open source intelligence collection methods</div>
+                    </div>
+                </div>
+                <div id="osintList"></div>
+            </div>
+
+            <!-- SECTION 4: BASH -->
+            <div class="card" style="margin-bottom:1.1rem">
+                <div class="ch">
+                    <div class="ci gr">💻</div>
+                    <div>
+                        <div class="ct">Bash Scripting (Defensive & Monitoring)</div>
+                        <div class="cd">Terminal commands for security monitoring — click 📋 to copy</div>
+                    </div>
+                </div>
+                <div id="bashList"></div>
+            </div>
+
+            <!-- SECTION 5: SHIMBA'S RULES -->
+            <div class="card ra">
+                <div class="ch">
+                    <div class="ci rd">🛡️</div>
+                    <div>
+                        <div class="ct">Shimba's Security Rules</div>
+                        <div class="cd">NEVER break these rules!</div>
+                    </div>
+                </div>
+                <div id="rulesList"></div>
+            </div>
+        </div>
+
+        <!-- ═══════════ TAB: OSINT ═══════════ -->
+        <div class="tp" id="panel-osint">
+            <div class="g2">
+                <div class="card">
+                    <div class="ch">
+                        <div class="ci or">🌐</div>
+                        <div>
+                            <div class="ct">Social Media OSINT</div>
+                            <div class="cd">Name/keyword likho → platform button dabao</div>
+                        </div>
+                    </div>
+                    <div class="ig"><label class="il">🔑 Keyword / Name</label><input type="text" class="inf" id="sK"
+                            placeholder="e.g., John Doe"></div>
+                    <div class="bg">
+                        <button class="btn bbl" onclick="socS('linkedin')">🔗 LinkedIn</button>
+                        <button class="btn bbl" onclick="socS('twitter')">🐦 Twitter</button>
+                        <button class="btn bs" onclick="socS('github')">🐙 GitHub</button>
+                        <button class="btn bor" onclick="socS('reddit')">🟠 Reddit</button>
+                        <button class="btn bpk" onclick="socS('instagram')">📸 Instagram</button>
+                    </div>
+                    <div class="st sg">🎯 People Search</div>
+                    <div class="ig"><label class="il">Name</label><input type="text" class="inf" id="pN"
+                            placeholder="John Doe"></div>
+                    <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.8rem">
+                        <div style="flex:1;min-width:130px"><label class="il">Location</label><input type="text"
+                                class="inf" id="pL" placeholder="Mumbai"></div>
+                        <div style="flex:1;min-width:130px"><label class="il">Org</label><input type="text" class="inf"
+                                id="pO" placeholder="Google"></div>
+                    </div>
+                    <button class="btn bp" onclick="pplSearch()">🔍 Search Person</button>
+                </div>
+                <div class="card">
+                    <div class="ch">
+                        <div class="ci cy">📦</div>
+                        <div>
+                            <div class="ct">Archive Access & Tools</div>
+                        </div>
+                    </div>
+                    <div class="ig"><label class="il">🔗 URL</label><input type="text" class="inf" id="aU"
+                            placeholder="https://..."></div>
+                    <div class="bg">
+                        <button class="btn bgr bsm" onclick="arc('google')">📋 Google Cache</button>
+                        <button class="btn bbl bsm" onclick="arc('wayback')">🕰️ Wayback</button>
+                        <button class="btn bpu bsm" onclick="arc('archiveis')">🗄️ Archive.is</button>
+                        <button class="btn bor bsm" onclick="arc('12ft')">🪜 12ft.io</button>
+                    </div>
+                    <div class="st sg">🔗 Cache + Strip JS</div>
+                    <div class="ig"><label class="il">URL (for &strip=1 trick)</label><input type="text" class="inf"
+                            id="stripU" placeholder="https://example.com/article"></div>
+                    <button class="btn bcy bsm" onclick="cacheStrip()">📋 Google Cache + &strip=1</button>
+                    <div class="st sg">🌊 Shodan</div>
+                    <div class="ig"><label class="il">Query</label><input type="text" class="inf" id="shQ"
+                            placeholder="webcam, apache, port:22"></div>
+                    <div class="bg"><button class="btn bcy" onclick="shSearch()">🌊 Shodan</button><button
+                            class="btn bs bsm" onclick="shPre('webcam')">📹 Webcams</button><button class="btn bs bsm"
+                            onclick="shPre('db')">🗄️ DBs</button></div>
+                    <div class="st sg">🔍 WHOIS/DNS</div>
+                    <div class="ig"><label class="il">Domain</label><input type="text" class="inf" id="whD"
+                            placeholder="example.com"></div>
+                    <div class="bg"><button class="btn bbl bsm" onclick="whL('whois')">WHOIS</button><button
+                            class="btn bgr bsm" onclick="whL('dns')">DNS</button><button class="btn bpu bsm"
+                            onclick="whL('bw')">BuiltWith</button></div>
+                </div>
+            </div>
+            <div class="card" style="margin-top:1.1rem">
+                <div class="ch">
+                    <div class="ci rd">💀</div>
+                    <div>
+                        <div class="ct">GHDB Categories</div>
+                        <div class="cd">Click = auto-fill dorking tab</div>
+                    </div>
+                </div>
+                <div class="pg">
+                    <button class="pb" onclick="ldGH('foot')"><span>🦶</span> Footholds</button>
+                    <button class="pb" onclick="ldGH('files')"><span>📁</span> Sensitive Files</button>
+                    <button class="pb" onclick="ldGH('dir')"><span>📂</span> Directory Listings</button>
+                    <button class="pb" onclick="ldGH('login')"><span>🔐</span> Login Pages</button>
+                    <button class="pb" onclick="ldGH('pass')"><span>🔑</span> Passwords</button>
+                    <button class="pb" onclick="ldGH('devices')"><span>📡</span> Devices</button>
+                    <button class="pb" onclick="ldGH('db')"><span>🗃️</span> Databases</button>
+                    <button class="pb" onclick="ldGH('error')"><span>❌</span> Error Messages</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════ TAB: TOOLS ═══════════ -->
+        <div class="tp" id="panel-tools">
+            <div class="g2">
+                <div class="card">
+                    <div class="ch">
+                        <div class="ci cy">🌊</div>
+                        <div>
+                            <div class="ct">Shodan</div>
+                            <div class="cd">"Search engine for IoT devices"</div>
+                        </div>
+                    </div>
+                    <div class="cs-card">
+                        <p>Finds: Medical devices, CCTV/webcams, HVAC, ICS/SCADA, traffic systems, UPS, serial port
+                            servers</p>
+                    </div>
+                    <div class="cs-card">
+                        <div class="cs-title">Common Queries</div>
+                        <table class="ref-table">
+                            <tbody>
+                                <tr>
+                                    <td><code>port:22</code></td>
+                                    <td>SSH</td>
+                                </tr>
+                                <tr>
+                                    <td><code>webcam has_screenshot:true</code></td>
+                                    <td>Webcams</td>
+                                </tr>
+                                <tr>
+                                    <td><code>country:US</code></td>
+                                    <td>US devices</td>
+                                </tr>
+                                <tr>
+                                    <td><code>product:MongoDB</code></td>
+                                    <td>MongoDB servers</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="ch">
+                        <div class="ci or">📑</div>
+                        <div>
+                            <div class="ct">FOCA</div>
+                            <div class="cd">Document Metadata Extraction</div>
+                        </div>
+                    </div>
+                    <div class="cs-card">
+                        <p>Search → Download → Analyze documents. Extracts: users, folders, printers, software, emails,
+                            OS, passwords, servers</p>
+                        <p>Supports: DOC, PPT, XLS, PDF, ODT, SVG, RDP, INDD, WPD, ICA + more</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="ch">
+                        <div class="ci gr">🌾</div>
+                        <div>
+                            <div class="ct">theHarvester</div>
+                            <div class="cd">Domain Intelligence</div>
+                        </div>
+                    </div>
+                    <div class="cs-card">
+                        <p>Gathers emails, IPs, domains, subdomains, ports from search engines + Shodan</p>
+                        <p><code>theHarvester -d target.com -b google -l 500</code></p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="ch">
+                        <div class="ci pu">🕸️</div>
+                        <div>
+                            <div class="ct">Maltego</div>
+                            <div class="cd">Relationship Mapping</div>
+                        </div>
+                    </div>
+                    <div class="cs-card">
+                        <p>Maps: people ↔ sites ↔ companies using "transforms". Domain→PGP, Person→Email, Domain→Phone
+                        </p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="ch">
+                        <div class="ci pk">🔬</div>
+                        <div>
+                            <div class="ct">Recon-ng</div>
+                            <div class="cd">Web Recon Framework</div>
+                        </div>
+                    </div>
+                    <div class="cs-card">
+                        <table class="ref-table">
+                            <tbody>
+                                <tr>
+                                    <td><strong>Recon</strong></td>
+                                    <td>50+ modules</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Discovery</strong></td>
+                                    <td>DNS cache snoop, interesting files</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Exploitation</strong></td>
+                                    <td>XPATH & Command Injection</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="ch">
+                        <div class="ci yl">🔧</div>
+                        <div>
+                            <div class="ct">More OSINT Tools</div>
+                        </div>
+                    </div>
+                    <div class="cs-card">
+                        <table class="ref-table">
+                            <tbody>
+                                <tr>
+                                    <td><strong>SpiderFoot</strong></td>
+                                    <td>200+ automated OSINT modules</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Amass</strong></td>
+                                    <td>Subdomain enumeration</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Metagoofil</strong></td>
+                                    <td>Document metadata extraction</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>whatsmyname.app</strong></td>
+                                    <td>Username tracking across platforms</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>PimEyes/Yandex</strong></td>
+                                    <td>Reverse image search</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════ TAB: HISTORY ═══════════ -->
+        <div class="tp" id="panel-history">
+            <div class="g2">
+                <div class="card">
+                    <div class="ch">
+                        <div class="ci bl">🕒</div>
+                        <div>
+                            <div class="ct">Query History</div>
+                        </div>
+                    </div>
+                    <div class="fb mb1"><span style="font-size:0.74rem;color:var(--text-muted)"
+                            id="hCnt">0</span><button class="btn bd bxs" onclick="clrHist()">🗑️</button></div>
+                    <div class="syl" id="hC">
+                        <div style="color:var(--text-muted);font-size:0.76rem;text-align:center;padding:0.8rem">No
+                            history</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="ch">
+                        <div class="ci gr">💾</div>
+                        <div>
+                            <div class="ct">Saved Presets</div>
+                        </div>
+                    </div>
+                    <div class="fb mb1"><span style="font-size:0.74rem;color:var(--text-muted)" id="sCnt">0</span>
+                        <div class="bg"><button class="btn bs bxs" onclick="openM('ioM')">📦</button><button
+                                class="btn bd bxs" onclick="clrSaved()">🗑️</button></div>
+                    </div>
+                    <div class="syl" id="spCF">
+                        <div style="color:var(--text-muted);font-size:0.76rem;text-align:center;padding:0.8rem">No
+                            presets</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <div class="disc">⚠️ For Educational &amp; Defensive Purposes Only</div>
+        <p>Shimba's Cyber Intelligence Dashboard v3.0 &bull; Single HTML &bull; Zero Dependencies</p>
+        <p style="margin-top:0.2rem;font-size:0.68rem">OSINT Reference: binca via cheatography.com/44948/cs/13288/</p>
+    </footer>
+
+    <script>
+        /* ========================================
+           SHIMBA'S DASHBOARD v3.0 — FULL ENGINE
+           ======================================== */
+
+        // ── CONFIG ──
+        const C = {
+            FT: ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'txt', 'csv', 'zip', 'log', 'conf'],
+            OPS: [
+                { v: 'intitle', l: 'intitle:' }, { v: 'allintitle', l: 'allintitle:' }, { v: 'inurl', l: 'inurl:' }, { v: 'allinurl', l: 'allinurl:' },
+                { v: 'intext', l: 'intext:' }, { v: 'allintext', l: 'allintext:' }, { v: 'site', l: 'site:' }, { v: 'filetype', l: 'filetype:' },
+                { v: 'ext', l: 'ext:' }, { v: 'link', l: 'link:' }, { v: 'related', l: 'related:' }, { v: 'cache', l: 'cache:' },
+                { v: 'define', l: 'define:' }, { v: 'exclude', l: '-keyword' }, { v: 'or', l: 'OR' }, { v: 'before', l: 'before:' }, { v: 'after', l: 'after:' }
+            ],
+            PR: {
+                cyber: { k: 'cybersecurity', q: 'intitle:"cybersecurity tutorial" site:edu filetype:pdf OR filetype:ppt' },
+                prog: { k: 'programming', q: 'intitle:"programming guide" intext:beginner filetype:pdf OR filetype:doc' },
+                research: { k: 'research paper', q: 'site:scholar.google.com OR site:researchgate.net filetype:pdf "research paper"' },
+                public: { k: 'public documents', q: 'intitle:"index of" inurl:documents filetype:pdf' },
+                index: { k: '', q: 'intitle:"index of /" "parent directory"' },
+                gov: { k: 'government report', q: 'site:gov "government report" filetype:pdf' },
+                edu: { k: 'educational', q: 'site:edu intitle:"course materials" filetype:pdf OR filetype:ppt' },
+                tech: { k: 'technical documentation', q: 'intitle:"documentation" inurl:docs filetype:pdf "technical"' }
+            },
+            GH: {
+                foot: 'intitle:"index of" "parent directory" "server at"',
+                files: 'filetype:log inurl:password',
+                dir: 'intitle:"index of" "last modified" "parent directory"',
+                login: 'inurl:"/admin/login" OR inurl:"/wp-login.php" intitle:"login"',
+                pass: 'filetype:txt inurl:password OR filetype:log inurl:password',
+                devices: 'intitle:"webcamXP 5" OR intitle:"Network Camera"',
+                db: 'filetype:sql "CREATE TABLE" (email|password|user)',
+                error: 'intitle:"error" "warning" "mysql" filetype:php'
+            },
+            EX: {
+                javadsa: '"java dsa handwritten notes" filetype:pdf site:drive.google.com',
+                python: 'python tutorial beginner intitle:"python tutorial" filetype:pdf',
+                cyber: 'cybersecurity site:edu (filetype:pdf OR filetype:ppt)',
+                gate: '"gate" "computer science" notes filetype:pdf',
+                gdrive: 'site:drive.google.com "data structures" filetype:pdf',
+                cheat: '"cheat sheet" javascript filetype:pdf',
+                ebook: 'intitle:"index of" "parent directory" ebook filetype:pdf',
+                resume: '"resume" OR "cv" filetype:docx site:drive.google.com'
+            },
+            URL: { google: 'https://www.google.com/search?q=', bing: 'https://www.bing.com/search?q=', duckduckgo: 'https://duckduckgo.com/?q=' },
+            SOC: {
+                linkedin: q => `https://www.google.com/search?q=site:linkedin.com/in+${euc(q)}`,
+                twitter: q => `https://www.google.com/search?q=site:twitter.com+OR+site:x.com+${euc(q)}`,
+                github: q => `https://github.com/search?q=${euc(q)}&type=repositories`,
+                reddit: q => `https://www.google.com/search?q=site:reddit.com+${euc(q)}`,
+                instagram: q => `https://www.google.com/search?q=site:instagram.com+${euc(q)}`
+            },
+            ARC: {
+                google: u => `https://webcache.googleusercontent.com/search?q=cache:${euc(u)}`,
+                wayback: u => `https://web.archive.org/web/*/${u}`,
+                archiveis: u => `https://archive.is/newest/${u}`,
+                '12ft': u => `https://12ft.io/${u}`
+            },
+
+            // ── CHEAT SHEET DATA ──
+            DORKS: [
+                { code: 'filetype:pdf', desc: 'Finds specific file formats (books, reports, notes)', dork: 'filetype:pdf' },
+                { code: 'intitle:"index of"', desc: 'Finds open server directories with direct download links', dork: 'intitle:"index of"' },
+                { code: 'inurl:admin/login', desc: 'Finds administrative login portals', dork: 'inurl:admin/login' },
+                { code: 'site:edu / site:gov', desc: 'Limits results to educational or government sites', dork: 'site:edu' },
+                { code: 'cache:URL', desc: 'Opens the Google-saved version of a page', dork: 'cache:' },
+                { code: '"exact phrase"', desc: 'Searches for the literal string within quotes', dork: '"exact phrase"' },
+                { code: '-keyword', desc: 'Excludes specific words/sites from results', dork: '-pinterest' },
+                { code: 'AROUND(n)', desc: 'Finds two words within n words distance of each other', dork: 'AROUND(3)' },
+                { code: 'inurl:wp-login.php', desc: 'Finds WordPress login pages', dork: 'inurl:wp-login.php' },
+                { code: 'inurl:/admin', desc: 'Finds admin entry points on websites', dork: 'inurl:/admin' },
+                { code: 'filetype:sql "password"', desc: 'Finds SQL database dumps with password data', dork: 'filetype:sql "password"' },
+                { code: 'intitle:"index of" /backup', desc: 'Finds backup directories on servers', dork: 'intitle:"index of" /backup' }
+            ],
+            ACCESS: [
+                { title: 'Google Cache + &strip=1', desc: 'Views a page without JavaScript — often bypasses login popups and paywalls. Add <code>&strip=1</code> to Google Cache URL.' },
+                { title: 'Wayback Machine (archive.org)', desc: 'Access deleted or older versions of any website. Paste URL at <code>web.archive.org</code>.' },
+                { title: '12ft.io / Archive.is', desc: 'Third-party tools that remove paywalls from articles. Paste article URL and read freely.' },
+                { title: 'In-URL Dorking', desc: 'Searching for <code>/wp-login.php</code> or <code>/admin</code> to find entry points and login pages on websites.' },
+                { title: 'Google Cache Trick', desc: 'Search <code>cache:example.com/article</code> in Google to see saved version even if page is now behind paywall.' }
+            ],
+            OSINT_TRICKS: [
+                { title: '🔍 Reverse Image Search', desc: 'Use <code>pimeyes.com</code> or <code>yandex.com/images</code> to find the source/origin of any photo. Upload image → find where it appears online.' },
+                { title: '👤 Username Tracking', desc: 'Use <code>whatsmyname.app</code> to find accounts across 500+ social media platforms with just a username.' },
+                { title: '🌊 Shodan Search', desc: 'Find internet-connected devices — CCTV cameras, servers, IoT devices, industrial systems. Search at <code>shodan.io</code>.' },
+                { title: '📄 FOCA / Metadata', desc: 'Extract hidden info (author name, OS, software version, printer info) from PDF, DOC, PPT files. Tools: FOCA, Exiftool, Metagoofil.' },
+                { title: '📧 Email OSINT', desc: 'Use <code>hunter.io</code> to find email patterns for any company domain. <code>theHarvester</code> automates this from terminal.' },
+                { title: '🌐 DNS/WHOIS Recon', desc: 'Look up domain registration, IP info, nameservers using WHOIS. Tools: whois.com, nslookup.io, censys.io' }
+            ],
+            BASH: [
+                { cmd: 'ps aux', desc: 'Displays ALL running processes — spot suspicious activity' },
+                { cmd: 'ss -tulpn', desc: 'Shows all open network ports and active connections' },
+                { cmd: 'sha256sum [file]', desc: 'Generates digital fingerprint to verify if a file is safe/untampered' },
+                { cmd: 'ls -la', desc: 'Shows all files including hidden ones (starting with dot .)' },
+                { cmd: 'find . -executable', desc: 'Locates files that have execute permission (potential malware)' },
+                { cmd: 'curl -I [URL]', desc: 'Checks HTTP status/headers of a website (page exists?)' },
+                { cmd: 'netstat -an', desc: 'Shows all network connections and listening ports' },
+                { cmd: 'whoami', desc: 'Shows current logged-in username' },
+                { cmd: 'uname -a', desc: 'Shows full system/kernel information' },
+                { cmd: 'history', desc: 'Shows command history — check what was run on system' },
+                { cmd: 'cat /etc/passwd', desc: 'Lists all user accounts on Linux system' },
+                { cmd: 'chmod 600 [file]', desc: 'Sets file permission — only owner can read/write' },
+                { cmd: 'grep -r "password" .', desc: 'Recursively searches for "password" in all files' },
+                { cmd: 'nmap -sV [target]', desc: 'Scans target for open ports and service versions' },
+                { cmd: 'dig [domain]', desc: 'DNS lookup — find IP addresses for a domain' }
+            ],
+            RULES: [
+                { icon: '🔍', title: 'Double Extension Check', desc: '<strong>NEVER</strong> open files like <code>report.pdf.exe</code> — the real extension is .exe (executable malware). Always check the LAST extension.' },
+                { icon: '🖥️', title: 'The VM Rule', desc: '<strong>ALWAYS</strong> test unknown scripts, tools, and downloads inside a <strong>Virtual Machine</strong> (VirtualBox/VMware). Never run on your main system.' },
+                { icon: '🔑', title: 'No Password Input', desc: '<strong>NEVER</strong> enter your real credentials on a bypassed, "cracked", or suspicious website. They could be phishing pages stealing your data.' },
+                { icon: '🛡️', title: 'HTTPS Always', desc: 'Check for <strong>https://</strong> and the lock icon before entering any sensitive data. HTTP sites are not encrypted.' },
+                { icon: '🧪', title: 'Hash Before Running', desc: 'Before running any downloaded tool, check its <code>sha256sum</code> hash against the official hash provided by the developer.' },
+                { icon: '📡', title: 'VPN for OSINT', desc: 'When doing OSINT research, use a <strong>VPN</strong> to protect your IP address. Your research queries reveal your interests.' }
+            ]
+        };
+
+        // ── STATE ──
+        const S = { filters: [], selFT: new Set(), hist: [], saved: [], fid: 0, manual: false };
+        const euc = encodeURIComponent;
+        const $ = id => document.getElementById(id);
+
+        // ── INIT ──
+        document.addEventListener('DOMContentLoaded', () => {
+            initFT(); buildCheatSheet(); loadLS(); renderH(); renderSP(); updA(); bindEv(); updQP();
+        });
+
+        function bindEv() {
+            $('kw').addEventListener('input', () => { S.manual = false; updQP() });
+            $('dA').addEventListener('change', () => { S.manual = false; updQP() });
+            $('dB').addEventListener('change', () => { S.manual = false; updQP() });
+            $('eng').addEventListener('change', updA);
+            $('pm').addEventListener('change', () => { S.manual = false; updQP() });
+            $('mQ').addEventListener('input', () => { S.manual = true; updPM(); updA() });
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    const a = document.activeElement;
+                    if (['pnI', 'impA', 'expA'].includes(a.id)) return;
+                    if (a.id === 'mQ' || a.id === 'kw') { e.preventDefault(); doSearch() }
+                    if (a.id === 'sK') { e.preventDefault(); socS('linkedin') }
+                    if (a.id === 'shQ') { e.preventDefault(); shSearch() }
+                }
+            });
+        }
+
+        // ── CHEAT SHEET BUILDER ──
+        function buildCheatSheet() {
+            // Dorks
+            let dH = '';
+            C.DORKS.forEach(d => {
+                dH += `<div class="dork-row"><span class="dork-code">${esc(d.code)}</span><span class="dork-desc">${d.desc}</span><div class="dork-actions"><button class="btn bbl bxs" onclick="loadDork('${esc(d.dork.replace(/'/g, "\\'"))}')" title="Load into Dorking">🔍</button><button class="btn bs bxs" onclick="copyTxt('${esc(d.dork.replace(/'/g, "\\'"))}')" title="Copy">📋</button></div></div>`;
+            });
+            $('dorkList').innerHTML = dH;
+
+            // Access
+            let aH = '';
+            C.ACCESS.forEach(a => { aH += `<div class="cs-card"><div class="cs-title">🔓 ${a.title}</div><p>${a.desc}</p></div>` });
+            $('accessList').innerHTML = aH;
+
+            // OSINT
+            let oH = '';
+            C.OSINT_TRICKS.forEach(o => { oH += `<div class="cs-card"><div class="cs-title">${o.title}</div><p>${o.desc}</p></div>` });
+            $('osintList').innerHTML = oH;
+
+            // Bash
+            let bH = '';
+            C.BASH.forEach(b => {
+                bH += `<div class="bash-row"><span class="bash-cmd">${esc(b.cmd)}</span><span class="bash-desc">${b.desc}</span><button class="btn bgr bxs" onclick="copyTxt('${esc(b.cmd)}')" title="Copy command">📋</button></div>`;
+            });
+            $('bashList').innerHTML = bH;
+
+            // Rules
+            let rH = '';
+            C.RULES.forEach(r => { rH += `<div class="rule-row"><span class="rule-icon">${r.icon}</span><div class="rule-text"><strong>${r.title}:</strong> ${r.desc}</div></div>` });
+            $('rulesList').innerHTML = rH;
+        }
+
+        function loadDork(d) {
+            $('mQ').value = d; $('kw').value = '';
+            S.manual = true; updPM(); updA();
+            swTab('dorking', document.querySelectorAll('.nav-tab')[0]);
+            toast('Dork loaded! 🔍 Search dabao', 'success');
+        }
+        function copyTxt(t) { cpClip(t); toast('Copied! 📋', 'success') }
+
+        // ── TABS ──
+        function swTab(id, btn) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            document.querySelectorAll('.tp').forEach(p => p.classList.remove('active'));
+            const p = $(`panel-${id}`); if (p) p.classList.add('active');
+        }
+
+        // ── FILETYPE ──
+        function initFT() {
+            const g = $('ftG'); g.innerHTML = '';
+            C.FT.forEach(ft => {
+                const l = document.createElement('label'); l.className = 'ftc'; l.id = `ft-${ft}`;
+                l.innerHTML = `<input type="checkbox"><span>${ft.toUpperCase()}</span>`;
+                l.onclick = e => { e.preventDefault(); togFT(ft) }; g.appendChild(l);
+            });
+        }
+        function togFT(ft) {
+            if (S.selFT.has(ft)) { S.selFT.delete(ft); $(`ft-${ft}`).classList.remove('ac') }
+            else { S.selFT.add(ft); $(`ft-${ft}`).classList.add('ac') }
+            S.manual = false; updQP();
+        }
+
+        // ── FILTERS ──
+        function addF() {
+            const id = ++S.fid; S.filters.push({ id, op: 'intitle', val: '' });
+            const c = $('fC'), r = document.createElement('div'); r.className = 'fr'; r.id = `f-${id}`;
+            const opts = C.OPS.filter(o => !['before', 'after'].includes(o.v)).map(o => `<option value="${o.v}">${o.l}</option>`).join('');
+            r.innerHTML = `<select onchange="ufOp(${id},this.value)">${opts}</select><input type="text" placeholder="Value..." oninput="ufVal(${id},this.value)"><button class="rf" onclick="rmF(${id})">&times;</button>`;
+            c.appendChild(r); S.manual = false; updQP();
+        }
+        function ufOp(id, op) { const f = S.filters.find(f => f.id === id); if (f) { f.op = op; S.manual = false; updQP() } }
+        function ufVal(id, v) { const f = S.filters.find(f => f.id === id); if (f) { f.val = v; S.manual = false; updQP() } }
+        function rmF(id) { S.filters = S.filters.filter(f => f.id !== id); const r = $(`f-${id}`); if (r) { r.style.opacity = '0'; r.style.transform = 'translateX(20px)'; r.style.transition = 'all .3s'; setTimeout(() => r.remove(), 300) } S.manual = false; updQP() }
+        function clrF() { S.filters = []; $('fC').innerHTML = ''; S.manual = false; updQP() }
+
+        // ── QUERY BUILDER ──
+        function buildQ() {
+            const p = [], kw = $('kw').value.trim(), pm = $('pm').value;
+            if (kw) p.push(pm === 'exact' ? `"${kw}"` : kw);
+            S.filters.forEach(f => {
+                if (!f.val.trim()) return; const v = f.val.trim();
+                if (f.op === 'exclude') p.push(`-${v}`);
+                else if (f.op === 'or') p.push(`OR ${v}`);
+                else { const nq = v.includes(' ') && !['site', 'filetype', 'ext', 'related', 'cache', 'define'].includes(f.op); p.push(`${f.op}:${nq ? '"' + v + '"' : v}`) }
+            });
+            const ft = Array.from(S.selFT);
+            if (ft.length === 1) p.push(`filetype:${ft[0]}`); else if (ft.length > 1) p.push(`(${ft.map(f => `filetype:${f}`).join(' OR ')})`);
+            const da = $('dA').value, db = $('dB').value;
+            if (da) p.push(`after:${da}`); if (db) p.push(`before:${db}`);
+            return p.join(' ');
+        }
+        function getQ() { return S.manual ? $('mQ').value.trim() : buildQ() }
+        function updQP() {
+            const q = buildQ(), p = $('qP'), m = $('mQ');
+            if (!q) { p.innerHTML = '<span class="em">Keywords likho upar... query yahan dikhega</span>'; if (!S.manual) m.value = '' }
+            else { p.innerHTML = colorQ(q); if (!S.manual) m.value = q }
+            updA();
+        }
+        function updPM() { const q = $('mQ').value.trim(); $('qP').innerHTML = q ? colorQ(q) : '<span class="em">Query likho...</span>' }
+        function colorQ(q) {
+            let s = q.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            ['allintitle:', 'allinurl:', 'allintext:', 'intitle:', 'inurl:', 'intext:', 'site:', 'filetype:', 'ext:', 'before:', 'after:', 'related:', 'cache:', 'define:', 'info:', 'link:'].forEach(op => {
+                s = s.replace(new RegExp(op.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), `<span class="op">${op}</span>`)
+            });
+            s = s.replace(/\bOR\b/g, '<span class="op">OR</span>');
+            s = s.replace(/\bAROUND\(\d+\)/g, '<span class="op">$&</span>');
+            s = s.replace(/"([^"]*)"/g, '<span class="vl">"$1"</span>');
+            s = s.replace(/(-\w+)/g, '<span style="color:var(--neon-red)">$1</span>');
+            return s;
+        }
+
+        // ── SEARCH ──
+        function doSearch() {
+            const q = getQ(); if (!q) { toast('Pehle keywords likho!', 'error'); $('kw').focus(); return }
+            const eng = $('eng').value;
+            window.open(C.URL[eng] + euc(q), '_blank', 'noopener,noreferrer');
+            addH(q, eng); toast(`Search opened (${eng})`, 'success');
+        }
+
+        // ── QUICK OPS ──
+        function qOp(op) { const i = $('kw'), c = i.value.trim(); i.value = c ? `${c} ${op}` : op; S.manual = false; updQP(); toast(`Added: ${op}`, 'info') }
+
+        // ── TRY EXAMPLES ──
+        function tryEx(k) { const q = C.EX[k]; if (!q) return; $('mQ').value = q; $('kw').value = ''; S.manual = true; updPM(); updA(); swTab('dorking', document.querySelectorAll('.nav-tab')[0]); toast('Example loaded! Search dabao 🔍', 'success') }
+
+        // ── PRESETS ──
+        function ldP(k) { const p = C.PR[k]; if (!p) return; $('kw').value = p.k || ''; $('mQ').value = p.q; S.manual = true; updPM(); updA(); toast(`Preset: ${k}`, 'success') }
+        function ldGH(k) { const q = C.GH[k]; if (!q) return; $('mQ').value = q; $('kw').value = ''; S.manual = true; updPM(); updA(); swTab('dorking', document.querySelectorAll('.nav-tab')[0]); toast(`GHDB: ${k}`, 'success') }
+
+        // ── SOCIAL ──
+        function socS(p) { const kw = $('sK').value.trim(); if (!kw) { toast('Keyword likho!', 'error'); return } window.open(C.SOC[p](kw), '_blank', 'noopener,noreferrer'); toast(`${p} search opened`, 'success') }
+        function pplSearch() {
+            const n = $('pN').value.trim(); if (!n) { toast('Name likho!', 'error'); return }
+            const l = $('pL').value.trim(), o = $('pO').value.trim();
+            let q = `"${n}"`; if (l) q += ` "${l}"`; if (o) q += ` "${o}"`;
+            q += ' (site:linkedin.com OR site:twitter.com OR site:facebook.com)';
+            window.open(C.URL.google + euc(q), '_blank', 'noopener,noreferrer');
+            addH(q, 'google'); toast(`People search: ${n}`, 'success');
+        }
+
+        // ── ARCHIVE ──
+        function arc(s) { const u = $('aU').value.trim(); if (!u) { toast('URL paste karo!', 'error'); return } if (!u.startsWith('http')) { toast('Valid URL (http/https)', 'error'); return } window.open(C.ARC[s](u), '_blank', 'noopener,noreferrer'); toast(`${s} opened`, 'success') }
+        function cacheStrip() {
+            const u = $('stripU').value.trim(); if (!u) { toast('URL paste karo!', 'error'); return }
+            window.open(`https://webcache.googleusercontent.com/search?q=cache:${euc(u)}&strip=1`, '_blank', 'noopener,noreferrer');
+            toast('Cache + strip=1 opened!', 'success');
+        }
+
+        // ── SHODAN ──
+        function shSearch() { const q = $('shQ').value.trim(); if (!q) { toast('Query likho!', 'error'); return } window.open(`https://www.shodan.io/search?query=${euc(q)}`, '_blank', 'noopener,noreferrer'); toast(`Shodan: ${q}`, 'success') }
+        function shPre(t) { const p = { webcam: 'webcam has_screenshot:true', db: 'product:MySQL OR product:MongoDB' }; $('shQ').value = p[t] || ''; shSearch() }
+
+        // ── WHOIS ──
+        function whL(t) { const d = $('whD').value.trim(); if (!d) { toast('Domain!', 'error'); return } const u = { whois: `https://www.whois.com/whois/${euc(d)}`, dns: `https://www.nslookup.io/domains/${euc(d)}/dns-records/`, bw: `https://builtwith.com/${euc(d)}` }; window.open(u[t], '_blank', 'noopener,noreferrer'); toast(`${t}: ${d}`, 'success') }
+
+        // ── ACTIONS ──
+        function copyQ() { const q = getQ(); if (!q) { toast('No query!', 'error'); return } cpClip(q); toast('Copied! 📋', 'success') }
+        function dupQ() { const q = getQ(); if (!q) return; $('mQ').value = q + ' '; S.manual = true; $('mQ').focus(); toast('Duplicated!', 'info') }
+        function clrAll() {
+            $('kw').value = ''; $('mQ').value = ''; $('dA').value = ''; $('dB').value = ''; $('pm').value = 'normal'; clrF();
+            S.selFT.clear(); C.FT.forEach(ft => $(`ft-${ft}`).classList.remove('ac'));
+            S.manual = false; updQP(); toast('Cleared! ✨', 'info');
+        }
+
+        // ── HISTORY ──
+        function addH(q, eng) {
+            const e = { query: q, engine: eng, ts: Date.now(), time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+            if (S.hist.length && S.hist[0].query === q) return;
+            S.hist.unshift(e); if (S.hist.length > 100) S.hist.pop();
+            saveLS(); renderH(); updA();
+        }
+        function renderH() {
+            const c = $('hC'), ce = $('hCnt'); if (ce) ce.textContent = `${S.hist.length} entries`;
+            if (!S.hist.length) { c.innerHTML = '<div style="color:var(--text-muted);font-size:0.76rem;text-align:center;padding:0.8rem">No history</div>'; return }
+            c.innerHTML = S.hist.map((h, i) => `<div class="hi"><span class="hq" onclick="ldHQ(${i})">${esc(trunc(h.query, 60))}</span><span class="ht">${h.time}</span><div class="ha"><button class="btn bxs bs" onclick="rerunH(${i})">🔄</button><button class="btn bxs bs" onclick="cpHQ(${i})">📋</button><button class="btn bxs bs" onclick="delH(${i})">✕</button></div></div>`).join('');
+        }
+        function ldHQ(i) { const h = S.hist[i]; if (!h) return; $('mQ').value = h.query; S.manual = true; updPM(); swTab('dorking', document.querySelectorAll('.nav-tab')[0]); toast('Loaded!', 'info') }
+        function rerunH(i) { const h = S.hist[i]; if (!h) return; window.open((C.URL[h.engine] || C.URL.google) + euc(h.query), '_blank', 'noopener,noreferrer') }
+        function cpHQ(i) { const h = S.hist[i]; if (!h) return; cpClip(h.query); toast('Copied!', 'success') }
+        function delH(i) { S.hist.splice(i, 1); saveLS(); renderH(); updA() }
+        function clrHist() { if (!S.hist.length) return; S.hist = []; saveLS(); renderH(); updA(); toast('History cleared', 'info') }
+
+        // ── SAVED ──
+        function openSaveM() { const q = getQ(); if (!q) { toast('Query banao!', 'error'); return } $('pqI').value = q; $('pnI').value = ''; openM('saveM'); setTimeout(() => $('pnI').focus(), 100) }
+        function confirmSave() {
+            const n = $('pnI').value.trim(), q = $('pqI').value.trim();
+            if (!n) { toast('Naam do!', 'error'); return } if (!q) return;
+            if (S.saved.some(p => p.name.toLowerCase() === n.toLowerCase())) { toast('Naam already hai!', 'error'); return }
+            S.saved.push({ name: n, query: q, engine: $('eng').value, ts: Date.now() });
+            saveLS(); renderSP(); updA(); closeM('saveM'); toast(`"${n}" saved!`, 'success');
+        }
+        function renderSP() {
+            [$('spC'), $('spCF')].forEach(c => {
+                if (!c) return; const ce = $('sCnt'); if (ce) ce.textContent = `${S.saved.length} presets`;
+                if (!S.saved.length) { c.innerHTML = '<div style="color:var(--text-muted);font-size:0.76rem;text-align:center;padding:0.6rem">No presets</div>'; return }
+                c.innerHTML = S.saved.map((p, i) => `<div class="hi"><span class="hq" onclick="ldSP(${i})"><strong style="color:var(--neon-blue)">${esc(p.name)}</strong>: ${esc(trunc(p.query, 35))}</span><div class="ha"><button class="btn bxs bgr" onclick="ldSP(${i})">📂</button><button class="btn bxs bs" onclick="delSP(${i})">✕</button></div></div>`).join('');
+            });
+        }
+        function ldSP(i) { const p = S.saved[i]; if (!p) return; $('mQ').value = p.query; if (p.engine) $('eng').value = p.engine; S.manual = true; updPM(); updA(); swTab('dorking', document.querySelectorAll('.nav-tab')[0]); toast(`Loaded: ${p.name}`, 'success') }
+        function delSP(i) { S.saved.splice(i, 1); saveLS(); renderSP(); updA() }
+        function clrSaved() { if (!S.saved.length) return; S.saved = []; saveLS(); renderSP(); updA(); toast('Presets cleared', 'info') }
+
+        // ── I/O ──
+        function openM(id) { $(id).classList.add('active'); if (id === 'ioM') { $('expA').value = JSON.stringify({ history: S.hist, savedPresets: S.saved, v: '3.0' }, null, 2); $('impA').value = '' } }
+        function closeM(id) { $(id).classList.remove('active') }
+        function copyExp() { cpClip($('expA').value); toast('Export copied!', 'success') }
+        function impData() {
+            const r = $('impA').value.trim(); if (!r) { toast('JSON paste karo!', 'error'); return }
+            try {
+                const d = JSON.parse(r);
+                if (d.history) { const ex = new Set(S.hist.map(h => h.query)); d.history.forEach(h => { if (!ex.has(h.query)) S.hist.push(h) }) }
+                if (d.savedPresets) { const ex = new Set(S.saved.map(p => p.name.toLowerCase())); d.savedPresets.forEach(p => { if (!ex.has(p.name.toLowerCase())) S.saved.push(p) }) }
+                saveLS(); renderH(); renderSP(); updA(); closeM('ioM'); toast('Imported! ✅', 'success');
+            } catch (e) { toast('Invalid JSON!', 'error') }
+        }
+
+        // ── THEME ──
+        function togTheme() {
+            const h = document.documentElement, n = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            h.setAttribute('data-theme', n); $('tI').textContent = n === 'dark' ? '🌙' : '☀️'; $('tL').textContent = n === 'dark' ? 'Dark' : 'Light';
+            localStorage.setItem('s_th', n);
+        }
+
+        // ── ANALYTICS ──
+        function updA() {
+            const q = getQ(); $('sF').textContent = S.filters.length; $('sT').textContent = S.selFT.size;
+            $('sL').textContent = q.length; $('sH').textContent = S.hist.length; $('sS').textContent = S.saved.length;
+            const e = $('eng'); $('sE').textContent = e.options[e.selectedIndex].text;
+        }
+
+        // ── STORAGE ──
+        function saveLS() { try { localStorage.setItem('s_h', JSON.stringify(S.hist)); localStorage.setItem('s_p', JSON.stringify(S.saved)) } catch (e) { } }
+        function loadLS() {
+            try {
+                const h = localStorage.getItem('s_h'); if (h) S.hist = JSON.parse(h);
+                const p = localStorage.getItem('s_p'); if (p) S.saved = JSON.parse(p);
+                const t = localStorage.getItem('s_th'); if (t) { document.documentElement.setAttribute('data-theme', t); $('tI').textContent = t === 'dark' ? '🌙' : '☀️'; $('tL').textContent = t === 'dark' ? 'Dark' : 'Light' }
+            } catch (e) { }
+        }
+
+        // ── UTILS ──
+        function cpClip(t) { if (navigator.clipboard) navigator.clipboard.writeText(t).catch(() => fbCp(t)); else fbCp(t) }
+        function fbCp(t) { const a = document.createElement('textarea'); a.value = t; a.style.cssText = 'position:fixed;left:-9999px'; document.body.appendChild(a); a.select(); try { document.execCommand('copy') } catch (e) { } document.body.removeChild(a) }
+        function toast(m, t = 'info') { const c = $('tc'), el = document.createElement('div'); el.className = `toast ${t}`; el.innerHTML = `<span>${{ success: '✅', error: '❌', info: 'ℹ️' }[t] || 'ℹ️'}</span><span>${esc(m)}</span>`; c.appendChild(el); setTimeout(() => { if (el.parentNode) el.remove() }, 3200) }
+        function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML }
+        function trunc(s, m) { return !s ? '' : s.length > m ? s.substring(0, m) + '…' : s }
+    </script>
+</body>
+
+</html>
