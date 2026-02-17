@@ -1,0 +1,3542 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-accent="indigo">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DorkMaster Pro v3.0 — Advanced Search Query Builder</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-tertiary: #1e293b;
+            --bg-card: #162032;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --accent-glow: rgba(99, 102, 241, .25);
+            --accent-rgb: 99, 102, 241;
+            --border: #1e293b;
+            --border-hover: #334155;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-xs: 6px;
+            --shadow: 0 4px 24px rgba(0, 0, 0, .3);
+            --shadow-lg: 0 8px 40px rgba(0, 0, 0, .4);
+            --transition: all .3s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f1f5f9;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e2e8f0;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border: #cbd5e1;
+            --border-hover: #94a3b8;
+            --shadow: 0 4px 24px rgba(0, 0, 0, .08);
+            --shadow-lg: 0 8px 40px rgba(0, 0, 0, .12);
+        }
+
+        [data-accent="indigo"] {
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --accent-glow: rgba(99, 102, 241, .25);
+            --accent-rgb: 99, 102, 241
+        }
+
+        [data-accent="emerald"] {
+            --accent: #10b981;
+            --accent-hover: #34d399;
+            --accent-glow: rgba(16, 185, 129, .25);
+            --accent-rgb: 16, 185, 129
+        }
+
+        [data-accent="rose"] {
+            --accent: #f43f5e;
+            --accent-hover: #fb7185;
+            --accent-glow: rgba(244, 63, 94, .25);
+            --accent-rgb: 244, 63, 94
+        }
+
+        [data-accent="amber"] {
+            --accent: #f59e0b;
+            --accent-hover: #fbbf24;
+            --accent-glow: rgba(245, 158, 11, .25);
+            --accent-rgb: 245, 158, 11
+        }
+
+        [data-accent="cyan"] {
+            --accent: #06b6d4;
+            --accent-hover: #22d3ee;
+            --accent-glow: rgba(6, 182, 212, .25);
+            --accent-rgb: 6, 182, 212
+        }
+
+        [data-accent="purple"] {
+            --accent: #a855f7;
+            --accent-hover: #c084fc;
+            --accent-glow: rgba(168, 85, 247, .25);
+            --accent-rgb: 168, 85, 247
+        }
+
+        [data-accent="blue"] {
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+            --accent-glow: rgba(59, 130, 246, .25);
+            --accent-rgb: 59, 130, 246
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: var(--transition);
+            line-height: 1.6;
+            overflow-x: hidden
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary)
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px)
+        }
+
+        .header-inner {
+            max-width: 1500px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-decoration: none;
+            letter-spacing: -.5px
+        }
+
+        .logo svg {
+            width: 30px;
+            height: 30px
+        }
+
+        .logo span.brand {
+            background: linear-gradient(135deg, var(--accent), #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap
+        }
+
+        .badge {
+            font-size: .6rem;
+            background: var(--accent);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 700
+        }
+
+        .badge-new {
+            background: var(--success)
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: .8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+            text-decoration: none;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+            font-family: inherit
+        }
+
+        .btn:active {
+            transform: scale(.97)
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 0 20px var(--accent-glow)
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border)
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent)
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            padding: 6px 10px
+        }
+
+        .btn-ghost:hover {
+            color: var(--accent);
+            background: var(--accent-glow)
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff
+        }
+
+        .btn-danger:hover {
+            opacity: .9
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: #fff
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: #000
+        }
+
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: .75rem
+        }
+
+        .btn-xs {
+            padding: 3px 8px;
+            font-size: .7rem
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm)
+        }
+
+        .btn-lg {
+            padding: 12px 28px;
+            font-size: 1rem;
+            border-radius: var(--radius)
+        }
+
+        .main {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 300px 1fr 280px;
+            gap: 20px
+        }
+
+        @media(max-width:1200px) {
+            .main {
+                grid-template-columns: 280px 1fr
+            }
+        }
+
+        @media(max-width:900px) {
+            .main {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 14px
+        }
+
+        .sidebar-right {
+            display: flex;
+            flex-direction: column;
+            gap: 14px
+        }
+
+        @media(max-width:1200px) {
+            .sidebar-right {
+                display: none
+            }
+
+            .sidebar-right.mobile-show {
+                display: flex;
+                position: fixed;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 300px;
+                z-index: 150;
+                background: var(--bg-primary);
+                padding: 16px;
+                overflow-y: auto;
+                border-left: 1px solid var(--border);
+                box-shadow: var(--shadow-lg)
+            }
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            transition: var(--transition)
+        }
+
+        .card:hover {
+            border-color: var(--border-hover)
+        }
+
+        .card-title {
+            font-size: .78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .card-title svg {
+            width: 14px;
+            height: 14px;
+            color: var(--accent)
+        }
+
+        .card-title .count-badge {
+            margin-left: auto;
+            background: var(--accent-glow);
+            color: var(--accent);
+            padding: 1px 8px;
+            border-radius: 10px;
+            font-size: .65rem
+        }
+
+        .form-group {
+            margin-bottom: 12px
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 5px
+        }
+
+        .form-label .tip {
+            width: 15px;
+            height: 15px;
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .6rem;
+            cursor: help;
+            position: relative;
+            border: 1px solid var(--border);
+            font-weight: 700
+        }
+
+        .form-label .tip:hover::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 6px 10px;
+            border-radius: var(--radius-xs);
+            font-size: .7rem;
+            z-index: 50;
+            box-shadow: var(--shadow);
+            font-weight: 400;
+            max-width: 220px;
+            white-space: normal;
+            width: max-content
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xs);
+            color: var(--text-primary);
+            font-size: .85rem;
+            transition: var(--transition);
+            font-family: inherit
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow)
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+            font-family: 'Courier New', monospace;
+            font-size: .8rem
+        }
+
+        .engine-selector {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap
+        }
+
+        .engine-btn {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: .72rem;
+            min-width: 60px
+        }
+
+        .engine-btn:hover {
+            border-color: var(--accent)
+        }
+
+        .engine-btn.active {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+            color: var(--accent)
+        }
+
+        .engine-btn .ei {
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 1px
+        }
+
+        .filter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 250px;
+            overflow-y: auto
+        }
+
+        .filter-item {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            animation: filterIn .3s ease
+        }
+
+        @keyframes filterIn {
+            from {
+                opacity: 0;
+                transform: translateY(-6px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .filter-item select {
+            width: 100px;
+            flex-shrink: 0;
+            font-size: .75rem;
+            padding: 6px 8px
+        }
+
+        .filter-item input {
+            flex: 1;
+            font-size: .78rem;
+            padding: 6px 8px
+        }
+
+        .filter-remove {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: var(--danger);
+            color: #fff;
+            border-radius: var(--radius-xs);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            flex-shrink: 0;
+            font-size: .9rem
+        }
+
+        .filter-remove:hover {
+            opacity: .8
+        }
+
+        .chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px
+        }
+
+        .chip {
+            padding: 4px 10px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            font-size: .7rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            user-select: none
+        }
+
+        .chip:hover {
+            border-color: var(--accent)
+        }
+
+        .chip.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent)
+        }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px
+        }
+
+        .preset-btn {
+            padding: 8px 6px;
+            text-align: center;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: .68rem;
+            font-weight: 500;
+            color: var(--text-secondary)
+        }
+
+        .preset-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-glow);
+            transform: translateY(-1px)
+        }
+
+        .preset-btn .pi {
+            font-size: 1rem;
+            display: block;
+            margin-bottom: 2px
+        }
+
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-width: 0
+        }
+
+        .query-preview-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            position: relative
+        }
+
+        .query-preview-label {
+            font-size: .78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            color: var(--accent);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .3
+            }
+        }
+
+        .query-display {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            font-family: 'Courier New', monospace;
+            font-size: .88rem;
+            color: var(--text-primary);
+            min-height: 50px;
+            word-break: break-all;
+            line-height: 1.8;
+            transition: var(--transition);
+            white-space: pre-wrap
+        }
+
+        .query-display:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow)
+        }
+
+        .query-display .op {
+            color: var(--accent);
+            font-weight: 700
+        }
+
+        .query-display .str {
+            color: var(--warning)
+        }
+
+        .query-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 12px;
+            flex-wrap: wrap
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            padding: 10px 0 0
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: .73rem;
+            color: var(--text-muted)
+        }
+
+        .stat-val {
+            color: var(--accent);
+            font-weight: 700
+        }
+
+        /* Strength meter */
+        .strength-meter {
+            margin-top: 10px
+        }
+
+        .strength-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden
+        }
+
+        .strength-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: all .5s ease;
+            width: 0%
+        }
+
+        .strength-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 4px;
+            font-size: .7rem
+        }
+
+        /* Multi-engine toggle */
+        .multi-engine-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 8px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-xs);
+            font-size: .75rem
+        }
+
+        .switch {
+            width: 40px;
+            height: 22px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border);
+            border-radius: 11px;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+            flex-shrink: 0
+        }
+
+        .switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 14px;
+            height: 14px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            transition: var(--transition)
+        }
+
+        .switch.on {
+            background: var(--accent);
+            border-color: var(--accent)
+        }
+
+        .switch.on::after {
+            left: 20px;
+            background: #fff
+        }
+
+        /* Region selector */
+        .region-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px
+        }
+
+        .region-btn {
+            padding: 5px;
+            text-align: center;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xs);
+            cursor: pointer;
+            font-size: .65rem;
+            transition: var(--transition)
+        }
+
+        .region-btn:hover {
+            border-color: var(--accent)
+        }
+
+        .region-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent)
+        }
+
+        /* History & Saved */
+        .history-list,
+        .saved-list {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            max-height: 280px;
+            overflow-y: auto
+        }
+
+        .history-item,
+        .saved-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 10px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-xs);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: .75rem;
+            font-family: 'Courier New', monospace;
+            border: 1px solid transparent
+        }
+
+        .history-item:hover,
+        .saved-item:hover {
+            border-color: var(--accent);
+            background: var(--accent-glow)
+        }
+
+        .history-item .time {
+            font-size: .65rem;
+            color: var(--text-muted);
+            font-family: 'Segoe UI', sans-serif;
+            white-space: nowrap
+        }
+
+        .history-item .query-text,
+        .saved-item .query-text {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 2px
+        }
+
+        .item-actions button {
+            width: 22px;
+            height: 22px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .65rem
+        }
+
+        .item-actions button:hover {
+            color: var(--accent);
+            background: var(--accent-glow)
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 16px;
+            color: var(--text-muted);
+            font-size: .8rem
+        }
+
+        .empty-state svg {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 6px;
+            opacity: .3
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 12px;
+            gap: 2px;
+            overflow-x: auto
+        }
+
+        .tab {
+            padding: 8px 14px;
+            font-size: .78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+            white-space: nowrap
+        }
+
+        .tab:hover {
+            color: var(--text-primary)
+        }
+
+        .tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent)
+        }
+
+        .tab-content {
+            display: none
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn .3s ease
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .6);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px
+        }
+
+        .modal-overlay.active {
+            display: flex
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            max-width: 560px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: modalIn .3s ease;
+            position: relative
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(.95) translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0)
+            }
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: var(--radius-xs);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .toast {
+            padding: 10px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: .8rem;
+            animation: toastIn .4s ease;
+            min-width: 250px;
+            max-width: 380px
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0)
+            }
+        }
+
+        .toast.success {
+            border-left: 3px solid var(--success)
+        }
+
+        .toast.error {
+            border-left: 3px solid var(--danger)
+        }
+
+        .toast.info {
+            border-left: 3px solid var(--info)
+        }
+
+        .kbd {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 1px 6px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: .65rem;
+            font-family: monospace;
+            color: var(--text-muted)
+        }
+
+        .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .toggle {
+            width: 42px;
+            height: 24px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition)
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            transition: var(--transition)
+        }
+
+        .toggle.active {
+            background: var(--accent);
+            border-color: var(--accent)
+        }
+
+        .toggle.active::after {
+            left: 20px;
+            background: #fff
+        }
+
+        .color-dots {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        .color-dot {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: var(--transition)
+        }
+
+        .color-dot:hover {
+            transform: scale(1.15)
+        }
+
+        .color-dot.active {
+            border-color: #fff;
+            box-shadow: 0 0 8px var(--accent-glow)
+        }
+
+        .color-dot[data-color="indigo"] {
+            background: #6366f1
+        }
+
+        .color-dot[data-color="emerald"] {
+            background: #10b981
+        }
+
+        .color-dot[data-color="rose"] {
+            background: #f43f5e
+        }
+
+        .color-dot[data-color="amber"] {
+            background: #f59e0b
+        }
+
+        .color-dot[data-color="cyan"] {
+            background: #06b6d4
+        }
+
+        .color-dot[data-color="purple"] {
+            background: #a855f7
+        }
+
+        .color-dot[data-color="blue"] {
+            background: #3b82f6
+        }
+
+        .op-ref {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px
+        }
+
+        .op-ref-item {
+            padding: 6px 8px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-xs);
+            font-size: .7rem;
+            border: 1px solid var(--border)
+        }
+
+        .op-ref-item code {
+            color: var(--accent);
+            font-weight: 700
+        }
+
+        .op-ref-item p {
+            color: var(--text-muted);
+            margin-top: 1px;
+            font-size: .65rem
+        }
+
+        .collapsible-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 2px 0
+        }
+
+        .collapsible-header .chevron {
+            transition: var(--transition);
+            font-size: .6rem;
+            color: var(--text-muted)
+        }
+
+        .collapsible-header.open .chevron {
+            transform: rotate(180deg)
+        }
+
+        .collapsible-body {
+            overflow: hidden;
+            transition: max-height .3s ease;
+            max-height: 0
+        }
+
+        .collapsible-body.open {
+            max-height: 2000px
+        }
+
+        .validation-msg {
+            font-size: .72rem;
+            color: var(--danger);
+            margin-top: 4px;
+            display: none;
+            align-items: center;
+            gap: 4px
+        }
+
+        .validation-msg.show {
+            display: flex
+        }
+
+        /* Voice button */
+        .voice-btn {
+            position: absolute;
+            right: 130px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: var(--transition)
+        }
+
+        .voice-btn:hover {
+            color: var(--accent);
+            background: var(--accent-glow)
+        }
+
+        .voice-btn.recording {
+            color: var(--danger);
+            animation: voicePulse 1s infinite
+        }
+
+        @keyframes voicePulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .4
+            }
+        }
+
+        /* Batch mode */
+        .batch-area {
+            display: flex;
+            flex-direction: column;
+            gap: 8px
+        }
+
+        .batch-textarea {
+            min-height: 100px;
+            font-size: .8rem
+        }
+
+        /* QR Code */
+        .qr-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: white;
+            border-radius: var(--radius-sm);
+            margin-top: 10px
+        }
+
+        #qrCanvas {
+            max-width: 200px;
+            max-height: 200px
+        }
+
+        /* Floating action buttons */
+        .fab-container {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 90;
+            display: flex;
+            flex-direction: column;
+            gap: 8px
+        }
+
+        .fab {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition)
+        }
+
+        .fab:hover {
+            transform: scale(1.1)
+        }
+
+        .fab-primary {
+            background: var(--accent);
+            color: #fff
+        }
+
+        .fab-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border)
+        }
+
+        /* Tutorial overlay */
+        .tutorial-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .7);
+            z-index: 250;
+            display: none;
+            align-items: center;
+            justify-content: center
+        }
+
+        .tutorial-overlay.active {
+            display: flex
+        }
+
+        .tutorial-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent);
+            border-radius: var(--radius);
+            padding: 28px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: modalIn .3s ease
+        }
+
+        .tutorial-card h3 {
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-size: 1.2rem
+        }
+
+        .tutorial-card p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            font-size: .9rem;
+            line-height: 1.6
+        }
+
+        .tutorial-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 16px
+        }
+
+        .tutorial-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--bg-tertiary)
+        }
+
+        .tutorial-dot.active {
+            background: var(--accent)
+        }
+
+        .tutorial-nav {
+            display: flex;
+            gap: 8px;
+            justify-content: center
+        }
+
+        /* Search input container */
+        .search-box-wrapper {
+            position: relative
+        }
+
+        .search-main-input {
+            width: 100%;
+            padding: 14px 20px;
+            padding-right: 175px;
+            font-size: 1rem;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            color: var(--text-primary);
+            transition: var(--transition)
+        }
+
+        .search-main-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-glow)
+        }
+
+        .search-main-input::placeholder {
+            color: var(--text-muted)
+        }
+
+        .search-submit {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-size: .9rem
+        }
+
+        .search-submit svg {
+            width: 16px;
+            height: 16px
+        }
+
+        /* Suggestion dropdown */
+        .suggestions {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-lg);
+            z-index: 50;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none
+        }
+
+        .suggestions.show {
+            display: block
+        }
+
+        .suggestion-item {
+            padding: 8px 14px;
+            cursor: pointer;
+            font-size: .82rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .suggestion-item:hover {
+            background: var(--accent-glow);
+            color: var(--accent)
+        }
+
+        .suggestion-item .sg-cat {
+            font-size: .6rem;
+            padding: 1px 6px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            color: var(--text-muted)
+        }
+
+        /* Dashboard */
+        .dash-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px
+        }
+
+        .dash-card {
+            padding: 12px;
+            text-align: center;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border)
+        }
+
+        .dash-card .dash-num {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--accent)
+        }
+
+        .dash-card .dash-label {
+            font-size: .65rem;
+            color: var(--text-muted);
+            margin-top: 2px
+        }
+
+        /* Shortcuts panel */
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px
+        }
+
+        .shortcut-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-xs);
+            font-size: .75rem
+        }
+
+        /* Number range */
+        .range-row {
+            display: flex;
+            gap: 6px;
+            align-items: center
+        }
+
+        .range-row input {
+            width: 100px
+        }
+
+        .range-row span {
+            color: var(--text-muted);
+            font-size: .8rem
+        }
+
+        /* Undo/Redo */
+        .undo-redo {
+            display: flex;
+            gap: 4px
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: .75rem;
+            border-top: 1px solid var(--border);
+            margin-top: 32px
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .animate-in {
+            animation: slideUp .4s ease forwards
+        }
+
+        /* Confetti */
+        .confetti-piece {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            z-index: 400;
+            pointer-events: none;
+            border-radius: 2px
+        }
+
+        /* Disclaimer */
+        .disclaimer {
+            background: rgba(var(--accent-rgb), .08);
+            border: 1px solid rgba(var(--accent-rgb), .2);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-size: .72rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 12px
+        }
+
+        .disclaimer strong {
+            color: var(--accent)
+        }
+
+        /* Responsive */
+        @media(max-width:768px) {
+            .header-inner {
+                gap: 8px
+            }
+
+            .main {
+                padding: 12px;
+                gap: 12px
+            }
+
+            .preset-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .query-actions {
+                flex-direction: column
+            }
+
+            .query-actions .btn {
+                width: 100%;
+                justify-content: center
+            }
+
+            .search-main-input {
+                padding-right: 55px;
+                font-size: .9rem
+            }
+
+            .search-submit span {
+                display: none
+            }
+
+            .search-submit {
+                padding: 10px
+            }
+
+            .voice-btn {
+                right: 50px
+            }
+
+            .fab-container {
+                bottom: 12px;
+                left: 12px
+            }
+
+            .op-ref {
+                grid-template-columns: 1fr
+            }
+
+            .dash-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .shortcuts-grid {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="#" class="logo" onclick="return false">
+                <svg viewBox="0 0 32 32" fill="none">
+                    <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2.5" />
+                    <circle cx="16" cy="16" r="6" stroke="currentColor" stroke-width="2" />
+                    <line x1="20.2" y1="20.2" x2="27" y2="27" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" />
+                    <circle cx="16" cy="16" r="1.5" fill="currentColor" />
+                </svg>
+                <span class="brand">DorkMaster Pro</span>
+                <span class="badge">v3.0</span>
+                <span class="badge badge-new">NEW</span>
+            </a>
+            <div class="header-actions">
+                <button class="btn btn-ghost btn-sm" onclick="showTutorial()" title="Tutorial">🎓 Tutorial</button>
+                <button class="btn btn-ghost btn-sm" onclick="showModal('helpModal')">📖 Reference</button>
+                <button class="btn btn-ghost btn-sm" onclick="showModal('shortcutsModal')">⌨️ Shortcuts</button>
+                <button class="btn btn-ghost btn-sm" onclick="showModal('dashboardModal')">📊 Stats</button>
+                <button class="btn btn-ghost btn-sm" onclick="importQueries()">📥 Import</button>
+                <button class="btn btn-ghost btn-sm" onclick="exportQueries()">📤 Export</button>
+                <button class="btn btn-ghost btn-sm" onclick="toggleRightPanel()" title="Settings Panel">⚙️</button>
+                <div class="toggle-wrapper">
+                    <span style="font-size:.75rem">☀️</span>
+                    <div class="toggle active" id="themeToggle" onclick="toggleTheme()"></div>
+                    <span style="font-size:.75rem">🌙</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main">
+        <!-- LEFT SIDEBAR -->
+        <aside class="sidebar">
+            <div class="card">
+                <div class="card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                    </svg>Search Engine</div>
+                <div class="engine-selector">
+                    <div class="engine-btn active" data-engine="google" onclick="selectEngine(this)">
+                        <div class="ei">🔍</div>Google
+                    </div>
+                    <div class="engine-btn" data-engine="bing" onclick="selectEngine(this)">
+                        <div class="ei">🅱️</div>Bing
+                    </div>
+                    <div class="engine-btn" data-engine="duckduckgo" onclick="selectEngine(this)">
+                        <div class="ei">🦆</div>DDG
+                    </div>
+                    <div class="engine-btn" data-engine="yahoo" onclick="selectEngine(this)">
+                        <div class="ei">🟣</div>Yahoo
+                    </div>
+                    <div class="engine-btn" data-engine="brave" onclick="selectEngine(this)">
+                        <div class="ei">🦁</div>Brave
+                    </div>
+                </div>
+                <div class="multi-engine-row">
+                    <div class="switch" id="multiEngineSwitch" onclick="toggleMultiEngine(this)"></div>
+                    <span>Search all engines simultaneously</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
+                    </svg>Query Filters <span class="count-badge" id="filterCount">0</span></div>
+                <div class="filter-list" id="filterList"></div>
+                <div style="display:flex;gap:4px;margin-top:8px">
+                    <button class="btn btn-secondary btn-sm" onclick="addFilter()"
+                        style="flex:1;justify-content:center">+ Add Filter</button>
+                    <button class="btn btn-ghost btn-sm" onclick="addORGroup()" title="Add OR group">OR</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>File Types</div>
+                <div class="chip-group" id="fileTypeChips">
+                    <div class="chip" data-type="pdf" onclick="toggleChip(this)">PDF</div>
+                    <div class="chip" data-type="doc" onclick="toggleChip(this)">DOC</div>
+                    <div class="chip" data-type="docx" onclick="toggleChip(this)">DOCX</div>
+                    <div class="chip" data-type="xls" onclick="toggleChip(this)">XLS</div>
+                    <div class="chip" data-type="xlsx" onclick="toggleChip(this)">XLSX</div>
+                    <div class="chip" data-type="ppt" onclick="toggleChip(this)">PPT</div>
+                    <div class="chip" data-type="pptx" onclick="toggleChip(this)">PPTX</div>
+                    <div class="chip" data-type="txt" onclick="toggleChip(this)">TXT</div>
+                    <div class="chip" data-type="csv" onclick="toggleChip(this)">CSV</div>
+                    <div class="chip" data-type="zip" onclick="toggleChip(this)">ZIP</div>
+                    <div class="chip" data-type="xml" onclick="toggleChip(this)">XML</div>
+                    <div class="chip" data-type="json" onclick="toggleChip(this)">JSON</div>
+                    <div class="chip" data-type="sql" onclick="toggleChip(this)">SQL</div>
+                    <div class="chip" data-type="log" onclick="toggleChip(this)">LOG</div>
+                    <div class="chip" data-type="conf" onclick="toggleChip(this)">CONF</div>
+                    <div class="chip" data-type="env" onclick="toggleChip(this)">ENV</div>
+                    <div class="chip" data-type="html" onclick="toggleChip(this)">HTML</div>
+                    <div class="chip" data-type="php" onclick="toggleChip(this)">PHP</div>
+                    <div class="chip" data-type="py" onclick="toggleChip(this)">PY</div>
+                    <div class="chip" data-type="js" onclick="toggleChip(this)">JS</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="2" y1="12" x2="22" y2="12" />
+                        <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                    </svg>Target Domain</div>
+                <div class="form-group" style="margin-bottom:6px">
+                    <input type="text" id="targetDomain" placeholder="e.g. github.com, .edu, .gov"
+                        oninput="buildQuery()">
+                </div>
+                <div class="chip-group">
+                    <div class="chip" onclick="setDomain('.edu')">EDU</div>
+                    <div class="chip" onclick="setDomain('.gov')">GOV</div>
+                    <div class="chip" onclick="setDomain('.org')">ORG</div>
+                    <div class="chip" onclick="setDomain('.mil')">MIL</div>
+                    <div class="chip" onclick="setDomain('github.com')">GitHub</div>
+                    <div class="chip" onclick="setDomain('stackoverflow.com')">SO</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>Date Range</div>
+                <div class="form-group">
+                    <label class="form-label">After <span class="tip"
+                            data-tip="Results published after this date">?</span></label>
+                    <input type="date" id="dateAfter" onchange="buildQuery()">
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label">Before <span class="tip"
+                            data-tip="Results published before this date">?</span></label>
+                    <input type="date" id="dateBefore" onchange="buildQuery()">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                    </svg>Region / Country</div>
+                <div class="region-grid" id="regionGrid">
+                    <div class="region-btn" onclick="selectRegion(this,'')" data-region="">🌍 Global</div>
+                    <div class="region-btn" onclick="selectRegion(this,'us')" data-region="us">🇺🇸 US</div>
+                    <div class="region-btn" onclick="selectRegion(this,'uk')" data-region="uk">🇬🇧 UK</div>
+                    <div class="region-btn" onclick="selectRegion(this,'de')" data-region="de">🇩🇪 DE</div>
+                    <div class="region-btn" onclick="selectRegion(this,'fr')" data-region="fr">🇫🇷 FR</div>
+                    <div class="region-btn" onclick="selectRegion(this,'in')" data-region="in">🇮🇳 IN</div>
+                    <div class="region-btn" onclick="selectRegion(this,'jp')" data-region="jp">🇯🇵 JP</div>
+                    <div class="region-btn" onclick="selectRegion(this,'au')" data-region="au">🇦🇺 AU</div>
+                    <div class="region-btn" onclick="selectRegion(this,'ca')" data-region="ca">🇨🇦 CA</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                    </svg>Number Range</div>
+                <div class="range-row">
+                    <input type="number" id="rangeMin" placeholder="Min" oninput="buildQuery()">
+                    <span>to</span>
+                    <input type="number" id="rangeMax" placeholder="Max" oninput="buildQuery()">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>Quick Presets</div>
+                <div class="preset-grid">
+                    <div class="preset-btn" onclick="loadPreset('cybersecurity')"><span
+                            class="pi">🔐</span>Cybersecurity</div>
+                    <div class="preset-btn" onclick="loadPreset('programming')"><span class="pi">💻</span>Programming
+                    </div>
+                    <div class="preset-btn" onclick="loadPreset('research')"><span class="pi">📄</span>Research Papers
+                    </div>
+                    <div class="preset-btn" onclick="loadPreset('public')"><span class="pi">📁</span>Public Docs</div>
+                    <div class="preset-btn" onclick="loadPreset('index')"><span class="pi">📂</span>Index Listings</div>
+                    <div class="preset-btn" onclick="loadPreset('education')"><span class="pi">🎓</span>Education</div>
+                    <div class="preset-btn" onclick="loadPreset('government')"><span class="pi">🏛️</span>Government
+                    </div>
+                    <div class="preset-btn" onclick="loadPreset('technical')"><span class="pi">⚙️</span>Tech Docs</div>
+                    <div class="preset-btn" onclick="loadPreset('database')"><span class="pi">🗄️</span>Databases</div>
+                    <div class="preset-btn" onclick="loadPreset('api')"><span class="pi">🔌</span>API Docs</div>
+                    <div class="preset-btn" onclick="loadPreset('opensource')"><span class="pi">🌐</span>Open Source
+                    </div>
+                    <div class="preset-btn" onclick="loadPreset('books')"><span class="pi">📚</span>eBooks</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CENTER CONTENT -->
+        <div class="content-area">
+            <div class="disclaimer">
+                <span>⚖️</span>
+                <div><strong>Legal & Educational Use Only:</strong> This tool builds search queries for public search
+                    engines. Always respect website terms of service, privacy laws, and applicable regulations. Do not
+                    use for unauthorized access.</div>
+            </div>
+
+            <div class="card" style="padding:22px">
+                <div class="form-group">
+                    <label class="form-label" style="font-size:.85rem;font-weight:700">
+                        🔍 Keywords & Phrases
+                        <span class="tip"
+                            data-tip="Enter your main search terms. Use quotes for exact phrases.">?</span>
+                        <span class="kbd" style="margin-left:auto">Ctrl+K</span>
+                    </label>
+                    <div class="search-box-wrapper">
+                        <input type="text" class="search-main-input" id="mainKeywords"
+                            placeholder='Enter keywords, e.g. "web security" penetration testing'
+                            oninput="buildQuery();showSuggestions()" onfocus="showSuggestions()" autocomplete="off">
+                        <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()" title="Voice Input">🎤</button>
+                        <button class="btn btn-primary search-submit" onclick="executeSearch()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <circle cx="11" cy="11" r="8" />
+                                <path d="m21 21-4.35-4.35" />
+                            </svg>
+                            <span>Search</span>
+                        </button>
+                        <div class="suggestions" id="suggestionsDropdown"></div>
+                    </div>
+                    <div class="validation-msg" id="searchValidation">⚠️ Please enter keywords or add filters before
+                        searching</div>
+                </div>
+
+                <div class="form-group" style="margin-bottom:8px">
+                    <label class="form-label">Exclude Keywords <span class="tip"
+                            data-tip="Terms to exclude, comma separated">?</span></label>
+                    <input type="text" id="excludeKeywords" placeholder="e.g. ads, spam, tutorial"
+                        oninput="buildQuery()">
+                </div>
+
+                <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label">Wildcard / AROUND <span class="tip"
+                            data-tip="Use * for wildcard, AROUND(n) for proximity">?</span></label>
+                    <div style="display:flex;gap:6px">
+                        <input type="text" id="wildcardInput" placeholder='e.g. "security * testing"'
+                            oninput="buildQuery()" style="flex:1">
+                        <input type="number" id="aroundN" placeholder="AROUND(n)" min="1" max="50"
+                            oninput="buildQuery()" style="width:90px" title="AROUND proximity value">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Query Preview -->
+            <div class="query-preview-card">
+                <div class="query-preview-label">
+                    <span class="live-dot"></span> Live Query Preview
+                    <div class="undo-redo" style="margin-left:auto">
+                        <button class="btn btn-ghost btn-xs" onclick="undo()" title="Undo (Ctrl+Z)">↩️ Undo</button>
+                        <button class="btn btn-ghost btn-xs" onclick="redo()" title="Redo (Ctrl+Y)">↪️ Redo</button>
+                    </div>
+                </div>
+                <div class="query-display" id="queryPreview" contenteditable="true" spellcheck="false"
+                    oninput="onManualEdit()">
+                    <span style="color:var(--text-muted);font-style:italic">Your generated query will appear
+                        here...</span>
+                </div>
+
+                <!-- Strength meter -->
+                <div class="strength-meter">
+                    <div class="strength-bar-bg">
+                        <div class="strength-bar" id="strengthBar"></div>
+                    </div>
+                    <div class="strength-label">
+                        <span id="strengthText" style="color:var(--text-muted)">No query</span>
+                        <span id="strengthScore" style="color:var(--accent);font-weight:700">0/100</span>
+                    </div>
+                </div>
+
+                <div class="query-actions">
+                    <button class="btn btn-primary btn-sm" onclick="executeSearch()">🔍 Search</button>
+                    <button class="btn btn-secondary btn-sm" onclick="copyQuery()">📋 Copy</button>
+                    <button class="btn btn-secondary btn-sm" onclick="saveQuery()">💾 Save</button>
+                    <button class="btn btn-secondary btn-sm" onclick="duplicateQuery()">📑 Duplicate</button>
+                    <button class="btn btn-secondary btn-sm" onclick="generateQR()">📱 QR Code</button>
+                    <button class="btn btn-secondary btn-sm" onclick="shareQuery()">🔗 Share</button>
+                    <button class="btn btn-secondary btn-sm" onclick="printQuery()">🖨️ Print</button>
+                    <button class="btn btn-warning btn-sm" onclick="randomDork()">🎲 Random</button>
+                    <button class="btn btn-danger btn-sm" onclick="clearAll()">🗑️ Clear All</button>
+                </div>
+
+                <div class="stats-bar" id="statsBar">
+                    <div class="stat">Filters: <span class="stat-val" id="statFilters">0</span></div>
+                    <div class="stat">Operators: <span class="stat-val" id="statOperators">0</span></div>
+                    <div class="stat">Chars: <span class="stat-val" id="statChars">0</span></div>
+                    <div class="stat">Engine: <span class="stat-val" id="statEngine">Google</span></div>
+                    <div class="stat">Strength: <span class="stat-val" id="statStrength">0%</span></div>
+                </div>
+            </div>
+
+            <!-- Batch Mode -->
+            <div class="card">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <div class="card-title" style="margin-bottom:0">🚀 Batch Search Mode <span class="badge badge-new"
+                            style="font-size:.55rem">NEW</span></div>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="collapsible-body">
+                    <div class="batch-area" style="padding-top:12px">
+                        <p style="font-size:.75rem;color:var(--text-muted);margin-bottom:8px">Enter one query per line.
+                            Each will open in a new tab.</p>
+                        <textarea class="batch-textarea" id="batchQueries"
+                            placeholder='intitle:"index of" filetype:pdf&#10;site:.edu "research paper"&#10;"cybersecurity guide" filetype:pdf'></textarea>
+                        <div style="display:flex;gap:6px">
+                            <button class="btn btn-primary btn-sm" onclick="executeBatchSearch()"
+                                style="flex:1;justify-content:center">🚀 Search All</button>
+                            <button class="btn btn-secondary btn-sm"
+                                onclick="document.getElementById('batchQueries').value=''">Clear</button>
+                            <button class="btn btn-secondary btn-sm" onclick="addCurrentToBatch()">+ Current</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History & Saved & Templates -->
+            <div class="card">
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab(this,'historyTab')">🕐 History</div>
+                    <div class="tab" onclick="switchTab(this,'savedTab')">💾 Saved</div>
+                    <div class="tab" onclick="switchTab(this,'templatesTab')">📋 Templates</div>
+                    <div class="tab" onclick="switchTab(this,'notesTab')">📝 Notes</div>
+                </div>
+
+                <div class="tab-content active" id="historyTab">
+                    <div style="display:flex;gap:6px;margin-bottom:8px">
+                        <input type="text" id="historySearch" placeholder="Search history..." oninput="filterHistory()"
+                            style="flex:1;padding:6px 10px;font-size:.78rem">
+                        <button class="btn btn-danger btn-xs" onclick="clearHistory()">Clear All</button>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <div class="empty-state" id="historyEmpty">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            <p>No recent searches yet</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="savedTab">
+                    <div style="display:flex;gap:6px;margin-bottom:8px">
+                        <input type="text" id="savedSearch" placeholder="Search saved..." oninput="filterSaved()"
+                            style="flex:1;padding:6px 10px;font-size:.78rem">
+                        <button class="btn btn-danger btn-xs" onclick="clearSaved()">Clear All</button>
+                    </div>
+                    <div class="saved-list" id="savedList">
+                        <div class="empty-state" id="savedEmpty">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                                <polyline points="17 21 17 13 7 13 7 21" />
+                                <polyline points="7 3 7 8 15 8" />
+                            </svg>
+                            <p>No saved queries yet</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="templatesTab">
+                    <div style="display:flex;flex-direction:column;gap:6px">
+                        <div class="saved-item"
+                            onclick="loadTemplate('intitle:&quot;index of&quot; {keyword} filetype:{type}')"><span
+                                class="query-text">📄 intitle:"index of" {keyword} filetype:{type}</span></div>
+                        <div class="saved-item" onclick="loadTemplate('site:{domain} inurl:admin')"><span
+                                class="query-text">🔑 site:{domain} inurl:admin</span></div>
+                        <div class="saved-item" onclick="loadTemplate('&quot;{keyword}&quot; filetype:pdf site:.edu')">
+                            <span class="query-text">🎓 "{keyword}" filetype:pdf site:.edu</span>
+                        </div>
+                        <div class="saved-item" onclick="loadTemplate('intitle:&quot;{keyword}&quot; inurl:blog')"><span
+                                class="query-text">📝 intitle:"{keyword}" inurl:blog</span></div>
+                        <div class="saved-item"
+                            onclick="loadTemplate('site:github.com &quot;{keyword}&quot; language:{lang}')"><span
+                                class="query-text">💻 site:github.com "{keyword}"</span></div>
+                        <div class="saved-item"
+                            onclick="loadTemplate('inurl:wp-content/uploads filetype:pdf &quot;{keyword}&quot;')"><span
+                                class="query-text">📂 inurl:wp-content filetype:pdf</span></div>
+                        <div class="saved-item"
+                            onclick="loadTemplate('&quot;powered by&quot; &quot;{keyword}&quot; inurl:forum')"><span
+                                class="query-text">💬 "powered by" inurl:forum</span></div>
+                        <div class="saved-item" onclick="loadTemplate('site:docs.google.com &quot;{keyword}&quot;')">
+                            <span class="query-text">📊 site:docs.google.com</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="notesTab">
+                    <textarea id="notesArea" placeholder="Write your research notes here... They'll be saved locally."
+                        style="min-height:120px;font-size:.8rem;font-family:inherit" oninput="saveNotes()"></textarea>
+                    <div style="display:flex;gap:6px;margin-top:8px">
+                        <button class="btn btn-secondary btn-xs" onclick="exportNotes()">📤 Export Notes</button>
+                        <button class="btn btn-danger btn-xs" onclick="clearNotes()">Clear Notes</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Operator Reference -->
+            <div class="card">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <div class="card-title" style="margin-bottom:0">📚 Quick Operator Reference</div>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="collapsible-body">
+                    <div style="padding-top:12px">
+                        <div class="op-ref">
+                            <div class="op-ref-item"><code>intitle:</code>
+                                <p>Search in page title</p>
+                            </div>
+                            <div class="op-ref-item"><code>inurl:</code>
+                                <p>Search in URL</p>
+                            </div>
+                            <div class="op-ref-item"><code>intext:</code>
+                                <p>Search in page body</p>
+                            </div>
+                            <div class="op-ref-item"><code>site:</code>
+                                <p>Limit to specific site</p>
+                            </div>
+                            <div class="op-ref-item"><code>filetype:</code>
+                                <p>Find specific file types</p>
+                            </div>
+                            <div class="op-ref-item"><code>"phrase"</code>
+                                <p>Exact phrase match</p>
+                            </div>
+                            <div class="op-ref-item"><code>-keyword</code>
+                                <p>Exclude a term</p>
+                            </div>
+                            <div class="op-ref-item"><code>OR</code>
+                                <p>Either term matches</p>
+                            </div>
+                            <div class="op-ref-item"><code>before:</code>
+                                <p>Results before date</p>
+                            </div>
+                            <div class="op-ref-item"><code>after:</code>
+                                <p>Results after date</p>
+                            </div>
+                            <div class="op-ref-item"><code>allintitle:</code>
+                                <p>All words in title</p>
+                            </div>
+                            <div class="op-ref-item"><code>allinurl:</code>
+                                <p>All words in URL</p>
+                            </div>
+                            <div class="op-ref-item"><code>AROUND(n)</code>
+                                <p>Proximity search</p>
+                            </div>
+                            <div class="op-ref-item"><code>cache:</code>
+                                <p>Cached version of page</p>
+                            </div>
+                            <div class="op-ref-item"><code>related:</code>
+                                <p>Sites related to URL</p>
+                            </div>
+                            <div class="op-ref-item"><code>*</code>
+                                <p>Wildcard (any word)</p>
+                            </div>
+                            <div class="op-ref-item"><code>n..m</code>
+                                <p>Number range search</p>
+                            </div>
+                            <div class="op-ref-item"><code>ext:</code>
+                                <p>File extension</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <aside class="sidebar-right" id="rightPanel">
+            <div class="card">
+                <div class="card-title">🎨 Accent Color</div>
+                <div class="color-dots">
+                    <div class="color-dot active" data-color="indigo" onclick="setAccent(this)"></div>
+                    <div class="color-dot" data-color="emerald" onclick="setAccent(this)"></div>
+                    <div class="color-dot" data-color="rose" onclick="setAccent(this)"></div>
+                    <div class="color-dot" data-color="amber" onclick="setAccent(this)"></div>
+                    <div class="color-dot" data-color="cyan" onclick="setAccent(this)"></div>
+                    <div class="color-dot" data-color="purple" onclick="setAccent(this)"></div>
+                    <div class="color-dot" data-color="blue" onclick="setAccent(this)"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🛡️ Safe Search</div>
+                <div class="multi-engine-row" style="margin-top:0">
+                    <div class="switch on" id="safeSearchSwitch" onclick="toggleSwitch(this)"></div>
+                    <span>Enable Safe Search</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">⏱️ Auto Search</div>
+                <div class="multi-engine-row" style="margin-top:0">
+                    <div class="switch" id="autoSearchSwitch" onclick="toggleSwitch(this)"></div>
+                    <span>Auto-search on changes</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💡 Query Tips</div>
+                <div id="queryTips" style="font-size:.72rem;color:var(--text-secondary);line-height:1.5">
+                    <p>💡 Start by entering keywords, then refine with filters and operators.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📊 Session Stats</div>
+                <div class="dash-grid" style="grid-template-columns:1fr 1fr">
+                    <div class="dash-card">
+                        <div class="dash-num" id="sessionSearches">0</div>
+                        <div class="dash-label">Searches</div>
+                    </div>
+                    <div class="dash-card">
+                        <div class="dash-num" id="sessionQueries">0</div>
+                        <div class="dash-label">Queries Built</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🔧 Quick Tools</div>
+                <div style="display:flex;flex-direction:column;gap:4px">
+                    <button class="btn btn-secondary btn-sm" onclick="encodeDecodeQuery()"
+                        style="justify-content:center">🔄 URL Encode/Decode</button>
+                    <button class="btn btn-secondary btn-sm" onclick="analyzeQuery()" style="justify-content:center">🔬
+                        Analyze Query</button>
+                    <button class="btn btn-secondary btn-sm" onclick="optimizeQuery()" style="justify-content:center">⚡
+                        Optimize Query</button>
+                    <button class="btn btn-secondary btn-sm" onclick="reverseQuery()" style="justify-content:center">🔃
+                        Reverse Query</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- FABs -->
+    <div class="fab-container">
+        <button class="fab fab-primary" onclick="scrollToTop()" title="Scroll to top">⬆️</button>
+        <button class="fab fab-secondary" onclick="toggleFullscreen()" title="Toggle Fullscreen">⛶</button>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>🔐 <strong>DorkMaster Pro v3.0</strong> — Advanced Search Query Builder for Educational & Legal Research</p>
+        <p style="margin-top:4px">Use responsibly. Respect website terms of service and applicable laws. | Built with ❤️
+            for researchers</p>
+    </div>
+
+    <!-- MODALS -->
+
+    <!-- Help Modal -->
+    <div class="modal-overlay" id="helpModal">
+        <div class="modal">
+            <button class="modal-close" onclick="hideModal('helpModal')">✕</button>
+            <div class="modal-title">📖 Complete Operator Reference</div>
+            <div style="display:flex;flex-direction:column;gap:8px;max-height:60vh;overflow-y:auto">
+                <div class="op-ref-item" style="padding:10px"><code>intitle:keyword</code>
+                    <p>Finds pages with keyword in HTML title. E.g., intitle:"login page"</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>allintitle:word1 word2</code>
+                    <p>All specified words must appear in the title.</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>inurl:keyword</code>
+                    <p>Searches within URLs. E.g., inurl:admin</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>allinurl:word1 word2</code>
+                    <p>All words must appear in the URL.</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>intext:keyword</code>
+                    <p>Finds keyword in page body text.</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>allintext:word1 word2</code>
+                    <p>All words must be in the body text.</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>site:domain.com</code>
+                    <p>Restricts to a domain. Use site:.edu for TLDs.</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>filetype:pdf</code>
+                    <p>Finds specific file types (pdf, doc, xls, etc).</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>ext:pdf</code>
+                    <p>Alternative to filetype. Same function.</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>"exact phrase"</code>
+                    <p>Searches for exact phrase match.</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>-keyword</code>
+                    <p>Excludes term from results.</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>OR</code>
+                    <p>Boolean OR. E.g., cats OR dogs</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>AROUND(n)</code>
+                    <p>Words within n words of each other.</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>before:YYYY-MM-DD</code>
+                    <p>Results before date.</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>after:YYYY-MM-DD</code>
+                    <p>Results after date.</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>cache:url</code>
+                    <p>Shows Google's cached version.</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>related:url</code>
+                    <p>Finds similar sites.</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>info:url</code>
+                    <p>Shows page information.</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>define:word</code>
+                    <p>Shows definition.</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>*</code>
+                    <p>Wildcard - matches any word. E.g., "how to * a website"</p>
+                </div>
+                <div class="op-ref-item" style="padding:10px"><code>100..200</code>
+                    <p>Number range. Searches for numbers in range.</p>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="hideModal('helpModal')"
+                style="width:100%;justify-content:center;margin-top:12px">Got it!</button>
+        </div>
+    </div>
+
+    <!-- Save Modal -->
+    <div class="modal-overlay" id="saveModal">
+        <div class="modal">
+            <button class="modal-close" onclick="hideModal('saveModal')">✕</button>
+            <div class="modal-title">💾 Save Query</div>
+            <div class="form-group">
+                <label class="form-label">Query Name</label>
+                <input type="text" id="saveQueryName" placeholder="e.g. Security research PDFs">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Category</label>
+                <select id="saveQueryCategory">
+                    <option value="general">General</option>
+                    <option value="cybersecurity">Cybersecurity</option>
+                    <option value="research">Research</option>
+                    <option value="programming">Programming</option>
+                    <option value="education">Education</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tags (comma separated)</label>
+                <input type="text" id="saveQueryTags" placeholder="e.g. pdf, security, edu">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Query Preview</label>
+                <textarea id="saveQueryPreview" readonly></textarea>
+            </div>
+            <div style="display:flex;gap:8px">
+                <button class="btn btn-primary" onclick="confirmSaveQuery()" style="flex:1;justify-content:center">💾
+                    Save Query</button>
+                <button class="btn btn-secondary" onclick="hideModal('saveModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shortcuts Modal -->
+    <div class="modal-overlay" id="shortcutsModal">
+        <div class="modal">
+            <button class="modal-close" onclick="hideModal('shortcutsModal')">✕</button>
+            <div class="modal-title">⌨️ Keyboard Shortcuts</div>
+            <div class="shortcuts-grid">
+                <div class="shortcut-item"><span>Focus search</span><span class="kbd">Ctrl+K</span></div>
+                <div class="shortcut-item"><span>Execute search</span><span class="kbd">Ctrl+Enter</span></div>
+                <div class="shortcut-item"><span>Copy query</span><span class="kbd">Ctrl+Shift+C</span></div>
+                <div class="shortcut-item"><span>Save query</span><span class="kbd">Ctrl+S</span></div>
+                <div class="shortcut-item"><span>Clear all</span><span class="kbd">Ctrl+Shift+X</span></div>
+                <div class="shortcut-item"><span>Add filter</span><span class="kbd">Ctrl+F</span></div>
+                <div class="shortcut-item"><span>Undo</span><span class="kbd">Ctrl+Z</span></div>
+                <div class="shortcut-item"><span>Redo</span><span class="kbd">Ctrl+Y</span></div>
+                <div class="shortcut-item"><span>Toggle theme</span><span class="kbd">Ctrl+D</span></div>
+                <div class="shortcut-item"><span>Random dork</span><span class="kbd">Ctrl+R</span></div>
+                <div class="shortcut-item"><span>Toggle fullscreen</span><span class="kbd">F11</span></div>
+                <div class="shortcut-item"><span>Close modal</span><span class="kbd">Escape</span></div>
+            </div>
+            <button class="btn btn-primary" onclick="hideModal('shortcutsModal')"
+                style="width:100%;justify-content:center;margin-top:12px">Close</button>
+        </div>
+    </div>
+
+    <!-- Dashboard Modal -->
+    <div class="modal-overlay" id="dashboardModal">
+        <div class="modal" style="max-width:650px">
+            <button class="modal-close" onclick="hideModal('dashboardModal')">✕</button>
+            <div class="modal-title">📊 Usage Dashboard</div>
+            <div class="dash-grid" style="margin-bottom:16px">
+                <div class="dash-card">
+                    <div class="dash-num" id="dashTotalSearches">0</div>
+                    <div class="dash-label">Total Searches</div>
+                </div>
+                <div class="dash-card">
+                    <div class="dash-num" id="dashSavedQueries">0</div>
+                    <div class="dash-label">Saved Queries</div>
+                </div>
+                <div class="dash-card">
+                    <div class="dash-num" id="dashEngines">0</div>
+                    <div class="dash-label">Engines Used</div>
+                </div>
+                <div class="dash-card">
+                    <div class="dash-num" id="dashAvgLength">0</div>
+                    <div class="dash-label">Avg Query Length</div>
+                </div>
+                <div class="dash-card">
+                    <div class="dash-num" id="dashPresets">0</div>
+                    <div class="dash-label">Presets Used</div>
+                </div>
+                <div class="dash-card">
+                    <div class="dash-num" id="dashFiletypes">0</div>
+                    <div class="dash-label">File Types Used</div>
+                </div>
+            </div>
+            <div class="card-title">Most Used Operators</div>
+            <div id="operatorChart" style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px"></div>
+            <div class="card-title">Recent Activity</div>
+            <div id="activityLog" style="max-height:150px;overflow-y:auto;font-size:.75rem;color:var(--text-secondary)">
+            </div>
+            <button class="btn btn-primary" onclick="hideModal('dashboardModal')"
+                style="width:100%;justify-content:center;margin-top:12px">Close</button>
+        </div>
+    </div>
+
+    <!-- QR Modal -->
+    <div class="modal-overlay" id="qrModal">
+        <div class="modal" style="max-width:350px;text-align:center">
+            <button class="modal-close" onclick="hideModal('qrModal')">✕</button>
+            <div class="modal-title" style="justify-content:center">📱 QR Code</div>
+            <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:12px">Scan to open search on mobile</p>
+            <div class="qr-container"><canvas id="qrCanvas"></canvas></div>
+            <button class="btn btn-primary" onclick="hideModal('qrModal')"
+                style="width:100%;justify-content:center;margin-top:12px">Close</button>
+        </div>
+    </div>
+
+    <!-- Analyze Modal -->
+    <div class="modal-overlay" id="analyzeModal">
+        <div class="modal">
+            <button class="modal-close" onclick="hideModal('analyzeModal')">✕</button>
+            <div class="modal-title">🔬 Query Analysis</div>
+            <div id="analysisContent" style="font-size:.82rem;line-height:1.7"></div>
+            <button class="btn btn-primary" onclick="hideModal('analyzeModal')"
+                style="width:100%;justify-content:center;margin-top:12px">Close</button>
+        </div>
+    </div>
+
+    <!-- Encode/Decode Modal -->
+    <div class="modal-overlay" id="encodeModal">
+        <div class="modal">
+            <button class="modal-close" onclick="hideModal('encodeModal')">✕</button>
+            <div class="modal-title">🔄 URL Encode / Decode</div>
+            <div class="form-group">
+                <label class="form-label">Original Query</label>
+                <textarea id="encodeInput" style="min-height:60px"></textarea>
+            </div>
+            <div style="display:flex;gap:6px;margin-bottom:12px">
+                <button class="btn btn-primary btn-sm" onclick="doEncode()" style="flex:1;justify-content:center">Encode
+                    →</button>
+                <button class="btn btn-secondary btn-sm" onclick="doDecode()" style="flex:1;justify-content:center">←
+                    Decode</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Result</label>
+                <textarea id="encodeOutput" readonly style="min-height:60px"></textarea>
+            </div>
+            <button class="btn btn-secondary" onclick="copyEncodeResult()" style="width:100%;justify-content:center">📋
+                Copy Result</button>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal-overlay" id="shareModal">
+        <div class="modal" style="max-width:450px">
+            <button class="modal-close" onclick="hideModal('shareModal')">✕</button>
+            <div class="modal-title">🔗 Share Query</div>
+            <div class="form-group">
+                <label class="form-label">Shareable Search URL</label>
+                <textarea id="shareUrl" readonly style="min-height:60px;font-size:.75rem"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Plain Query</label>
+                <textarea id="sharePlain" readonly style="min-height:40px;font-size:.75rem"></textarea>
+            </div>
+            <div style="display:flex;gap:6px">
+                <button class="btn btn-primary btn-sm" onclick="copyShareUrl()" style="flex:1;justify-content:center">📋
+                    Copy URL</button>
+                <button class="btn btn-secondary btn-sm" onclick="copySharePlain()"
+                    style="flex:1;justify-content:center">📋 Copy Query</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutorial -->
+    <div class="tutorial-overlay" id="tutorialOverlay">
+        <div class="tutorial-card">
+            <h3 id="tutTitle">Welcome to DorkMaster Pro! 🎉</h3>
+            <p id="tutContent">This is an advanced search query builder designed for educational and legal research.
+                Let's take a quick tour!</p>
+            <div class="tutorial-dots" id="tutDots"></div>
+            <div class="tutorial-nav">
+                <button class="btn btn-secondary btn-sm" id="tutPrev" onclick="tutorialNav(-1)">← Previous</button>
+                <button class="btn btn-ghost btn-sm" onclick="closeTutorial()">Skip</button>
+                <button class="btn btn-primary btn-sm" id="tutNext" onclick="tutorialNav(1)">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="handleImport(event)">
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // ==================== STATE ====================
+        let state = {
+            engine: 'google', keywords: '', excludeKeywords: '', filters: [], fileTypes: [],
+            targetDomain: '', dateAfter: '', dateBefore: '', manualEdit: false, currentQuery: '',
+            history: JSON.parse(localStorage.getItem('dm_history') || '[]'),
+            saved: JSON.parse(localStorage.getItem('dm_saved') || '[]'),
+            theme: localStorage.getItem('dm_theme') || 'dark',
+            accent: localStorage.getItem('dm_accent') || 'indigo',
+            region: '', multiEngine: false, safeSearch: true,
+            undoStack: [], redoStack: [],
+            sessionSearches: 0, sessionQueries: 0,
+            analytics: JSON.parse(localStorage.getItem('dm_analytics') || '{"totalSearches":0,"enginesUsed":{},"operatorsUsed":{},"presetsUsed":0,"fileTypesUsed":{}}'),
+            activityLog: JSON.parse(localStorage.getItem('dm_activity') || '[]')
+        };
+
+        const SEARCH_URLS = {
+            google: 'https://www.google.com/search?q=',
+            bing: 'https://www.bing.com/search?q=',
+            duckduckgo: 'https://duckduckgo.com/?q=',
+            yahoo: 'https://search.yahoo.com/search?p=',
+            brave: 'https://search.brave.com/search?q='
+        };
+
+        const REGION_PARAMS = {
+            google: { us: '&gl=us', uk: '&gl=uk', de: '&gl=de', fr: '&gl=fr', in: '&gl=in', jp: '&gl=jp', au: '&gl=au', ca: '&gl=ca' },
+            bing: { us: '&cc=us', uk: '&cc=gb', de: '&cc=de', fr: '&cc=fr', in: '&cc=in', jp: '&cc=jp', au: '&cc=au', ca: '&cc=ca' },
+            duckduckgo: { us: '&kl=us-en', uk: '&kl=uk-en', de: '&kl=de-de', fr: '&kl=fr-fr', in: '&kl=in-en', jp: '&kl=jp-jp', au: '&kl=au-en', ca: '&kl=ca-en' },
+            yahoo: { us: '&vl=lang_en', uk: '&vl=lang_en', de: '&vl=lang_de', fr: '&vl=lang_fr', in: '&vl=lang_en', jp: '&vl=lang_ja', au: '&vl=lang_en', ca: '&vl=lang_en' },
+            brave: { us: '&country=us', uk: '&country=gb', de: '&country=de', fr: '&country=fr', in: '&country=in', jp: '&country=jp', au: '&country=au', ca: '&country=ca' }
+        };
+
+        const SAFE_PARAMS = {
+            google: '&safe=active', bing: '&adlt=strict', duckduckgo: '&kp=1', yahoo: '&vm=r', brave: '&safesearch=strict'
+        };
+
+        const OP_OPTIONS = [
+            { value: 'intitle', label: 'intitle:', tip: 'Search in page title' },
+            { value: 'allintitle', label: 'allintitle:', tip: 'All words in title' },
+            { value: 'inurl', label: 'inurl:', tip: 'Search in URL' },
+            { value: 'allinurl', label: 'allinurl:', tip: 'All words in URL' },
+            { value: 'intext', label: 'intext:', tip: 'Search in body text' },
+            { value: 'allintext', label: 'allintext:', tip: 'All words in body' },
+            { value: 'site', label: 'site:', tip: 'Restrict to domain' },
+            { value: 'filetype', label: 'filetype:', tip: 'File type' },
+            { value: 'ext', label: 'ext:', tip: 'File extension' },
+            { value: 'cache', label: 'cache:', tip: 'Cached version' },
+            { value: 'related', label: 'related:', tip: 'Related sites' },
+            { value: 'info', label: 'info:', tip: 'Page info' },
+            { value: 'define', label: 'define:', tip: 'Definition' },
+            { value: 'link', label: 'link:', tip: 'Pages linking to URL' },
+            { value: 'exact', label: '"exact"', tip: 'Exact phrase' },
+            { value: 'or', label: 'OR', tip: 'Either term' },
+        ];
+
+        const PRESETS = {
+            cybersecurity: { keywords: '"cybersecurity" OR "penetration testing" OR "ethical hacking"', filters: [{ operator: 'intitle', value: 'security guide' }], fileTypes: ['pdf'], domain: '.edu' },
+            programming: { keywords: '"programming tutorial" OR "coding guide"', filters: [{ operator: 'intitle', value: 'documentation' }], fileTypes: ['pdf'], domain: '' },
+            research: { keywords: '"research paper" OR "academic study"', filters: [{ operator: 'inurl', value: 'paper' }], fileTypes: ['pdf'], domain: '.edu' },
+            public: { keywords: '"public document" OR "public record"', filters: [{ operator: 'intitle', value: 'index of' }], fileTypes: [], domain: '.gov' },
+            index: { keywords: '', filters: [{ operator: 'intitle', value: 'index of /' }], fileTypes: [], domain: '' },
+            education: { keywords: '"course material" OR "lecture notes" OR "syllabus"', filters: [{ operator: 'site', value: '.edu' }], fileTypes: ['pdf', 'ppt'], domain: '' },
+            government: { keywords: '"government report" OR "annual report" OR "policy document"', filters: [], fileTypes: ['pdf'], domain: '.gov' },
+            technical: { keywords: '"technical documentation" OR "API reference" OR "user manual"', filters: [{ operator: 'inurl', value: 'docs' }], fileTypes: ['pdf'], domain: '' },
+            database: { keywords: '"database" OR "dataset" OR "data repository"', filters: [{ operator: 'inurl', value: 'data' }], fileTypes: ['csv', 'json', 'sql'], domain: '' },
+            api: { keywords: '"API documentation" OR "REST API" OR "API reference"', filters: [{ operator: 'inurl', value: 'api' }], fileTypes: ['json'], domain: '' },
+            opensource: { keywords: '"open source" OR "repository" OR "source code"', filters: [{ operator: 'site', value: 'github.com' }], fileTypes: [], domain: '' },
+            books: { keywords: '"ebook" OR "textbook" OR "book" OR "manual"', filters: [{ operator: 'intitle', value: 'book' }], fileTypes: ['pdf', 'epub'], domain: '' }
+        };
+
+        const SUGGESTIONS = [
+            { text: 'intitle:"index of" filetype:pdf', cat: 'Index' },
+            { text: 'site:.edu "research paper" filetype:pdf', cat: 'Academic' },
+            { text: '"cybersecurity" site:.gov filetype:pdf', cat: 'Security' },
+            { text: 'inurl:admin intitle:login', cat: 'Admin' },
+            { text: 'site:github.com "awesome" list', cat: 'GitHub' },
+            { text: 'filetype:sql "insert into"', cat: 'Database' },
+            { text: '"powered by wordpress" inurl:wp-content', cat: 'CMS' },
+            { text: 'intitle:"index of" "parent directory"', cat: 'Directory' },
+            { text: 'site:stackoverflow.com "how to"', cat: 'Q&A' },
+            { text: '"API key" OR "api_key" filetype:env', cat: 'Config' },
+            { text: 'intitle:"network camera" inurl:view', cat: 'IoT' },
+            { text: 'site:.mil filetype:pdf "unclassified"', cat: 'Military' },
+            { text: '"machine learning" filetype:pdf site:.edu', cat: 'ML/AI' },
+            { text: 'inurl:/wp-json/wp/v2/', cat: 'WordPress' },
+            { text: 'site:docs.google.com "spreadsheet"', cat: 'GDocs' },
+        ];
+
+        const RANDOM_DORKS = [
+            'intitle:"index of" "parent directory" filetype:pdf',
+            'site:.edu "lecture notes" filetype:ppt',
+            '"powered by" "phpBB" inurl:viewforum',
+            'intitle:"curriculum vitae" filetype:pdf',
+            'site:pastebin.com "password" -site:pastebin.com/doc',
+            'inurl:/robots.txt "Disallow:"',
+            '"Apache Server at" intitle:index.of',
+            'site:.gov filetype:xls "budget"',
+            'intitle:"index of" "backup" filetype:sql',
+            '"security advisory" filetype:pdf site:.gov',
+            'inurl:readme.md site:github.com',
+            '"annual report" filetype:pdf after:2023-01-01',
+            'site:arxiv.org "deep learning" filetype:pdf',
+            'intitle:"dashboard" inurl:grafana',
+            '"configuration file" filetype:conf',
+        ];
+
+        const TUTORIAL_STEPS = [
+            { title: 'Welcome to DorkMaster Pro! 🎉', content: 'This tool helps you build advanced search engine queries (dorks) for educational and legal research. No manual typing of complex operators needed!' },
+            { title: '🔍 Search Box', content: 'Enter your main keywords in the search box. Use quotes for exact phrases. The voice input button lets you speak your query.' },
+            { title: '🎛️ Filters Panel', content: 'Add multiple filters using operators like intitle:, inurl:, intext:, site:, and more. Each filter refines your search automatically.' },
+            { title: '📄 File Types', content: 'Click file type chips to filter by document type. Search for PDFs, docs, spreadsheets, and 20+ file formats.' },
+            { title: '⚡ Live Preview', content: 'Watch your query build in real-time! The strength meter shows query complexity. You can manually edit the preview too.' },
+            { title: '🚀 Multi-Engine Search', content: 'Search across Google, Bing, DuckDuckGo, Yahoo, and Brave. Enable multi-engine to search all simultaneously!' },
+            { title: '💾 Save & Organize', content: 'Save queries with names, categories, and tags. Export/import your collection as JSON. Everything is stored locally.' },
+            { title: '🎨 Customize', content: 'Choose your accent color, toggle dark/light mode, and use keyboard shortcuts (Ctrl+K to focus, Ctrl+Enter to search).' },
+            { title: 'Ready to Go! 🚀', content: 'Start by entering keywords, adding filters, and hit search. Remember to use this tool responsibly and legally. Happy researching!' }
+        ];
+
+        let tutorialStep = 0;
+
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTheme(state.theme);
+            setAccentInit(state.accent);
+            addFilter();
+            renderHistory();
+            renderSaved();
+            loadNotes();
+            updateDashboardStats();
+
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); document.getElementById('mainKeywords').focus() }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); executeSearch() }
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') { e.preventDefault(); copyQuery() }
+                if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveQuery() }
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'X') { e.preventDefault(); clearAll() }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'f' && !e.shiftKey) {
+                    // Only prevent if not in an input
+                    if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') { e.preventDefault(); addFilter() }
+                }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo() }
+                if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) { e.preventDefault(); redo() }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'd') { e.preventDefault(); toggleTheme() }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'r' && !e.shiftKey) {/* allow browser refresh */ }
+                if (e.key === 'Escape') { document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active')); closeTutorial(); hideSuggestions() }
+            });
+
+            document.addEventListener('click', (e) => { if (!e.target.closest('.search-box-wrapper')) hideSuggestions() });
+
+            // Show tutorial for first-time users
+            if (!localStorage.getItem('dm_tutorial_done')) { setTimeout(() => showTutorial(), 1000) }
+        });
+
+        // ==================== THEME ====================
+        function toggleTheme() {
+            state.theme = state.theme === 'dark' ? 'light' : 'dark';
+            applyTheme(state.theme);
+            localStorage.setItem('dm_theme', state.theme);
+        }
+        function applyTheme(t) {
+            document.documentElement.setAttribute('data-theme', t);
+            const tog = document.getElementById('themeToggle');
+            t === 'dark' ? tog.classList.add('active') : tog.classList.remove('active');
+        }
+        function setAccent(el) {
+            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            el.classList.add('active');
+            const color = el.dataset.color;
+            state.accent = color;
+            document.documentElement.setAttribute('data-accent', color);
+            localStorage.setItem('dm_accent', color);
+        }
+        function setAccentInit(c) {
+            document.documentElement.setAttribute('data-accent', c);
+            document.querySelectorAll('.color-dot').forEach(d => { d.classList.toggle('active', d.dataset.color === c) });
+        }
+
+        // ==================== ENGINE ====================
+        function selectEngine(el) {
+            document.querySelectorAll('.engine-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            state.engine = el.dataset.engine;
+            document.getElementById('statEngine').textContent = capitalize(state.engine);
+            buildQuery();
+        }
+        function toggleMultiEngine(el) { el.classList.toggle('on'); state.multiEngine = el.classList.contains('on') }
+        function toggleSwitch(el) {
+            el.classList.toggle('on');
+            if (el.id === 'safeSearchSwitch') state.safeSearch = el.classList.contains('on');
+        }
+
+        // ==================== REGION ====================
+        function selectRegion(el, region) {
+            document.querySelectorAll('.region-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            state.region = region;
+        }
+
+        // ==================== FILTERS ====================
+        function addFilter(op = '', val = '') {
+            state.filters.push({ id: Date.now() + Math.random(), operator: op, value: val });
+            renderFilters();
+            buildQuery();
+        }
+        function addORGroup() {
+            state.filters.push({ id: Date.now() + Math.random(), operator: 'or', value: '' });
+            renderFilters();
+            buildQuery();
+            showToast('OR group added', 'info');
+        }
+        function removeFilter(id) {
+            state.filters = state.filters.filter(f => f.id !== id);
+            renderFilters();
+            buildQuery();
+        }
+        function renderFilters() {
+            const c = document.getElementById('filterList');
+            c.innerHTML = '';
+            state.filters.forEach(f => {
+                const d = document.createElement('div');
+                d.className = 'filter-item';
+                d.draggable = true;
+                d.dataset.id = f.id;
+                d.ondragstart = dragStart; d.ondragover = dragOver; d.ondrop = drop;
+                d.innerHTML = `
+      <select onchange="updateFilter(${f.id},'operator',this.value)">
+        <option value="">Select...</option>
+        ${OP_OPTIONS.map(op => `<option value="${op.value}" ${f.operator === op.value ? 'selected' : ''} title="${op.tip}">${op.label}</option>`).join('')}
+      </select>
+      <input type="text" placeholder="Value..." value="${escHtml(f.value)}" oninput="updateFilter(${f.id},'value',this.value)">
+      <button class="filter-remove" onclick="removeFilter(${f.id})" title="Remove">✕</button>`;
+                c.appendChild(d);
+            });
+            document.getElementById('filterCount').textContent = state.filters.filter(f => f.operator && f.value.trim()).length;
+        }
+        function updateFilter(id, field, value) {
+            const f = state.filters.find(x => x.id === id);
+            if (f) { f[field] = value; state.manualEdit = false; buildQuery() }
+        }
+
+        // Drag & Drop filters
+        let dragSrcId = null;
+        function dragStart(e) { dragSrcId = e.currentTarget.dataset.id; e.dataTransfer.effectAllowed = 'move' }
+        function dragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move' }
+        function drop(e) {
+            e.preventDefault();
+            const targetId = e.currentTarget.dataset.id;
+            if (dragSrcId && targetId && dragSrcId !== targetId) {
+                const arr = state.filters;
+                const fromIdx = arr.findIndex(f => f.id == dragSrcId);
+                const toIdx = arr.findIndex(f => f.id == targetId);
+                if (fromIdx > -1 && toIdx > -1) {
+                    const [item] = arr.splice(fromIdx, 1);
+                    arr.splice(toIdx, 0, item);
+                    renderFilters(); buildQuery();
+                }
+            }
+        }
+
+        // ==================== FILE TYPES ====================
+        function toggleChip(el) {
+            el.classList.toggle('active');
+            const t = el.dataset.type;
+            if (el.classList.contains('active')) { if (!state.fileTypes.includes(t)) state.fileTypes.push(t) }
+            else { state.fileTypes = state.fileTypes.filter(x => x !== t) }
+            buildQuery();
+        }
+        function setFileTypes(types) {
+            state.fileTypes = [...types];
+            document.querySelectorAll('#fileTypeChips .chip').forEach(c => { c.classList.toggle('active', types.includes(c.dataset.type)) });
+        }
+        function setDomain(d) { document.getElementById('targetDomain').value = d; buildQuery() }
+
+        // ==================== QUERY BUILDER ====================
+        function buildQuery() {
+            if (state.manualEdit) return;
+            const parts = []; let opCount = 0;
+            const kw = document.getElementById('mainKeywords').value.trim();
+            if (kw) parts.push(kw);
+
+            state.filters.forEach(f => {
+                if (f.operator && f.value.trim()) {
+                    opCount++;
+                    if (f.operator === 'exact') parts.push(`"${f.value.trim()}"`);
+                    else if (f.operator === 'or') parts.push(`OR ${f.value.trim()}`);
+                    else parts.push(`${f.operator}:${f.value.trim()}`);
+                }
+            });
+
+            if (state.fileTypes.length > 0) {
+                opCount += state.fileTypes.length;
+                if (state.fileTypes.length === 1) parts.push(`filetype:${state.fileTypes[0]}`);
+                else parts.push(`(${state.fileTypes.map(ft => `filetype:${ft}`).join(' OR ')})`);
+            }
+
+            const dom = document.getElementById('targetDomain').value.trim();
+            if (dom) { opCount++; parts.push(`site:${dom}`) }
+
+            const dA = document.getElementById('dateAfter').value;
+            const dB = document.getElementById('dateBefore').value;
+            if (dA) { opCount++; parts.push(`after:${dA}`) }
+            if (dB) { opCount++; parts.push(`before:${dB}`) }
+
+            const ex = document.getElementById('excludeKeywords').value.trim();
+            if (ex) { ex.split(',').forEach(e => { const t = e.trim(); if (t) { opCount++; parts.push(`-${t}`) } }) }
+
+            // Wildcard
+            const wc = document.getElementById('wildcardInput').value.trim();
+            if (wc) parts.push(wc);
+
+            // AROUND
+            const arN = document.getElementById('aroundN').value;
+            if (arN && parseInt(arN) > 0) { opCount++; parts.push(`AROUND(${arN})`) }
+
+            // Number range
+            const rMin = document.getElementById('rangeMin').value;
+            const rMax = document.getElementById('rangeMax').value;
+            if (rMin && rMax) { opCount++; parts.push(`${rMin}..${rMax}`) }
+
+            const query = parts.join(' ');
+            state.currentQuery = query;
+            pushUndo(query);
+            renderQueryPreview(query);
+            updateStats(opCount, query);
+            updateStrength(query, opCount);
+            updateTips(query, opCount);
+            state.sessionQueries++;
+            document.getElementById('sessionQueries').textContent = state.sessionQueries;
+
+            // Track operators
+            state.filters.forEach(f => {
+                if (f.operator && f.value.trim()) {
+                    state.analytics.operatorsUsed[f.operator] = (state.analytics.operatorsUsed[f.operator] || 0) + 1;
+                }
+            });
+        }
+
+        function renderQueryPreview(query) {
+            const p = document.getElementById('queryPreview');
+            if (!query) { p.innerHTML = '<span style="color:var(--text-muted);font-style:italic">Your generated query will appear here...</span>'; return }
+            let h = escHtml(query);
+            h = h.replace(/(intitle|allintitle|inurl|allinurl|intext|allintext|site|filetype|ext|cache|related|info|define|link|before|after):/g, '<span class="op">$1:</span>');
+            h = h.replace(/\b(OR|AND)\b/g, '<span class="op">$1</span>');
+            h = h.replace(/(AROUND\(\d+\))/g, '<span class="op">$1</span>');
+            h = h.replace(/"([^"]+)"/g, '<span class="str">"$1"</span>');
+            h = h.replace(/(?:^|\s)(-\S+)/g, ' <span style="color:var(--danger)">$1</span>');
+            h = h.replace(/(\d+\.\.\d+)/g, '<span style="color:var(--info)">$1</span>');
+            p.innerHTML = h;
+        }
+
+        function updateStats(ops, query) {
+            document.getElementById('statFilters').textContent = state.filters.filter(f => f.operator && f.value.trim()).length;
+            document.getElementById('statOperators').textContent = ops;
+            document.getElementById('statChars').textContent = query.length;
+        }
+
+        function updateStrength(query, ops) {
+            let score = 0;
+            if (query.length > 0) score += 10;
+            if (query.length > 20) score += 10;
+            if (query.length > 50) score += 10;
+            if (ops >= 1) score += 15;
+            if (ops >= 2) score += 10;
+            if (ops >= 3) score += 10;
+            if (ops >= 5) score += 5;
+            if (state.fileTypes.length > 0) score += 10;
+            if (document.getElementById('targetDomain').value.trim()) score += 10;
+            if (query.includes('"')) score += 5;
+            if (query.includes('-')) score += 5;
+            score = Math.min(100, score);
+
+            const bar = document.getElementById('strengthBar');
+            const text = document.getElementById('strengthText');
+            const scoreEl = document.getElementById('strengthScore');
+            document.getElementById('statStrength').textContent = score + '%';
+
+            bar.style.width = score + '%';
+            scoreEl.textContent = score + '/100';
+
+            if (score === 0) { bar.style.background = 'var(--text-muted)'; text.textContent = 'No query'; text.style.color = 'var(--text-muted)' }
+            else if (score < 30) { bar.style.background = 'var(--danger)'; text.textContent = 'Basic'; text.style.color = 'var(--danger)' }
+            else if (score < 60) { bar.style.background = 'var(--warning)'; text.textContent = 'Moderate'; text.style.color = 'var(--warning)' }
+            else if (score < 80) { bar.style.background = 'var(--info)'; text.textContent = 'Advanced'; text.style.color = 'var(--info)' }
+            else { bar.style.background = 'var(--success)'; text.textContent = 'Expert'; text.style.color = 'var(--success)' }
+        }
+
+        function updateTips(query, ops) {
+            const tips = document.getElementById('queryTips');
+            const t = [];
+            if (!query) t.push('💡 Start by entering keywords in the search box.');
+            else {
+                if (ops === 0) t.push('💡 Add operators like intitle: or site: to refine results.');
+                if (!query.includes('"') && query.split(' ').length > 2) t.push('💡 Use quotes around phrases for exact matching.');
+                if (!query.includes('-')) t.push('💡 Exclude irrelevant terms with the minus operator.');
+                if (state.fileTypes.length === 0) t.push('💡 Select file types to find specific documents.');
+                if (!document.getElementById('targetDomain').value.trim()) t.push('💡 Target a specific domain with the site: operator.');
+                if (ops >= 3) t.push('✅ Great query complexity! Consider testing variations.');
+                if (query.length > 150) t.push('⚠️ Very long query. Some engines may truncate it.');
+            }
+            tips.innerHTML = t.map(x => `<p style="margin-bottom:4px">${x}</p>`).join('');
+        }
+
+        function onManualEdit() { state.manualEdit = true; const p = document.getElementById('queryPreview'); state.currentQuery = p.textContent || p.innerText }
+
+        // ==================== UNDO / REDO ====================
+        function pushUndo(q) {
+            if (state.undoStack[state.undoStack.length - 1] !== q) {
+                state.undoStack.push(q);
+                if (state.undoStack.length > 50) state.undoStack.shift();
+                state.redoStack = [];
+            }
+        }
+        function undo() {
+            if (state.undoStack.length > 1) {
+                state.redoStack.push(state.undoStack.pop());
+                const prev = state.undoStack[state.undoStack.length - 1];
+                state.currentQuery = prev;
+                state.manualEdit = true;
+                renderQueryPreview(prev);
+                showToast('Undo', 'info');
+            }
+        }
+        function redo() {
+            if (state.redoStack.length > 0) {
+                const next = state.redoStack.pop();
+                state.undoStack.push(next);
+                state.currentQuery = next;
+                state.manualEdit = true;
+                renderQueryPreview(next);
+                showToast('Redo', 'info');
+            }
+        }
+
+        // ==================== SEARCH ====================
+        function executeSearch() {
+            let query = state.currentQuery;
+            if (!query || !query.trim()) {
+                document.getElementById('searchValidation').classList.add('show');
+                setTimeout(() => document.getElementById('searchValidation').classList.remove('show'), 3000);
+                showToast('Please enter keywords or add filters', 'error'); return;
+            }
+
+            if (state.multiEngine) {
+                Object.keys(SEARCH_URLS).forEach(eng => {
+                    const url = buildSearchUrl(eng, query);
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                });
+                showToast(`Opened in all ${Object.keys(SEARCH_URLS).length} engines!`, 'success');
+            } else {
+                const url = buildSearchUrl(state.engine, query);
+                window.open(url, '_blank', 'noopener,noreferrer');
+                showToast(`Search opened (${capitalize(state.engine)})`, 'success');
+            }
+
+            addToHistory(query.trim());
+            state.sessionSearches++;
+            document.getElementById('sessionSearches').textContent = state.sessionSearches;
+            state.analytics.totalSearches++;
+            state.analytics.enginesUsed[state.engine] = (state.analytics.enginesUsed[state.engine] || 0) + 1;
+            logActivity(`Searched: "${query.substring(0, 50)}..." on ${capitalize(state.engine)}`);
+            saveAnalytics();
+
+            // Confetti on first search
+            if (state.sessionSearches === 1) fireConfetti();
+        }
+
+        function buildSearchUrl(engine, query) {
+            let url = SEARCH_URLS[engine] + encodeURIComponent(query.trim());
+            if (state.region && REGION_PARAMS[engine] && REGION_PARAMS[engine][state.region]) {
+                url += REGION_PARAMS[engine][state.region];
+            }
+            if (state.safeSearch && SAFE_PARAMS[engine]) {
+                url += SAFE_PARAMS[engine];
+            }
+            return url;
+        }
+
+        // ==================== BATCH SEARCH ====================
+        function executeBatchSearch() {
+            const lines = document.getElementById('batchQueries').value.split('\n').map(l => l.trim()).filter(l => l);
+            if (lines.length === 0) { showToast('No queries in batch', 'error'); return }
+            if (lines.length > 10) { showToast('Max 10 queries at once for safety', 'warning'); return }
+            lines.forEach((q, i) => {
+                setTimeout(() => {
+                    const url = buildSearchUrl(state.engine, q);
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                }, i * 500);
+            });
+            showToast(`Opening ${lines.length} searches...`, 'success');
+            lines.forEach(q => addToHistory(q));
+        }
+        function addCurrentToBatch() {
+            if (!state.currentQuery) { showToast('No current query', 'error'); return }
+            const ta = document.getElementById('batchQueries');
+            ta.value = (ta.value ? ta.value + '\n' : '') + state.currentQuery;
+            showToast('Added to batch', 'info');
+        }
+
+        // ==================== COPY / SHARE ====================
+        function copyQuery() {
+            if (!state.currentQuery) { showToast('No query to copy', 'error'); return }
+            copyText(state.currentQuery);
+            showToast('Query copied!', 'success');
+        }
+        function shareQuery() {
+            if (!state.currentQuery) { showToast('No query to share', 'error'); return }
+            const url = buildSearchUrl(state.engine, state.currentQuery);
+            document.getElementById('shareUrl').value = url;
+            document.getElementById('sharePlain').value = state.currentQuery;
+            showModal('shareModal');
+        }
+        function copyShareUrl() { copyText(document.getElementById('shareUrl').value); showToast('URL copied!', 'success') }
+        function copySharePlain() { copyText(document.getElementById('sharePlain').value); showToast('Query copied!', 'success') }
+
+        function copyText(text) {
+            if (navigator.clipboard) { navigator.clipboard.writeText(text).catch(() => fallbackCopy(text)) }
+            else fallbackCopy(text);
+        }
+        function fallbackCopy(text) { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta) }
+
+        // ==================== DUPLICATE ====================
+        function duplicateQuery() {
+            if (!state.currentQuery) { showToast('No query', 'error'); return }
+            document.getElementById('mainKeywords').value = state.currentQuery;
+            state.filters = [{ id: Date.now(), operator: '', value: '' }];
+            state.fileTypes = []; setFileTypes([]);
+            document.getElementById('targetDomain').value = '';
+            document.getElementById('dateAfter').value = ''; document.getElementById('dateBefore').value = '';
+            document.getElementById('excludeKeywords').value = '';
+            document.getElementById('wildcardInput').value = ''; document.getElementById('aroundN').value = '';
+            document.getElementById('rangeMin').value = ''; document.getElementById('rangeMax').value = '';
+            renderFilters(); state.manualEdit = false; buildQuery();
+            showToast('Duplicated to keywords', 'info');
+        }
+
+        // ==================== CLEAR ====================
+        function clearAll() {
+            document.getElementById('mainKeywords').value = '';
+            document.getElementById('excludeKeywords').value = '';
+            document.getElementById('targetDomain').value = '';
+            document.getElementById('dateAfter').value = ''; document.getElementById('dateBefore').value = '';
+            document.getElementById('wildcardInput').value = ''; document.getElementById('aroundN').value = '';
+            document.getElementById('rangeMin').value = ''; document.getElementById('rangeMax').value = '';
+            state.filters = [{ id: Date.now(), operator: '', value: '' }];
+            state.fileTypes = []; state.manualEdit = false; state.currentQuery = '';
+            setFileTypes([]); renderFilters(); buildQuery();
+            showToast('All cleared', 'info');
+        }
+
+        // ==================== SAVE / LOAD ====================
+        function saveQuery() {
+            if (!state.currentQuery) { showToast('No query to save', 'error'); return }
+            document.getElementById('saveQueryPreview').value = state.currentQuery;
+            document.getElementById('saveQueryName').value = '';
+            document.getElementById('saveQueryTags').value = '';
+            showModal('saveModal');
+            setTimeout(() => document.getElementById('saveQueryName').focus(), 200);
+        }
+        function confirmSaveQuery() {
+            const name = document.getElementById('saveQueryName').value.trim() || 'Untitled';
+            const query = document.getElementById('saveQueryPreview').value;
+            const category = document.getElementById('saveQueryCategory').value;
+            const tags = document.getElementById('saveQueryTags').value.split(',').map(t => t.trim()).filter(t => t);
+            state.saved.unshift({ id: Date.now(), name, query, engine: state.engine, category, tags, date: new Date().toISOString() });
+            if (state.saved.length > 100) state.saved = state.saved.slice(0, 100);
+            localStorage.setItem('dm_saved', JSON.stringify(state.saved));
+            renderSaved(); hideModal('saveModal');
+            logActivity(`Saved query: "${name}"`);
+            showToast(`"${name}" saved!`, 'success');
+        }
+        function loadSavedQuery(id) {
+            const item = state.saved.find(s => s.id === id);
+            if (item) {
+                document.getElementById('mainKeywords').value = item.query;
+                if (item.engine) { state.engine = item.engine; document.querySelectorAll('.engine-btn').forEach(b => b.classList.toggle('active', b.dataset.engine === item.engine)); document.getElementById('statEngine').textContent = capitalize(item.engine) }
+                resetFiltersUI(); state.manualEdit = false; buildQuery();
+                showToast('Query loaded!', 'info');
+            }
+        }
+        function deleteSaved(id) {
+            state.saved = state.saved.filter(s => s.id !== id);
+            localStorage.setItem('dm_saved', JSON.stringify(state.saved));
+            renderSaved(); showToast('Deleted', 'info');
+        }
+        function clearSaved() { state.saved = []; localStorage.setItem('dm_saved', '[]'); renderSaved(); showToast('All saved cleared', 'info') }
+        function renderSaved() {
+            const c = document.getElementById('savedList');
+            const e = document.getElementById('savedEmpty');
+            const search = document.getElementById('savedSearch')?.value?.toLowerCase() || '';
+            const filtered = state.saved.filter(s => !search || s.name.toLowerCase().includes(search) || s.query.toLowerCase().includes(search));
+            if (filtered.length === 0) { c.innerHTML = ''; c.appendChild(e); e.style.display = ''; return }
+            e.style.display = 'none';
+            c.innerHTML = filtered.map(item => `
+    <div class="saved-item" onclick="loadSavedQuery(${item.id})">
+      <span class="query-text" title="${escHtml(item.query)}"><strong>${escHtml(item.name)}</strong> — ${escHtml(item.query)}</span>
+      <div class="item-actions">
+        <button onclick="event.stopPropagation();loadSavedQuery(${item.id})" title="Load">▶</button>
+        <button onclick="event.stopPropagation();deleteSaved(${item.id})" title="Delete">🗑</button>
+      </div>
+    </div>`).join('');
+        }
+        function filterSaved() { renderSaved() }
+
+        // ==================== HISTORY ====================
+        function addToHistory(query) {
+            state.history = state.history.filter(h => h.query !== query);
+            state.history.unshift({ id: Date.now(), query, engine: state.engine, date: new Date().toISOString() });
+            if (state.history.length > 50) state.history = state.history.slice(0, 50);
+            localStorage.setItem('dm_history', JSON.stringify(state.history));
+            renderHistory();
+        }
+        function renderHistory() {
+            const c = document.getElementById('historyList');
+            const e = document.getElementById('historyEmpty');
+            const search = document.getElementById('historySearch')?.value?.toLowerCase() || '';
+            const filtered = state.history.filter(h => !search || h.query.toLowerCase().includes(search));
+            if (filtered.length === 0) { c.innerHTML = ''; c.appendChild(e); e.style.display = ''; return }
+            e.style.display = 'none';
+            c.innerHTML = filtered.map(item => `
+    <div class="history-item" onclick="loadHistoryItem(${item.id})">
+      <span class="query-text" title="${escHtml(item.query)}">${escHtml(item.query)}</span>
+      <span class="time">${relTime(item.date)}</span>
+      <div class="item-actions">
+        <button onclick="event.stopPropagation();loadHistoryItem(${item.id})" title="Load">▶</button>
+        <button onclick="event.stopPropagation();deleteHistory(${item.id})" title="Delete">✕</button>
+      </div>
+    </div>`).join('');
+        }
+        function loadHistoryItem(id) {
+            const item = state.history.find(h => h.id === id);
+            if (item) { document.getElementById('mainKeywords').value = item.query; resetFiltersUI(); state.manualEdit = false; buildQuery(); showToast('Loaded', 'info') }
+        }
+        function deleteHistory(id) { state.history = state.history.filter(h => h.id !== id); localStorage.setItem('dm_history', JSON.stringify(state.history)); renderHistory() }
+        function clearHistory() { state.history = []; localStorage.setItem('dm_history', '[]'); renderHistory(); showToast('History cleared', 'info') }
+        function filterHistory() { renderHistory() }
+
+        function resetFiltersUI() {
+            state.filters = [{ id: Date.now(), operator: '', value: '' }];
+            state.fileTypes = []; setFileTypes([]);
+            document.getElementById('targetDomain').value = '';
+            document.getElementById('excludeKeywords').value = '';
+            document.getElementById('dateAfter').value = ''; document.getElementById('dateBefore').value = '';
+            document.getElementById('wildcardInput').value = ''; document.getElementById('aroundN').value = '';
+            document.getElementById('rangeMin').value = ''; document.getElementById('rangeMax').value = '';
+            renderFilters();
+        }
+
+        // ==================== PRESETS ====================
+        function loadPreset(key) {
+            const p = PRESETS[key]; if (!p) return;
+            document.getElementById('mainKeywords').value = p.keywords;
+            document.getElementById('targetDomain').value = p.domain || '';
+            document.getElementById('excludeKeywords').value = '';
+            document.getElementById('dateAfter').value = ''; document.getElementById('dateBefore').value = '';
+            document.getElementById('wildcardInput').value = ''; document.getElementById('aroundN').value = '';
+            document.getElementById('rangeMin').value = ''; document.getElementById('rangeMax').value = '';
+            state.filters = p.filters.map(f => ({ id: Date.now() + Math.random(), ...f }));
+            if (state.filters.length === 0) state.filters.push({ id: Date.now(), operator: '', value: '' });
+            renderFilters(); setFileTypes(p.fileTypes || []);
+            state.manualEdit = false; buildQuery();
+            state.analytics.presetsUsed++; saveAnalytics();
+            logActivity(`Loaded preset: ${key}`);
+            showToast(`Preset "${key}" loaded!`, 'success');
+            if (window.innerWidth < 968) document.querySelector('.query-preview-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        function loadTemplate(tmpl) {
+            const decoded = tmpl.replace(/&quot;/g, '"');
+            document.getElementById('mainKeywords').value = decoded;
+            resetFiltersUI(); state.manualEdit = false; buildQuery();
+            showToast('Template loaded - customize placeholders!', 'info');
+        }
+
+        // ==================== SUGGESTIONS ====================
+        function showSuggestions() {
+            const input = document.getElementById('mainKeywords').value.toLowerCase().trim();
+            const dd = document.getElementById('suggestionsDropdown');
+            if (!input || input.length < 2) { dd.classList.remove('show'); return }
+            const filtered = SUGGESTIONS.filter(s => s.text.toLowerCase().includes(input)).slice(0, 6);
+            if (filtered.length === 0) { dd.classList.remove('show'); return }
+            dd.innerHTML = filtered.map(s => `<div class="suggestion-item" onclick="applySuggestion('${escHtml(s.text)}')">${escHtml(s.text)}<span class="sg-cat">${s.cat}</span></div>`).join('');
+            dd.classList.add('show');
+        }
+        function hideSuggestions() { document.getElementById('suggestionsDropdown').classList.remove('show') }
+        function applySuggestion(text) {
+            document.getElementById('mainKeywords').value = text;
+            hideSuggestions(); state.manualEdit = false; buildQuery();
+        }
+
+        // ==================== VOICE INPUT ====================
+        function toggleVoice() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                showToast('Voice input not supported in this browser', 'error'); return;
+            }
+            const btn = document.getElementById('voiceBtn');
+            if (btn.classList.contains('recording')) {
+                btn.classList.remove('recording'); return;
+            }
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SR();
+            recognition.lang = 'en-US'; recognition.interimResults = false; recognition.maxAlternatives = 1;
+            btn.classList.add('recording');
+            recognition.start();
+            recognition.onresult = (e) => {
+                const text = e.results[0][0].transcript;
+                document.getElementById('mainKeywords').value = text;
+                btn.classList.remove('recording');
+                state.manualEdit = false; buildQuery();
+                showToast('Voice input captured!', 'success');
+            };
+            recognition.onerror = () => { btn.classList.remove('recording'); showToast('Voice recognition error', 'error') };
+            recognition.onend = () => { btn.classList.remove('recording') };
+        }
+
+        // ==================== RANDOM DORK ====================
+        function randomDork() {
+            const dork = RANDOM_DORKS[Math.floor(Math.random() * RANDOM_DORKS.length)];
+            document.getElementById('mainKeywords').value = dork;
+            resetFiltersUI(); state.manualEdit = false; buildQuery();
+            logActivity(`Random dork: "${dork.substring(0, 40)}..."`);
+            showToast('Random dork generated!', 'success');
+        }
+
+        // ==================== QR CODE ====================
+        function generateQR() {
+            if (!state.currentQuery) { showToast('No query for QR', 'error'); return }
+            const url = buildSearchUrl(state.engine, state.currentQuery);
+            const canvas = document.getElementById('qrCanvas');
+            drawQR(canvas, url);
+            showModal('qrModal');
+        }
+        function drawQR(canvas, text) {
+            // Simple QR placeholder using canvas text (real QR would need library)
+            const ctx = canvas.getContext('2d');
+            canvas.width = 200; canvas.height = 200;
+            ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 200, 200);
+
+            // Generate a simple visual representation
+            const data = text.split('').map(c => c.charCodeAt(0));
+            const size = 20; const cells = 10;
+            const cellSize = size;
+
+            ctx.fillStyle = '#000';
+            // Position markers
+            drawFinderPattern(ctx, 0, 0, cellSize);
+            drawFinderPattern(ctx, (cells - 3) * cellSize, 0, cellSize);
+            drawFinderPattern(ctx, 0, (cells - 3) * cellSize, cellSize);
+
+            // Data cells
+            for (let i = 0; i < data.length && i < cells * cells; i++) {
+                const x = (i % cells) * cellSize;
+                const y = Math.floor(i / cells) * cellSize;
+                if (data[i] % 3 === 0) { ctx.fillRect(x + 1, y + 1, cellSize - 2, cellSize - 2) }
+            }
+
+            // Center text
+            ctx.fillStyle = '#333'; ctx.font = '8px monospace'; ctx.textAlign = 'center';
+            ctx.fillText('Scan to search', 100, 195);
+        }
+        function drawFinderPattern(ctx, x, y, s) {
+            ctx.fillStyle = '#000'; ctx.fillRect(x, y, s * 3, s * 3);
+            ctx.fillStyle = '#fff'; ctx.fillRect(x + s * 0.5, y + s * 0.5, s * 2, s * 2);
+            ctx.fillStyle = '#000'; ctx.fillRect(x + s, y + s, s, s);
+        }
+
+        // ==================== PRINT ====================
+        function printQuery() {
+            if (!state.currentQuery) { showToast('No query to print', 'error'); return }
+            const win = window.open('', '_blank');
+            win.document.write(`<html><head><title>DorkMaster Query</title><style>body{font-family:monospace;padding:40px;max-width:800px;margin:auto}h1{font-size:18px;color:#333}pre{background:#f5f5f5;padding:20px;border-radius:8px;white-space:pre-wrap;word-break:break-all;font-size:14px;border:1px solid #ddd}.meta{color:#666;font-size:12px;margin-top:16px}</style></head><body>`);
+            win.document.write(`<h1>🔍 DorkMaster Pro — Search Query</h1>`);
+            win.document.write(`<pre>${escHtml(state.currentQuery)}</pre>`);
+            win.document.write(`<div class="meta"><p>Engine: ${capitalize(state.engine)}</p><p>Generated: ${new Date().toLocaleString()}</p><p>Search URL: ${buildSearchUrl(state.engine, state.currentQuery)}</p></div>`);
+            win.document.write(`<p style="margin-top:24px;font-size:11px;color:#999">Generated by DorkMaster Pro — For educational and legal use only.</p></body></html>`);
+            win.document.close();
+            win.print();
+        }
+
+        // ==================== ENCODE/DECODE ====================
+        function encodeDecodeQuery() {
+            document.getElementById('encodeInput').value = state.currentQuery || '';
+            document.getElementById('encodeOutput').value = '';
+            showModal('encodeModal');
+        }
+        function doEncode() { document.getElementById('encodeOutput').value = encodeURIComponent(document.getElementById('encodeInput').value) }
+        function doDecode() { document.getElementById('encodeOutput').value = decodeURIComponent(document.getElementById('encodeInput').value) }
+        function copyEncodeResult() { copyText(document.getElementById('encodeOutput').value); showToast('Copied!', 'success') }
+
+        // ==================== ANALYZE ====================
+        function analyzeQuery() {
+            if (!state.currentQuery) { showToast('No query to analyze', 'error'); return }
+            const q = state.currentQuery;
+            const analysis = [];
+            analysis.push(`<p><strong>📝 Raw Query:</strong></p><pre style="background:var(--bg-tertiary);padding:10px;border-radius:6px;font-size:.8rem;word-break:break-all">${escHtml(q)}</pre>`);
+            analysis.push(`<p><strong>📏 Length:</strong> ${q.length} characters</p>`);
+            analysis.push(`<p><strong>📊 Words:</strong> ${q.split(/\s+/).filter(w => w).length}</p>`);
+
+            const ops = ['intitle', 'inurl', 'intext', 'site', 'filetype', 'ext', 'allintitle', 'allinurl', 'allintext', 'cache', 'related', 'info', 'define', 'link', 'before', 'after'];
+            const found = ops.filter(op => q.includes(op + ':'));
+            analysis.push(`<p><strong>🔧 Operators found:</strong> ${found.length > 0 ? found.map(o => `<code style="color:var(--accent)">${o}:</code>`).join(', ') : 'None'}</p>`);
+
+            if (q.includes('"')) analysis.push(`<p><strong>✅ Exact phrases:</strong> ${(q.match(/"[^"]+"/g) || []).length} found</p>`);
+            if (q.includes('-')) analysis.push(`<p><strong>🚫 Exclusions:</strong> ${(q.match(/-\S+/g) || []).length} terms excluded</p>`);
+            if (q.includes('OR')) analysis.push(`<p><strong>🔀 OR operators:</strong> ${(q.match(/\bOR\b/g) || []).length} found</p>`);
+            if (q.includes('AROUND')) analysis.push(`<p><strong>📐 Proximity:</strong> AROUND operator detected</p>`);
+            if (q.match(/\d+\.\.\d+/)) analysis.push(`<p><strong>🔢 Number range:</strong> Detected</p>`);
+
+            const url = buildSearchUrl(state.engine, q);
+            analysis.push(`<p><strong>🔗 Encoded URL length:</strong> ${url.length} characters</p>`);
+
+            if (q.length > 256) analysis.push(`<p style="color:var(--warning)">⚠️ Query is quite long. Some search engines may not process all terms.</p>`);
+            else analysis.push(`<p style="color:var(--success)">✅ Query length is within recommended limits.</p>`);
+
+            document.getElementById('analysisContent').innerHTML = analysis.join('');
+            showModal('analyzeModal');
+        }
+
+        // ==================== OPTIMIZE ====================
+        function optimizeQuery() {
+            if (!state.currentQuery) { showToast('No query', 'error'); return }
+            let q = state.currentQuery;
+            // Remove double spaces
+            q = q.replace(/\s{2,}/g, ' ').trim();
+            // Remove duplicate operators
+            const parts = q.split(' ');
+            const unique = [...new Set(parts)];
+            q = unique.join(' ');
+
+            state.currentQuery = q;
+            state.manualEdit = true;
+            renderQueryPreview(q);
+            showToast('Query optimized!', 'success');
+        }
+
+        // ==================== REVERSE ====================
+        function reverseQuery() {
+            if (!state.currentQuery) { showToast('No query', 'error'); return }
+            const parts = state.currentQuery.split(' ');
+            parts.reverse();
+            state.currentQuery = parts.join(' ');
+            state.manualEdit = true;
+            renderQueryPreview(state.currentQuery);
+            showToast('Query reversed!', 'info');
+        }
+
+        // ==================== NOTES ====================
+        function loadNotes() {
+            const notes = localStorage.getItem('dm_notes') || '';
+            document.getElementById('notesArea').value = notes;
+        }
+        function saveNotes() { localStorage.setItem('dm_notes', document.getElementById('notesArea').value) }
+        function clearNotes() { document.getElementById('notesArea').value = ''; localStorage.removeItem('dm_notes'); showToast('Notes cleared', 'info') }
+        function exportNotes() {
+            const notes = document.getElementById('notesArea').value;
+            if (!notes) { showToast('No notes', 'error'); return }
+            const blob = new Blob([notes], { type: 'text/plain' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = `dorkmaster-notes-${new Date().toISOString().slice(0, 10)}.txt`; a.click();
+            showToast('Notes exported!', 'success');
+        }
+
+        // ==================== IMPORT/EXPORT ====================
+        function exportQueries() {
+            const data = { version: '3.0', exported: new Date().toISOString(), saved: state.saved, history: state.history, analytics: state.analytics, notes: document.getElementById('notesArea').value };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = `dorkmaster-export-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+            logActivity('Exported queries'); showToast('Exported!', 'success');
+        }
+        function importQueries() { document.getElementById('importFileInput').click() }
+        function handleImport(event) {
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.saved) { const ids = new Set(state.saved.map(s => s.id)); const nw = data.saved.filter(s => !ids.has(s.id)); state.saved = [...nw, ...state.saved]; localStorage.setItem('dm_saved', JSON.stringify(state.saved)); renderSaved() }
+                    if (data.history) { const ids = new Set(state.history.map(h => h.id)); const nw = data.history.filter(h => !ids.has(h.id)); state.history = [...nw, ...state.history]; localStorage.setItem('dm_history', JSON.stringify(state.history)); renderHistory() }
+                    if (data.notes) { document.getElementById('notesArea').value = data.notes; saveNotes() }
+                    logActivity('Imported queries'); showToast(`Imported successfully!`, 'success');
+                } catch (err) { showToast('Invalid JSON', 'error') }
+            };
+            reader.readAsText(file); event.target.value = '';
+        }
+
+        // ==================== ANALYTICS ====================
+        function logActivity(msg) {
+            state.activityLog.unshift({ time: new Date().toISOString(), msg });
+            if (state.activityLog.length > 100) state.activityLog = state.activityLog.slice(0, 100);
+            localStorage.setItem('dm_activity', JSON.stringify(state.activityLog));
+        }
+        function saveAnalytics() { localStorage.setItem('dm_analytics', JSON.stringify(state.analytics)) }
+        function updateDashboardStats() {
+            document.getElementById('dashTotalSearches').textContent = state.analytics.totalSearches;
+            document.getElementById('dashSavedQueries').textContent = state.saved.length;
+            document.getElementById('dashEngines').textContent = Object.keys(state.analytics.enginesUsed).length;
+            const avgLen = state.history.length > 0 ? Math.round(state.history.reduce((a, h) => a + h.query.length, 0) / state.history.length) : 0;
+            document.getElementById('dashAvgLength').textContent = avgLen;
+            document.getElementById('dashPresets').textContent = state.analytics.presetsUsed;
+            document.getElementById('dashFiletypes').textContent = Object.keys(state.analytics.fileTypesUsed).length;
+
+            // Operator chart
+            const opChart = document.getElementById('operatorChart');
+            const ops = Object.entries(state.analytics.operatorsUsed).sort((a, b) => b[1] - a[1]).slice(0, 6);
+            const maxOp = ops.length > 0 ? ops[0][1] : 1;
+            opChart.innerHTML = ops.map(([op, count]) => `
+    <div style="display:flex;align-items:center;gap:8px;font-size:.75rem">
+      <span style="width:70px;text-align:right;color:var(--text-muted)">${op}:</span>
+      <div style="flex:1;height:16px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:${(count / maxOp) * 100}%;background:var(--accent);border-radius:3px;transition:width .5s"></div>
+      </div>
+      <span style="width:30px;color:var(--accent);font-weight:700">${count}</span>
+    </div>`).join('') || (opChart.innerHTML = '<p style="font-size:.75rem;color:var(--text-muted)">No data yet</p>');
+
+            // Activity log
+            const actLog = document.getElementById('activityLog');
+            actLog.innerHTML = state.activityLog.slice(0, 20).map(a => `<div style="padding:4px 0;border-bottom:1px solid var(--border)">${relTime(a.time)} — ${escHtml(a.msg)}</div>`).join('') || '<p>No activity yet</p>';
+        }
+
+        // ==================== TUTORIAL ====================
+        function showTutorial() {
+            tutorialStep = 0; renderTutorial();
+            document.getElementById('tutorialOverlay').classList.add('active');
+        }
+        function closeTutorial() {
+            document.getElementById('tutorialOverlay').classList.remove('active');
+            localStorage.setItem('dm_tutorial_done', '1');
+        }
+        function tutorialNav(dir) {
+            tutorialStep += dir;
+            if (tutorialStep < 0) tutorialStep = 0;
+            if (tutorialStep >= TUTORIAL_STEPS.length) { closeTutorial(); return }
+            renderTutorial();
+        }
+        function renderTutorial() {
+            const step = TUTORIAL_STEPS[tutorialStep];
+            document.getElementById('tutTitle').textContent = step.title;
+            document.getElementById('tutContent').textContent = step.content;
+            document.getElementById('tutDots').innerHTML = TUTORIAL_STEPS.map((_, i) => `<div class="tutorial-dot ${i === tutorialStep ? 'active' : ''}"></div>`).join('');
+            document.getElementById('tutPrev').style.visibility = tutorialStep === 0 ? 'hidden' : 'visible';
+            document.getElementById('tutNext').textContent = tutorialStep === TUTORIAL_STEPS.length - 1 ? '🎉 Get Started' : 'Next →';
+        }
+
+        // ==================== UI HELPERS ====================
+        function switchTab(el, tabId) {
+            el.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            el.closest('.card').querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if (tabId === 'savedTab') renderSaved();
+            if (tabId === 'historyTab') renderHistory();
+        }
+        function toggleCollapsible(header) {
+            header.classList.toggle('open');
+            header.nextElementSibling.classList.toggle('open');
+        }
+        function showModal(id) {
+            document.getElementById(id).classList.add('active');
+            if (id === 'dashboardModal') updateDashboardStats();
+        }
+        function hideModal(id) { document.getElementById(id).classList.remove('active') }
+        document.addEventListener('click', (e) => { if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active') });
+
+        function toggleRightPanel() {
+            const panel = document.getElementById('rightPanel');
+            panel.classList.toggle('mobile-show');
+        }
+
+        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }) }
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+            else document.exitFullscreen?.();
+        }
+
+        function showToast(message, type = 'info') {
+            const c = document.getElementById('toastContainer');
+            const t = document.createElement('div'); t.className = `toast ${type}`;
+            const icons = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
+            t.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span>${message}</span>`;
+            c.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(30px)'; t.style.transition = 'all .3s'; setTimeout(() => t.remove(), 300) }, 3000);
+        }
+
+        // ==================== CONFETTI ====================
+        function fireConfetti() {
+            const colors = ['#6366f1', '#22c55e', '#f59e0b', '#ef4444', '#3b82f6', '#a855f7', '#ec4899'];
+            for (let i = 0; i < 50; i++) {
+                const p = document.createElement('div'); p.className = 'confetti-piece';
+                p.style.left = Math.random() * 100 + 'vw'; p.style.top = '-10px';
+                p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                p.style.transform = `rotate(${Math.random() * 360}deg)`;
+                document.body.appendChild(p);
+                const dur = 2000 + Math.random() * 2000;
+                p.animate([
+                    { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
+                    { transform: `translateY(${window.innerHeight + 20}px) rotate(${360 + Math.random() * 360}deg)`, opacity: 0 }
+                ], { duration: dur, easing: 'ease-out' });
+                setTimeout(() => p.remove(), dur);
+            }
+        }
+
+        // ==================== UTILITIES ====================
+        function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML }
+        function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1) }
+        function relTime(d) {
+            const diff = Date.now() - new Date(d).getTime();
+            const m = Math.floor(diff / 60000);
+            if (m < 1) return 'now'; if (m < 60) return m + 'm';
+            const h = Math.floor(m / 60); if (h < 24) return h + 'h';
+            const dy = Math.floor(h / 24); if (dy < 7) return dy + 'd';
+            return new Date(d).toLocaleDateString();
+        }
+    </script>
+</body>
+
+</html>
