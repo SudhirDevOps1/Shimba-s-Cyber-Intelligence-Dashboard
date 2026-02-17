@@ -1,0 +1,3290 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Shimba's Cyber Intelligence Dashboard v5.1 — Ultimate OSINT Suite
+    </title>
+    <style>
+      :root {
+        --bg1: #060b14;
+        --bg2: #0c1322;
+        --bg3: #131d2e;
+        --bg4: #0a1018;
+        --bdr: #1a304d;
+        --t1: #dfe8f2;
+        --t2: #7e95ad;
+        --t3: #4a6178;
+        --nb: #00c8ff;
+        --ng: #00f080;
+        --np: #b06cf5;
+        --no: #ff7040;
+        --nr: #ff3565;
+        --ny: #ffc400;
+        --nc: #00d4d4;
+        --nk: #f06090;
+        --grad: linear-gradient(135deg, #00c8ff, #00f080);
+        --grad2: linear-gradient(135deg, #b06cf5, #f06090);
+        --grad3: linear-gradient(135deg, #ff7040, #ffc400);
+        --dgrad: linear-gradient(135deg, #ff3565, #ff7040);
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        --glow: 0 0 25px rgba(0, 200, 255, 0.25);
+        --glowG: 0 0 25px rgba(0, 240, 128, 0.2);
+        --overlay: rgba(4, 8, 16, 0.85);
+        --speed: 0.3s;
+      }
+
+      [data-theme="light"] {
+        --bg1: #f2f5f9;
+        --bg2: #e4e9f0;
+        --bg3: #fff;
+        --bg4: #edf1f6;
+        --bdr: #c8d2dc;
+        --t1: #131d2e;
+        --t2: #4a5c70;
+        --t3: #90a0b4;
+        --nb: #0080cc;
+        --ng: #009955;
+        --np: #7b40d0;
+        --no: #d95800;
+        --nr: #d02545;
+        --ny: #b08a00;
+        --nc: #008a8a;
+        --nk: #c04070;
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+        --glow: 0 0 20px rgba(0, 128, 204, 0.12);
+        --glowG: 0 0 20px rgba(0, 153, 85, 0.1);
+        --overlay: rgba(0, 0, 0, 0.4);
+      }
+
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        font-size: 16px;
+      }
+
+      body {
+        font-family:
+          "Segoe UI",
+          "Inter",
+          -apple-system,
+          system-ui,
+          sans-serif;
+        background: var(--bg1);
+        color: var(--t1);
+        line-height: 1.65;
+        min-height: 100vh;
+        transition:
+          background 0.4s,
+          color 0.4s;
+        overflow-x: hidden;
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--bg1);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--bdr);
+        border-radius: 3px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--nb);
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          radial-gradient(
+            circle at 20% 50%,
+            rgba(0, 200, 255, 0.04),
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(0, 240, 128, 0.03),
+            transparent 50%
+          ),
+          linear-gradient(rgba(0, 200, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 200, 255, 0.02) 1px, transparent 1px);
+        background-size:
+          100%,
+          100%,
+          40px 40px,
+          40px 40px;
+        pointer-events: none;
+        z-index: 0;
+        animation: bgA 20s ease-in-out infinite alternate;
+      }
+
+      @keyframes bgA {
+        0% {
+          opacity: 0.7;
+        }
+
+        100% {
+          opacity: 1;
+        }
+      }
+
+      [data-theme="light"] body::before {
+        opacity: 0.2 !important;
+      }
+
+      .hdr {
+        background: rgba(12, 19, 34, 0.92);
+        border-bottom: 1px solid var(--bdr);
+        padding: 0.55rem 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        backdrop-filter: blur(20px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+      }
+
+      [data-theme="light"] .hdr {
+        background: rgba(228, 233, 240, 0.92);
+      }
+
+      .hl {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+
+      .logo {
+        width: 38px;
+        height: 38px;
+        background: var(--grad);
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+        font-weight: 900;
+        color: #060b14;
+        box-shadow: var(--glow);
+        animation: lp 3s ease-in-out infinite;
+        flex-shrink: 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .logo::after {
+        content: "";
+        position: absolute;
+        inset: -50%;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.12),
+          transparent
+        );
+        animation: ls 3s ease-in-out infinite;
+      }
+
+      @keyframes lp {
+        0%,
+        100% {
+          transform: scale(1);
+          box-shadow: var(--glow);
+        }
+
+        50% {
+          transform: scale(1.05);
+          box-shadow: 0 0 35px rgba(0, 200, 255, 0.5);
+        }
+      }
+
+      @keyframes ls {
+        0% {
+          transform: translateX(-100%) rotate(45deg);
+        }
+
+        100% {
+          transform: translateX(100%) rotate(45deg);
+        }
+      }
+
+      .ht {
+        font-size: 0.98rem;
+        font-weight: 800;
+        background: var(--grad);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hs {
+        font-size: 0.56rem;
+        color: var(--t3);
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+      }
+
+      .hr {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        flex-wrap: wrap;
+      }
+
+      .nav {
+        display: flex;
+        gap: 0.08rem;
+        background: var(--bg4);
+        border-radius: 9px;
+        padding: 0.1rem;
+        border: 1px solid var(--bdr);
+        overflow-x: auto;
+      }
+
+      .nav::-webkit-scrollbar {
+        height: 0;
+      }
+
+      .nt {
+        padding: 0.28rem 0.5rem;
+        border: none;
+        border-radius: 7px;
+        background: 0;
+        color: var(--t3);
+        font-size: 0.66rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-family: inherit;
+        white-space: nowrap;
+      }
+
+      .nt:hover {
+        color: var(--t1);
+        background: var(--bg3);
+      }
+
+      .nt.on {
+        background: var(--grad);
+        color: #060b14;
+        box-shadow: 0 2px 10px rgba(0, 200, 255, 0.3);
+      }
+
+      .hb {
+        background: var(--bg3);
+        border: 1px solid var(--bdr);
+        color: var(--t2);
+        padding: 0.28rem 0.5rem;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 0.68rem;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 0.18rem;
+        font-family: inherit;
+      }
+
+      .hb:hover {
+        border-color: var(--nb);
+        box-shadow: var(--glow);
+        color: var(--ng);
+        transform: translateY(-1px);
+      }
+
+      .wrap {
+        max-width: 1520px;
+        margin: 0 auto;
+        padding: 0.85rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .pnl {
+        display: none;
+      }
+
+      .pnl.on {
+        display: block;
+        animation: fi 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      @keyframes fi {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .g2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.95rem;
+      }
+
+      .g3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.95rem;
+      }
+
+      .card {
+        background: var(--bg3);
+        border: 1px solid var(--bdr);
+        border-radius: 13px;
+        padding: 1.05rem;
+        box-shadow: var(--shadow);
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--grad);
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .card:hover {
+        border-color: rgba(0, 200, 255, 0.2);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow), var(--glow);
+      }
+
+      .card:hover::before {
+        opacity: 1;
+      }
+
+      .card.cg::before {
+        background: linear-gradient(135deg, #00f080, #00d4d4);
+      }
+
+      .card.cp::before {
+        background: var(--grad2);
+      }
+
+      .card.co::before {
+        background: var(--grad3);
+      }
+
+      .card.cr::before {
+        background: var(--dgrad);
+      }
+
+      .ch {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.45rem;
+        border-bottom: 1px solid var(--bdr);
+      }
+
+      .ci {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.88rem;
+        flex-shrink: 0;
+        transition: transform 0.3s;
+      }
+
+      .card:hover .ci {
+        transform: scale(1.08) rotate(4deg);
+      }
+
+      .ci.b {
+        background: rgba(0, 200, 255, 0.1);
+        color: var(--nb);
+      }
+
+      .ci.g {
+        background: rgba(0, 240, 128, 0.1);
+        color: var(--ng);
+      }
+
+      .ci.p {
+        background: rgba(176, 108, 245, 0.1);
+        color: var(--np);
+      }
+
+      .ci.o {
+        background: rgba(255, 112, 64, 0.1);
+        color: var(--no);
+      }
+
+      .ci.r {
+        background: rgba(255, 53, 101, 0.1);
+        color: var(--nr);
+      }
+
+      .ci.y {
+        background: rgba(255, 196, 0, 0.1);
+        color: var(--ny);
+      }
+
+      .ci.c {
+        background: rgba(0, 212, 212, 0.1);
+        color: var(--nc);
+      }
+
+      .ci.k {
+        background: rgba(240, 96, 144, 0.1);
+        color: var(--nk);
+      }
+
+      .ct {
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      .cd {
+        font-size: 0.62rem;
+        color: var(--t3);
+      }
+
+      .fg {
+        margin-bottom: 0.65rem;
+      }
+
+      .fl {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.68rem;
+        font-weight: 600;
+        color: var(--t2);
+        margin-bottom: 0.18rem;
+      }
+
+      .fi {
+        width: 100%;
+        padding: 0.48rem 0.68rem;
+        background: var(--bg4);
+        border: 1px solid var(--bdr);
+        border-radius: 8px;
+        color: var(--t1);
+        font-size: 0.8rem;
+        font-family: inherit;
+        transition: all 0.3s;
+        outline: 0;
+      }
+
+      .fi:focus {
+        border-color: var(--nb);
+        box-shadow: 0 0 0 3px rgba(0, 200, 255, 0.1);
+      }
+
+      .fi::placeholder {
+        color: var(--t3);
+      }
+
+      textarea.fi {
+        resize: vertical;
+        min-height: 44px;
+        font-family: "Consolas", "Fira Code", monospace;
+      }
+
+      select.fi {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%237e95ad' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        padding-right: 1.8rem;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.2rem;
+        padding: 0.42rem 0.78rem;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.3s;
+        white-space: nowrap;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.06),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      .btn:hover::after {
+        opacity: 1;
+      }
+
+      .btn:active {
+        transform: scale(0.96);
+      }
+
+      .b1 {
+        background: var(--grad);
+        color: #060b14;
+        border: 0;
+        box-shadow: 0 3px 10px rgba(0, 200, 255, 0.2);
+        font-weight: 700;
+      }
+
+      .b1:hover {
+        box-shadow: 0 5px 20px rgba(0, 200, 255, 0.4);
+        transform: translateY(-1px);
+      }
+
+      .b2 {
+        background: 0;
+        border: 1px solid var(--bdr);
+        color: var(--t2);
+      }
+
+      .b2:hover {
+        border-color: var(--nb);
+        color: var(--nb);
+      }
+
+      .bD {
+        background: var(--dgrad);
+        color: #fff;
+        border: 0;
+      }
+
+      .bD:hover {
+        box-shadow: 0 4px 14px rgba(255, 53, 101, 0.3);
+      }
+
+      .bG {
+        background: rgba(0, 240, 128, 0.08);
+        border: 1px solid rgba(0, 240, 128, 0.2);
+        color: var(--ng);
+      }
+
+      .bG:hover {
+        background: rgba(0, 240, 128, 0.16);
+        box-shadow: var(--glowG);
+      }
+
+      .bB {
+        background: rgba(0, 200, 255, 0.08);
+        border: 1px solid rgba(0, 200, 255, 0.2);
+        color: var(--nb);
+      }
+
+      .bB:hover {
+        background: rgba(0, 200, 255, 0.16);
+        box-shadow: var(--glow);
+      }
+
+      .bP {
+        background: rgba(176, 108, 245, 0.08);
+        border: 1px solid rgba(176, 108, 245, 0.2);
+        color: var(--np);
+      }
+
+      .bO {
+        background: rgba(255, 112, 64, 0.08);
+        border: 1px solid rgba(255, 112, 64, 0.2);
+        color: var(--no);
+      }
+
+      .bY {
+        background: rgba(255, 196, 0, 0.08);
+        border: 1px solid rgba(255, 196, 0, 0.2);
+        color: var(--ny);
+      }
+
+      .bC {
+        background: rgba(0, 212, 212, 0.08);
+        border: 1px solid rgba(0, 212, 212, 0.2);
+        color: var(--nc);
+      }
+
+      .bC:hover {
+        background: rgba(0, 212, 212, 0.16);
+      }
+
+      .bK {
+        background: rgba(240, 96, 144, 0.08);
+        border: 1px solid rgba(240, 96, 144, 0.2);
+        color: var(--nk);
+      }
+
+      .bs {
+        padding: 0.28rem 0.52rem;
+        font-size: 0.66rem;
+        border-radius: 6px;
+      }
+
+      .bx {
+        padding: 0.18rem 0.35rem;
+        font-size: 0.6rem;
+        border-radius: 5px;
+      }
+
+      .bf {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.28rem;
+        align-items: center;
+      }
+
+      .qp {
+        background: var(--bg4);
+        border: 1px solid var(--bdr);
+        border-radius: 10px;
+        padding: 0.7rem 0.85rem;
+        font-family: "Consolas", monospace;
+        font-size: 0.76rem;
+        color: var(--ng);
+        word-break: break-all;
+        min-height: 34px;
+        line-height: 1.8;
+        transition: all 0.3s;
+      }
+
+      .qp:hover {
+        border-color: var(--ng);
+      }
+
+      .qp .op {
+        color: var(--nb);
+        font-weight: 700;
+      }
+
+      .qp .vl {
+        color: var(--ng);
+      }
+
+      .qp .em {
+        color: var(--t3);
+        font-style: italic;
+        font-family: inherit;
+      }
+
+      .fr {
+        display: flex;
+        align-items: center;
+        gap: 0.28rem;
+        padding: 0.28rem 0.42rem;
+        background: var(--bg4);
+        border: 1px solid var(--bdr);
+        border-radius: 7px;
+        margin-bottom: 0.28rem;
+        flex-wrap: wrap;
+        animation: su 0.3s ease;
+      }
+
+      @keyframes su {
+        from {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .fr select,
+      .fr input {
+        padding: 0.24rem 0.38rem;
+        background: var(--bg3);
+        border: 1px solid var(--bdr);
+        border-radius: 5px;
+        color: var(--t1);
+        font-size: 0.7rem;
+        font-family: inherit;
+        outline: 0;
+      }
+
+      .fr select:focus,
+      .fr input:focus {
+        border-color: var(--nb);
+      }
+
+      .fr input {
+        flex: 1;
+        min-width: 75px;
+      }
+
+      .fr .rx {
+        background: rgba(255, 53, 101, 0.08);
+        border: 0;
+        color: var(--nr);
+        width: 19px;
+        height: 19px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.76rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .fr .rx:hover {
+        background: rgba(255, 53, 101, 0.2);
+      }
+
+      .ftg {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+        gap: 0.18rem;
+      }
+
+      .ftc {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.2rem 0.35rem;
+        background: var(--bg4);
+        border: 1px solid var(--bdr);
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.64rem;
+        color: var(--t2);
+        user-select: none;
+        transition: all 0.3s;
+        font-weight: 600;
+      }
+
+      .ftc:hover {
+        border-color: var(--nb);
+      }
+
+      .ftc input {
+        display: none;
+      }
+
+      .ftc.ac {
+        border-color: var(--nb);
+        background: rgba(0, 200, 255, 0.1);
+        color: var(--nb);
+        box-shadow: 0 0 6px rgba(0, 200, 255, 0.1);
+      }
+
+      .pg {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+        gap: 0.28rem;
+      }
+
+      .pb {
+        padding: 0.4rem 0.55rem;
+        background: var(--bg4);
+        border: 1px solid var(--bdr);
+        border-radius: 8px;
+        color: var(--t2);
+        font-size: 0.7rem;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 0.28rem;
+      }
+
+      .pb:hover {
+        border-color: var(--ng);
+        color: var(--ng);
+        transform: translateY(-1px);
+      }
+
+      .pb:active {
+        transform: scale(0.97);
+      }
+
+      /* Flash animation when preset auto-executes */
+      .pb.fired {
+        animation: pbFire 0.6s ease;
+      }
+
+      @keyframes pbFire {
+        0% {
+          box-shadow: 0 0 0 0 rgba(0, 240, 128, 0.4);
+        }
+
+        50% {
+          box-shadow: 0 0 20px 4px rgba(0, 240, 128, 0.3);
+          border-color: var(--ng);
+          color: var(--ng);
+        }
+
+        100% {
+          box-shadow: 0 0 0 0 transparent;
+        }
+      }
+
+      .hi {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.36rem 0.5rem;
+        background: var(--bg4);
+        border: 1px solid var(--bdr);
+        border-radius: 6px;
+        margin-bottom: 0.2rem;
+        font-size: 0.7rem;
+        gap: 0.28rem;
+        transition: all 0.2s;
+      }
+
+      .hi:hover {
+        border-color: var(--nb);
+      }
+
+      .hq {
+        font-family: "Consolas", monospace;
+        color: var(--ng);
+        word-break: break-all;
+        flex: 1;
+        cursor: pointer;
+        font-size: 0.68rem;
+      }
+
+      .hq:hover {
+        text-decoration: underline;
+      }
+
+      .ht2 {
+        color: var(--t3);
+        font-size: 0.58rem;
+        flex-shrink: 0;
+      }
+
+      .ha {
+        display: flex;
+        gap: 0.1rem;
+        flex-shrink: 0;
+      }
+
+      .ql {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.18rem;
+      }
+
+      .qc {
+        padding: 0.16rem 0.4rem;
+        background: var(--bg4);
+        border: 1px solid var(--bdr);
+        border-radius: 5px;
+        color: var(--nb);
+        font-size: 0.64rem;
+        font-family: "Consolas", monospace;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .qc:hover {
+        border-color: var(--nb);
+        background: rgba(0, 200, 255, 0.06);
+        transform: translateY(-1px);
+      }
+
+      .stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.32rem;
+        padding: 0.25rem 0;
+        margin-bottom: 0.25rem;
+      }
+
+      .sc {
+        display: flex;
+        align-items: center;
+        gap: 0.18rem;
+        padding: 0.2rem 0.45rem;
+        background: var(--bg3);
+        border: 1px solid var(--bdr);
+        border-radius: 14px;
+        font-size: 0.64rem;
+        color: var(--t2);
+      }
+
+      .sc b {
+        font-weight: 700;
+        color: var(--nb);
+      }
+
+      .toasts {
+        position: fixed;
+        top: 55px;
+        right: 8px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+
+      .toast {
+        padding: 0.48rem 0.8rem;
+        background: var(--bg3);
+        border: 1px solid var(--bdr);
+        border-radius: 8px;
+        color: var(--t1);
+        font-size: 0.72rem;
+        box-shadow: var(--shadow);
+        animation:
+          tI 0.3s ease,
+          tO 0.3s ease 2.4s forwards;
+        display: flex;
+        align-items: center;
+        gap: 0.28rem;
+        max-width: 290px;
+        backdrop-filter: blur(8px);
+      }
+
+      .toast.ok {
+        border-left: 3px solid var(--ng);
+      }
+
+      .toast.er {
+        border-left: 3px solid var(--nr);
+      }
+
+      .toast.in {
+        border-left: 3px solid var(--nb);
+      }
+
+      @keyframes tI {
+        from {
+          opacity: 0;
+          transform: translateX(28px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes tO {
+        to {
+          opacity: 0;
+          transform: translateX(28px);
+        }
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: var(--overlay);
+        z-index: 5000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 0.6rem;
+        backdrop-filter: blur(6px);
+      }
+
+      .modal.on {
+        display: flex;
+      }
+
+      .mbox {
+        background: var(--bg3);
+        border: 1px solid var(--bdr);
+        border-radius: 13px;
+        padding: 1.2rem;
+        max-width: 680px;
+        width: 100%;
+        max-height: 85vh;
+        overflow-y: auto;
+        box-shadow: var(--shadow);
+        animation: mI 0.3s ease;
+      }
+
+      @keyframes mI {
+        from {
+          opacity: 0;
+          transform: scale(0.94);
+        }
+
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .mh {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.45rem;
+        border-bottom: 1px solid var(--bdr);
+      }
+
+      .mti {
+        font-size: 0.9rem;
+        font-weight: 700;
+      }
+
+      .mx {
+        background: 0;
+        border: 0;
+        color: var(--t3);
+        font-size: 1.1rem;
+        cursor: pointer;
+      }
+
+      .mx:hover {
+        color: var(--nr);
+        transform: rotate(90deg);
+        transition: 0.2s;
+      }
+
+      .sdiv {
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--t3);
+        text-transform: uppercase;
+        letter-spacing: 1.1px;
+        margin: 1rem 0 0.45rem;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+
+      .sdiv::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, var(--bdr), transparent);
+      }
+
+      /* Cheat sheet items */
+      .dr {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.4rem 0.55rem;
+        background: var(--bg4);
+        border: 1px solid var(--bdr);
+        border-radius: 7px;
+        margin-bottom: 0.24rem;
+        transition: all 0.3s;
+        flex-wrap: wrap;
+      }
+
+      .dr:hover {
+        border-color: rgba(0, 200, 255, 0.2);
+        transform: translateX(2px);
+      }
+
+      .dr-c {
+        font-family: "Consolas", monospace;
+        color: var(--ng);
+        font-size: 0.7rem;
+        font-weight: 600;
+        flex-shrink: 0;
+        min-width: 148px;
+      }
+
+      .dr-d {
+        font-size: 0.68rem;
+        color: var(--t2);
+        flex: 1;
+        min-width: 115px;
+      }
+
+      .dr-a {
+        display: flex;
+        gap: 0.12rem;
+        flex-shrink: 0;
+      }
+
+      .br {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.36rem 0.5rem;
+        background: rgba(0, 240, 128, 0.02);
+        border: 1px solid rgba(0, 240, 128, 0.08);
+        border-radius: 7px;
+        margin-bottom: 0.2rem;
+        flex-wrap: wrap;
+        transition: all 0.3s;
+      }
+
+      .br:hover {
+        border-color: rgba(0, 240, 128, 0.2);
+        transform: translateX(2px);
+      }
+
+      .br-c {
+        font-family: "Consolas", monospace;
+        color: var(--ng);
+        font-size: 0.7rem;
+        font-weight: 600;
+        flex-shrink: 0;
+        min-width: 140px;
+      }
+
+      .br-c::before {
+        content: "$ ";
+        color: var(--nb);
+      }
+
+      .br-d {
+        font-size: 0.68rem;
+        color: var(--t2);
+        flex: 1;
+        min-width: 115px;
+      }
+
+      .rr {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.45rem;
+        padding: 0.48rem 0.65rem;
+        background: rgba(255, 53, 101, 0.03);
+        border: 1px solid rgba(255, 53, 101, 0.08);
+        border-radius: 7px;
+        margin-bottom: 0.24rem;
+      }
+
+      .rr:hover {
+        border-color: rgba(255, 53, 101, 0.18);
+      }
+
+      .rr-i {
+        font-size: 0.9rem;
+        flex-shrink: 0;
+        margin-top: 0.08rem;
+      }
+
+      .rr-t {
+        font-size: 0.72rem;
+        color: var(--t2);
+        line-height: 1.5;
+      }
+
+      .rr-t strong {
+        color: var(--nr);
+      }
+
+      .cs-card {
+        background: var(--bg4);
+        border: 1px solid var(--bdr);
+        border-radius: 9px;
+        padding: 0.7rem;
+        margin-bottom: 0.35rem;
+        transition: all 0.3s;
+      }
+
+      .cs-card:hover {
+        border-color: rgba(0, 200, 255, 0.18);
+      }
+
+      .cs-t {
+        font-size: 0.76rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.28rem;
+      }
+
+      .cs-card p {
+        font-size: 0.7rem;
+        color: var(--t2);
+        margin-bottom: 0.15rem;
+        line-height: 1.5;
+      }
+
+      .cs-card code {
+        background: rgba(0, 200, 255, 0.06);
+        color: var(--ng);
+        padding: 0.04rem 0.2rem;
+        border-radius: 3px;
+        font-family: "Consolas", monospace;
+        font-size: 0.68rem;
+      }
+
+      .cs-card ul {
+        margin: 0.15rem 0 0.15rem 0.85rem;
+        font-size: 0.7rem;
+        color: var(--t2);
+      }
+
+      .tc2 {
+        background: var(--bg4);
+        border: 1px solid var(--bdr);
+        border-radius: 9px;
+        padding: 0.75rem;
+        transition: all 0.3s;
+      }
+
+      .tc2:hover {
+        border-color: rgba(0, 200, 255, 0.18);
+        transform: translateY(-1px);
+      }
+
+      .tc-n {
+        font-size: 0.78rem;
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+      }
+
+      .tc-d {
+        font-size: 0.7rem;
+        color: var(--t2);
+        line-height: 1.5;
+        margin-bottom: 0.2rem;
+      }
+
+      .tc-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.12rem;
+      }
+
+      .tc-tag {
+        padding: 0.06rem 0.25rem;
+        background: rgba(0, 200, 255, 0.04);
+        border: 1px solid rgba(0, 200, 255, 0.1);
+        border-radius: 3px;
+        font-size: 0.58rem;
+        color: var(--nb);
+        font-family: "Consolas", monospace;
+      }
+
+      .rt {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.7rem;
+      }
+
+      .rt th,
+      .rt td {
+        text-align: left;
+        padding: 0.32rem 0.42rem;
+        border-bottom: 1px solid var(--bdr);
+      }
+
+      .rt th {
+        color: var(--t3);
+        font-size: 0.64rem;
+        text-transform: uppercase;
+        position: sticky;
+        top: 0;
+        background: var(--bg3);
+      }
+
+      .rt code {
+        background: rgba(0, 200, 255, 0.06);
+        color: var(--nb);
+        padding: 0.04rem 0.18rem;
+        border-radius: 3px;
+        font-family: "Consolas", monospace;
+        font-size: 0.68rem;
+      }
+
+      .ex {
+        background: linear-gradient(
+          135deg,
+          rgba(0, 200, 255, 0.04),
+          rgba(0, 240, 128, 0.02)
+        );
+        border: 1px solid rgba(0, 200, 255, 0.12);
+        border-radius: 11px;
+        padding: 0.8rem;
+        margin-bottom: 0.55rem;
+        transition: all 0.3s;
+      }
+
+      .ex:hover {
+        border-color: rgba(0, 200, 255, 0.22);
+      }
+
+      .ex-t {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--nc);
+        margin-bottom: 0.3rem;
+      }
+
+      .stp {
+        display: flex;
+        gap: 0.45rem;
+        margin-bottom: 0.3rem;
+        align-items: flex-start;
+      }
+
+      .sn {
+        background: var(--grad);
+        color: #060b14;
+        width: 19px;
+        height: 19px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.6rem;
+        font-weight: 800;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      .stx {
+        font-size: 0.72rem;
+        color: var(--t2);
+        line-height: 1.5;
+      }
+
+      .stx strong {
+        color: var(--t1);
+      }
+
+      .stx code {
+        background: rgba(0, 200, 255, 0.06);
+        color: var(--ng);
+        padding: 0.04rem 0.2rem;
+        border-radius: 3px;
+        font-family: "Consolas", monospace;
+        font-size: 0.7rem;
+      }
+
+      .tip {
+        background: rgba(0, 240, 128, 0.04);
+        border: 1px solid rgba(0, 240, 128, 0.08);
+        border-radius: 7px;
+        padding: 0.4rem 0.6rem;
+        font-size: 0.7rem;
+        color: var(--ng);
+      }
+
+      .warn {
+        background: rgba(255, 53, 101, 0.04);
+        border: 1px solid rgba(255, 53, 101, 0.08);
+        border-radius: 7px;
+        padding: 0.4rem 0.6rem;
+        font-size: 0.7rem;
+        color: var(--nr);
+      }
+
+      .sy {
+        max-height: 210px;
+        overflow-y: auto;
+      }
+
+      .syl {
+        max-height: 350px;
+        overflow-y: auto;
+      }
+
+      .mt1 {
+        margin-top: 0.4rem;
+      }
+
+      .mt2 {
+        margin-top: 0.85rem;
+      }
+
+      .mb1 {
+        margin-bottom: 0.35rem;
+      }
+
+      .fb {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+      }
+
+      kbd {
+        background: var(--bg4);
+        padding: 0.03rem 0.2rem;
+        border-radius: 3px;
+        border: 1px solid var(--bdr);
+        font-size: 0.62rem;
+        font-family: "Consolas", monospace;
+        color: var(--t2);
+      }
+
+      .footer {
+        text-align: center;
+        padding: 1rem 0.6rem;
+        border-top: 1px solid var(--bdr);
+        color: var(--t3);
+        font-size: 0.68rem;
+        margin-top: 0.6rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .footer .disc {
+        display: inline-block;
+        padding: 0.3rem 0.9rem;
+        border: 1px solid rgba(255, 53, 101, 0.15);
+        border-radius: 6px;
+        background: rgba(255, 53, 101, 0.03);
+        color: var(--nr);
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+      }
+
+      @media (max-width: 1100px) {
+        .g2 {
+          grid-template-columns: 1fr;
+        }
+
+        .g3 {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hdr {
+          padding: 0.4rem 0.55rem;
+        }
+
+        .ht {
+          font-size: 0.84rem;
+        }
+
+        .wrap {
+          padding: 0.45rem;
+        }
+
+        .g3 {
+          grid-template-columns: 1fr;
+        }
+
+        .pg {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .nt {
+          padding: 0.22rem 0.38rem;
+          font-size: 0.6rem;
+        }
+
+        .dr,
+        .br {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .dr-c,
+        .br-c {
+          min-width: auto;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .pg {
+          grid-template-columns: 1fr;
+        }
+
+        .bf {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .bf .btn {
+          justify-content: center;
+        }
+
+        .hr {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .stats {
+          flex-direction: column;
+        }
+
+        .nt {
+          padding: 0.2rem 0.3rem;
+          font-size: 0.56rem;
+        }
+
+        .ftg {
+          grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="toasts" id="TC"></div>
+
+    <div class="modal" id="svM">
+      <div class="mbox">
+        <div class="mh">
+          <span class="mti">💾 Save Custom Preset</span
+          ><button class="mx" onclick="clM('svM')">&times;</button>
+        </div>
+        <div class="fg">
+          <label class="fl">Preset Name</label
+          ><input
+            type="text"
+            class="fi"
+            id="svN"
+            placeholder="e.g., Java DSA Notes Search"
+          />
+        </div>
+        <div class="fg">
+          <label class="fl">Query</label
+          ><textarea class="fi" id="svQ" rows="3" readonly></textarea>
+        </div>
+        <div class="bf mt1">
+          <button class="btn b1" onclick="doSave()">💾 Save</button
+          ><button class="btn b2" onclick="clM('svM')">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="ioM">
+      <div class="mbox">
+        <div class="mh">
+          <span class="mti">📦 Import / Export</span
+          ><button class="mx" onclick="clM('ioM')">&times;</button>
+        </div>
+        <div class="fg">
+          <label class="fl">📤 Export JSON</label
+          ><textarea class="fi" id="expA" rows="4" readonly></textarea
+          ><button class="btn bB bs mt1" onclick="cpF('expA')">📋 Copy</button>
+        </div>
+        <div class="fg mt2">
+          <label class="fl">📥 Import JSON</label
+          ><textarea
+            class="fi"
+            id="impA"
+            rows="4"
+            placeholder="Paste JSON..."
+          ></textarea
+          ><button class="btn bG bs mt1" onclick="doImp()">📥 Import</button>
+        </div>
+      </div>
+    </div>
+
+    <header class="hdr">
+      <div class="hl">
+        <div class="logo">S</div>
+        <div>
+          <div class="ht">Shimba's Cyber Intelligence Dashboard</div>
+          <div class="hs">Advanced OSINT &amp; Dorking Suite v5.1</div>
+        </div>
+      </div>
+      <div class="hr">
+        <nav class="nav" id="NV"></nav>
+        <button class="hb" onclick="opM('ioM')">📦 I/O</button
+        ><button class="hb" id="tB" onclick="togTh()">🌙 Dark</button>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div class="stats">
+        <div class="sc">🔍 Filters: <b id="xF">0</b></div>
+        <div class="sc">📄 Types: <b id="xT">0</b></div>
+        <div class="sc">📝 Len: <b id="xL">0</b></div>
+        <div class="sc">🕒 <b id="xH">0</b></div>
+        <div class="sc">💾 <b id="xS">0</b></div>
+        <div class="sc">🔧 <b id="xE">Google</b></div>
+      </div>
+      <div class="pnl on" id="p-dorking"></div>
+      <div class="pnl" id="p-howto"></div>
+      <div class="pnl" id="p-cheatsheet"></div>
+      <div class="pnl" id="p-osint"></div>
+      <div class="pnl" id="p-reference"></div>
+      <div class="pnl" id="p-tools"></div>
+      <div class="pnl" id="p-history"></div>
+    </main>
+
+    <footer class="footer">
+      <div class="disc">
+        ⚠️ For Educational &amp; Defensive Research Purposes Only
+      </div>
+      <p>
+        Shimba's Cyber Intelligence Dashboard v5.1 &bull; Single HTML &bull;
+        Zero Dependencies &bull; 100% Client-Side
+      </p>
+    </footer>
+
+    <script>
+      /* ═══════════════════════════════════════════════════════════
+           DEVELOPER CONFIG — Edit DATA object to customize everything
+           ═══════════════════════════════════════════════════════════ */
+      const DATA = {
+        tabs: [
+          { id: "dorking", i: "🔍", l: "Dorking" },
+          { id: "howto", i: "📖", l: "How-To" },
+          { id: "cheatsheet", i: "💀", l: "Cheat Sheet" },
+          { id: "osint", i: "🌐", l: "OSINT" },
+          { id: "reference", i: "📘", l: "Reference" },
+          { id: "tools", i: "🛠️", l: "Tools" },
+          { id: "history", i: "🕒", l: "History" },
+        ],
+        ft: [
+          "pdf",
+          "doc",
+          "docx",
+          "xls",
+          "xlsx",
+          "ppt",
+          "pptx",
+          "txt",
+          "csv",
+          "zip",
+          "log",
+          "conf",
+          "sql",
+          "xml",
+          "json",
+        ],
+        ops: [
+          { v: "intitle", l: "intitle:" },
+          { v: "allintitle", l: "allintitle:" },
+          { v: "inurl", l: "inurl:" },
+          { v: "allinurl", l: "allinurl:" },
+          { v: "intext", l: "intext:" },
+          { v: "allintext", l: "allintext:" },
+          { v: "site", l: "site:" },
+          { v: "filetype", l: "filetype:" },
+          { v: "ext", l: "ext:" },
+          { v: "link", l: "link:" },
+          { v: "related", l: "related:" },
+          { v: "cache", l: "cache:" },
+          { v: "define", l: "define:" },
+          { v: "info", l: "info:" },
+          { v: "exclude", l: "-keyword" },
+          { v: "or", l: "OR" },
+          { v: "before", l: "before:" },
+          { v: "after", l: "after:" },
+        ],
+        qops: [
+          '"index of"',
+          "inurl:admin",
+          "inurl:backup",
+          "inurl:login",
+          "inurl:wp-login.php",
+          "inurl:config",
+          "site:edu",
+          "site:gov",
+          "site:drive.google.com",
+          "site:github.com",
+          'intitle:"index of"',
+          "ext:sql",
+          "ext:env",
+          "AROUND(3)",
+          "cache:",
+        ],
+        eng: {
+          google: "https://www.google.com/search?q=",
+          bing: "https://www.bing.com/search?q=",
+          duckduckgo: "https://duckduckgo.com/?q=",
+        },
+        presets: [
+          {
+            i: "🔒",
+            n: "Cybersecurity Resources",
+            q: 'intitle:"cybersecurity tutorial" site:edu filetype:pdf OR filetype:ppt',
+          },
+          {
+            i: "💻",
+            n: "Programming Guides",
+            q: 'intitle:"programming guide" intext:beginner filetype:pdf OR filetype:doc',
+          },
+          {
+            i: "📄",
+            n: "Research Papers",
+            q: 'site:scholar.google.com OR site:researchgate.net filetype:pdf "research paper"',
+          },
+          {
+            i: "📂",
+            n: "Public Documents",
+            q: 'intitle:"index of" inurl:documents filetype:pdf OR filetype:doc',
+          },
+          {
+            i: "📁",
+            n: "Index / Open Directories",
+            q: 'intitle:"index of /" "parent directory"',
+          },
+          {
+            i: "🏛️",
+            n: "Government Reports",
+            q: 'site:gov "government report" filetype:pdf OR filetype:doc',
+          },
+          {
+            i: "🎓",
+            n: "Educational Materials",
+            q: 'site:edu intitle:"course materials" filetype:pdf OR filetype:ppt',
+          },
+          {
+            i: "📘",
+            n: "Technical Documentation",
+            q: 'intitle:"documentation" inurl:docs filetype:pdf "technical"',
+          },
+          {
+            i: "📊",
+            n: "Data & Statistics",
+            q: 'filetype:csv OR filetype:xls "statistics" "data" site:gov',
+          },
+          {
+            i: "🔬",
+            n: "Scientific Journals",
+            q: "site:nature.com OR site:sciencedirect.com filetype:pdf",
+          },
+        ],
+        ghdb: [
+          {
+            i: "🦶",
+            n: "Footholds",
+            q: 'intitle:"index of" "parent directory" "server at"',
+          },
+          { i: "📁", n: "Files with Info", q: "filetype:log inurl:password" },
+          {
+            i: "📂",
+            n: "Directory Listings",
+            q: 'intitle:"index of" "last modified" "parent directory"',
+          },
+          {
+            i: "🔐",
+            n: "Login Pages",
+            q: 'inurl:"/admin/login" OR inurl:"/wp-login.php" intitle:"login"',
+          },
+          {
+            i: "⚠️",
+            n: "Sensitive Info",
+            q: 'filetype:sql "insert into" (pass|password|passwd)',
+          },
+          {
+            i: "🖥️",
+            n: "Vulnerable Servers",
+            q: 'intitle:"Apache Status" "Apache Server Status for"',
+          },
+          {
+            i: "❌",
+            n: "Error Messages",
+            q: 'intitle:"error" "warning" "mysql" filetype:php',
+          },
+          {
+            i: "🌐",
+            n: "Web Infrastructure",
+            q: '"powered by" inurl:"/phpinfo.php" OR intitle:"phpinfo()"',
+          },
+          {
+            i: "📋",
+            n: "Advisories",
+            q: 'site:cve.mitre.org OR site:nvd.nist.gov "vulnerability"',
+          },
+          {
+            i: "🔑",
+            n: "Password Files",
+            q: "filetype:txt inurl:password OR filetype:log inurl:password",
+          },
+          {
+            i: "📡",
+            n: "Network Devices",
+            q: 'intitle:"webcamXP 5" OR intitle:"Network Camera"',
+          },
+          {
+            i: "🗃️",
+            n: "Database Dumps",
+            q: 'filetype:sql "CREATE TABLE" (email|password|user)',
+          },
+        ],
+        social: [
+          {
+            id: "linkedin",
+            i: "🔗",
+            n: "LinkedIn",
+            c: "bB",
+            u: (q) =>
+              `https://www.google.com/search?q=site:linkedin.com/in+${U(q)}`,
+          },
+          {
+            id: "twitter",
+            i: "🐦",
+            n: "Twitter/X",
+            c: "bB",
+            u: (q) =>
+              `https://www.google.com/search?q=site:twitter.com+OR+site:x.com+${U(q)}`,
+          },
+          {
+            id: "github",
+            i: "🐙",
+            n: "GitHub",
+            c: "bP",
+            u: (q) => `https://github.com/search?q=${U(q)}&type=repositories`,
+          },
+          {
+            id: "reddit",
+            i: "🟠",
+            n: "Reddit",
+            c: "bO",
+            u: (q) => `https://www.google.com/search?q=site:reddit.com+${U(q)}`,
+          },
+          {
+            id: "instagram",
+            i: "📸",
+            n: "Instagram",
+            c: "bK",
+            u: (q) =>
+              `https://www.google.com/search?q=site:instagram.com+${U(q)}`,
+          },
+          {
+            id: "facebook",
+            i: "📘",
+            n: "Facebook",
+            c: "bC",
+            u: (q) =>
+              `https://www.google.com/search?q=site:facebook.com+${U(q)}`,
+          },
+          {
+            id: "youtube",
+            i: "▶️",
+            n: "YouTube",
+            c: "bO",
+            u: (q) =>
+              `https://www.google.com/search?q=site:youtube.com+${U(q)}`,
+          },
+          {
+            id: "stackoverflow",
+            i: "📦",
+            n: "StackOverflow",
+            c: "bY",
+            u: (q) =>
+              `https://www.google.com/search?q=site:stackoverflow.com+${U(q)}`,
+          },
+        ],
+        arc: [
+          {
+            id: "google",
+            i: "📋",
+            n: "Google Cache",
+            c: "bG",
+            u: (u) =>
+              `https://webcache.googleusercontent.com/search?q=cache:${U(u)}`,
+          },
+          {
+            id: "wayback",
+            i: "🕰️",
+            n: "Wayback Machine",
+            c: "bB",
+            u: (u) => `https://web.archive.org/web/*/${u}`,
+          },
+          {
+            id: "archiveis",
+            i: "🗄️",
+            n: "Archive.is",
+            c: "bP",
+            u: (u) => `https://archive.is/newest/${u}`,
+          },
+          {
+            id: "12ft",
+            i: "🪜",
+            n: "12ft.io Paywall Remover",
+            c: "bO",
+            u: (u) => `https://12ft.io/${u}`,
+          },
+        ],
+        whois: [
+          {
+            id: "whois",
+            n: "📋 WHOIS Lookup",
+            c: "bB",
+            u: (d) => `https://www.whois.com/whois/${U(d)}`,
+          },
+          {
+            id: "dns",
+            n: "🔎 DNS Records",
+            c: "bG",
+            u: (d) => `https://www.nslookup.io/domains/${U(d)}/dns-records/`,
+          },
+          {
+            id: "bw",
+            n: "🛠️ BuiltWith",
+            c: "bP",
+            u: (d) => `https://builtwith.com/${U(d)}`,
+          },
+          {
+            id: "censys",
+            n: "🔬 Censys",
+            c: "bO",
+            u: (d) =>
+              `https://search.censys.io/search?resource=hosts&q=${U(d)}`,
+          },
+          {
+            id: "vt",
+            n: "🦠 VirusTotal",
+            c: "bK",
+            u: (d) => `https://www.virustotal.com/gui/domain/${U(d)}`,
+          },
+        ],
+        shodan: [
+          { i: "📹", n: "Webcams & CCTV", q: "webcam has_screenshot:true" },
+          {
+            i: "🗄️",
+            n: "Open Databases (MySQL/Mongo)",
+            q: "product:MySQL OR product:MongoDB OR product:PostgreSQL",
+          },
+          {
+            i: "🏭",
+            n: "ICS / SCADA Systems",
+            q: '"Siemens" OR "SCADA" OR "PLC" port:102',
+          },
+          { i: "🔒", n: "SSH Servers", q: 'port:22 "OpenSSH"' },
+          { i: "💻", n: "RDP Servers", q: 'port:3389 "Remote Desktop"' },
+          { i: "🌐", n: "Apache Web Servers", q: "apache country:US" },
+          {
+            i: "📡",
+            n: "IoT Devices",
+            q: '"Server: GoAhead" OR "Server: Boa" has_screenshot:true',
+          },
+          { i: "📧", n: "Mail Servers (SMTP)", q: 'port:25 "SMTP"' },
+          { i: "🖨️", n: "Printers", q: 'port:9100 "HP" OR "Canon" OR "Epson"' },
+        ],
+        recon: [
+          {
+            id: "ip",
+            n: "🌍 IP Geolocation",
+            ph: "IP address (8.8.8.8)",
+            u: (v) => `https://www.iplocation.net/ip-lookup?query=${U(v)}`,
+          },
+          {
+            id: "email",
+            n: "📧 Email Finder",
+            ph: "Domain (google.com)",
+            u: (v) => `https://hunter.io/search/${U(v)}`,
+          },
+          {
+            id: "sub",
+            n: "🔍 Subdomain Finder",
+            ph: "Domain (example.com)",
+            u: (v) => `https://crt.sh/?q=%25.${U(v)}`,
+          },
+          {
+            id: "hdr",
+            n: "📋 HTTP Headers Check",
+            ph: "URL (https://example.com)",
+            u: (v) =>
+              `https://securityheaders.com/?q=${U(v)}&followRedirects=on`,
+          },
+          {
+            id: "ssl",
+            n: "🔐 SSL Certificate Check",
+            ph: "Domain (example.com)",
+            u: (v) => `https://www.ssllabs.com/ssltest/analyze.html?d=${U(v)}`,
+          },
+        ],
+        cs: {
+          dorks: [
+            {
+              c: "filetype:pdf",
+              d: "Finds specific file types (PDF books, reports, notes)",
+            },
+            {
+              c: 'intitle:"index of"',
+              d: "Finds open server directories with direct downloads",
+            },
+            { c: "inurl:admin/login", d: "Finds admin login portals" },
+            {
+              c: "site:edu / site:gov",
+              d: "Limits to educational or government sites",
+              k: "site:edu",
+            },
+            {
+              c: "cache:URL",
+              d: "Opens Google's saved page version",
+              k: "cache:",
+            },
+            {
+              c: '"exact phrase"',
+              d: "Literal exact string search",
+              k: '"exact phrase"',
+            },
+            {
+              c: "-keyword",
+              d: "Excludes words from results",
+              k: "-pinterest",
+            },
+            {
+              c: "AROUND(n)",
+              d: "Two words within n words distance",
+              k: "AROUND(3)",
+            },
+            { c: "inurl:wp-login.php", d: "Finds WordPress login pages" },
+            {
+              c: 'filetype:sql "password"',
+              d: "Finds SQL dumps with passwords",
+            },
+            {
+              c: 'filetype:env "DB_PASSWORD"',
+              d: "Finds exposed .env config files",
+            },
+            { c: 'intitle:"index of" /backup', d: "Finds backup directories" },
+            { c: "filetype:log username", d: "Finds log files with usernames" },
+          ],
+          access: [
+            {
+              t: "Google Cache + &strip=1",
+              d: "Views page without JS — bypasses popups/paywalls",
+            },
+            {
+              t: "Wayback Machine (archive.org)",
+              d: "Access deleted/older website versions",
+            },
+            { t: "12ft.io / Archive.is", d: "Remove paywalls from articles" },
+            {
+              t: "In-URL Dorking",
+              d: "Find /wp-login.php, /admin, /dashboard entry points",
+            },
+            {
+              t: "Disable JavaScript Method",
+              d: "Some paywalls rely on JS — disable to bypass",
+            },
+          ],
+          osint: [
+            {
+              t: "🔍 Reverse Image Search",
+              d: "pimeyes.com, yandex.com/images, Google Lens",
+            },
+            {
+              t: "👤 Username Tracking",
+              d: "whatsmyname.app — find accounts across 500+ platforms",
+            },
+            {
+              t: "🌊 Shodan IoT Search",
+              d: "Find CCTV, servers, IoT devices at shodan.io",
+            },
+            {
+              t: "📄 FOCA / Metadata",
+              d: "Extract metadata from PDF/DOC files — FOCA, Exiftool",
+            },
+            {
+              t: "📧 Email Intelligence",
+              d: "hunter.io for email patterns, theHarvester CLI",
+            },
+            {
+              t: "🌐 DNS/WHOIS Recon",
+              d: "whois.com, nslookup.io, censys.io, securitytrails.com",
+            },
+            {
+              t: "📡 Wi-Fi Mapping",
+              d: "wigle.net — search Wi-Fi networks by location/SSID",
+            },
+            {
+              t: "🗺️ Geolocation Intel",
+              d: "Google Earth, Sentinel Hub for satellite imagery OSINT",
+            },
+          ],
+          bash: [
+            { c: "ps aux", d: "Show ALL running processes" },
+            { c: "ss -tulpn", d: "Show open ports & connections" },
+            { c: "sha256sum [file]", d: "File integrity fingerprint" },
+            { c: "ls -la", d: "List all files including hidden" },
+            {
+              c: "find . -executable",
+              d: "Find executable files (malware check)",
+            },
+            { c: "curl -I [URL]", d: "Check HTTP headers" },
+            { c: "netstat -an", d: "Network connections & ports" },
+            { c: "whoami", d: "Current logged-in user" },
+            { c: "uname -a", d: "System/kernel info" },
+            { c: "history", d: "Command history audit" },
+            { c: "cat /etc/passwd", d: "List system user accounts" },
+            { c: "chmod 600 [file]", d: "Secure file permissions" },
+            {
+              c: 'grep -r "password" .',
+              d: "Search for passwords recursively",
+            },
+            { c: "nmap -sV [target]", d: "Port scan with service detection" },
+            { c: "dig [domain]", d: "DNS lookup" },
+            { c: "traceroute [host]", d: "Network path tracing" },
+            { c: "whois [domain]", d: "Domain registration info" },
+            { c: "iptables -L", d: "List firewall rules" },
+            { c: "last", d: "Recent login history" },
+            { c: "df -h", d: "Disk space usage" },
+          ],
+          rules: [
+            {
+              i: "🔍",
+              t: "Double Extension Check",
+              d: "NEVER open report.pdf.exe — real extension is .exe!",
+            },
+            {
+              i: "🖥️",
+              t: "Virtual Machine Rule",
+              d: "ALWAYS test unknown scripts in VM. Never on main system.",
+            },
+            {
+              i: "🔑",
+              t: "No Real Password Input",
+              d: "NEVER enter real credentials on suspicious/bypassed sites.",
+            },
+            {
+              i: "🛡️",
+              t: "HTTPS Always",
+              d: "Check for https:// and lock icon before entering data.",
+            },
+            {
+              i: "🧪",
+              t: "Hash Before Running",
+              d: "Verify sha256sum hash before executing downloads.",
+            },
+            {
+              i: "📡",
+              t: "VPN for OSINT",
+              d: "Use VPN during research to protect your IP.",
+            },
+            {
+              i: "🔄",
+              t: "Regular Updates",
+              d: "Keep OS, browser, tools updated always.",
+            },
+            {
+              i: "💾",
+              t: "Backup Before Testing",
+              d: "Full backup before running any security tools.",
+            },
+          ],
+        },
+        dir: [
+          { o: "site:", d: "Limit to specific domain", e: "site:github.com" },
+          { o: "inurl:", d: "Search within URL", e: "inurl:admin" },
+          { o: "intitle:", d: "Search in page title", e: 'intitle:"login"' },
+          { o: "intext:", d: "Search in body text", e: "intext:confidential" },
+          { o: "filetype:", d: "Specific file type", e: "filetype:pdf" },
+          { o: "link:", d: "Pages linking to URL", e: "link:target.com" },
+          { o: "cache:", d: "Cached page version", e: "cache:example.com" },
+          { o: "related:", d: "Similar sites", e: "related:github.com" },
+          { o: "define:", d: "Definition of term", e: "define:OSINT" },
+          {
+            o: "before:/after:",
+            d: "Date range filter",
+            e: "after:2024-01-01",
+          },
+        ],
+        mods: [
+          { m: '"quotes"', f: "Exact phrase match" },
+          { m: "- (minus)", f: "Exclude term: -pinterest" },
+          { m: "* (wildcard)", f: 'Word placeholder: "best * tools"' },
+          { m: "OR / |", f: "Match either: hacking OR pentesting" },
+          { m: "AROUND(n)", f: "Words within n distance" },
+        ],
+        fullOps: [
+          {
+            o: "intitle:",
+            d: "Search in title",
+            e: "intitle:dashboard",
+            g: "Google, Bing, DDG",
+          },
+          {
+            o: "inurl:",
+            d: "Search in URL",
+            e: "inurl:admin",
+            g: "Google, Bing, DDG",
+          },
+          {
+            o: "intext:",
+            d: "Search in body",
+            e: "intext:password",
+            g: "Google",
+          },
+          { o: "site:", d: "Limit to domain", e: "site:github.com", g: "All" },
+          { o: "filetype:", d: "File type", e: "filetype:pdf", g: "All" },
+          {
+            o: "cache:",
+            d: "Cached page",
+            e: "cache:example.com",
+            g: "Google",
+          },
+          {
+            o: "-keyword",
+            d: "Exclude term",
+            e: "-pinterest",
+            g: "Google, DDG",
+          },
+          { o: "OR", d: "Either term", e: "hacking OR pentesting", g: "All" },
+          { o: "AROUND(n)", d: "Within n words", e: "AROUND(3)", g: "Google" },
+          {
+            o: "before:/after:",
+            d: "Date filter",
+            e: "after:2024-01-01",
+            g: "Google",
+          },
+        ],
+        examples: [
+          {
+            id: "javadsa",
+            t: "🎯 Java DSA Handwritten Notes PDF",
+            q: '"java dsa handwritten notes" filetype:pdf site:drive.google.com',
+            steps: [
+              "Keywords: java dsa handwritten notes",
+              "Phrase Mode → Exact Phrase",
+              "File Type: PDF (click to select)",
+              "Add Filter: site: → drive.google.com",
+              "Preview auto-updates",
+              "🔍 Search opens in new tab!",
+            ],
+          },
+          {
+            id: "python",
+            t: "💻 Python Tutorial PDF",
+            q: 'python tutorial beginner intitle:"python tutorial" filetype:pdf',
+          },
+          {
+            id: "cyber",
+            t: "🔒 Cyber Notes (edu)",
+            q: "cybersecurity site:edu (filetype:pdf OR filetype:ppt)",
+          },
+          {
+            id: "gate",
+            t: "🎓 GATE Exam Notes",
+            q: '"gate" "computer science" notes filetype:pdf',
+          },
+          {
+            id: "gdrive",
+            t: "📁 Google Drive Books",
+            q: 'site:drive.google.com "data structures" filetype:pdf',
+          },
+          {
+            id: "cheat",
+            t: "📋 Cheat Sheets",
+            q: '"cheat sheet" javascript filetype:pdf',
+          },
+          {
+            id: "ebook",
+            t: "📚 Free eBooks",
+            q: 'intitle:"index of" "parent directory" ebook filetype:pdf',
+          },
+          {
+            id: "resume",
+            t: "📄 Resume Templates",
+            q: '"resume" OR "cv" filetype:docx site:drive.google.com',
+          },
+          {
+            id: "research",
+            t: "🔬 Research Papers",
+            q: 'site:researchgate.net OR site:arxiv.org "machine learning" filetype:pdf',
+          },
+        ],
+        btnRef: [
+          ["🔍 Search", "Encode query → open in new tab"],
+          ["📋 Copy", "Copy query to clipboard"],
+          ["📑 Duplicate", "Clone query to editor"],
+          ["🗑️ Clear", "Reset everything"],
+          ["💾 Save", "Save as named preset"],
+          ["➕ Filter", "Add operator row"],
+          ["Chips", "Click to add operator"],
+          ["File Types", "Click = select/deselect"],
+          ["Presets", "Auto-fill AND auto-search!"],
+        ],
+        opsEx: [
+          ["intitle:", "Search in page TITLE", "intitle:notes"],
+          ["inurl:", "Search in URL", "inurl:admin"],
+          ["site:", "Only THIS website", "site:github.com"],
+          ["filetype:", "Only THIS file type", "filetype:pdf"],
+          ['"quotes"', "EXACT match", '"java notes"'],
+          ["-minus", "REMOVE from results", "-pinterest"],
+          ["OR", "Either term", "pdf OR ppt"],
+          ["AROUND(n)", "Within n words distance", "AROUND(3)"],
+        ],
+        tools: [
+          {
+            n: "🌊 Shodan",
+            d: "IoT device search engine. Finds CCTV, servers, SCADA, medical devices, HVAC.",
+            f: ["port:22", "webcam", "country:US", "has_screenshot:true"],
+          },
+          {
+            n: "📑 FOCA",
+            d: "Document metadata extraction. Gets users, printers, software, emails, OS from files.",
+            f: ["DOC", "PPT", "XLS", "PDF", "ODT", "SVG", "RDP"],
+          },
+          {
+            n: "🌾 theHarvester",
+            d: "Domain intelligence. Finds emails, IPs, subdomains, banners.",
+            f: ["theHarvester -d target.com -b google"],
+          },
+          {
+            n: "🕸️ Maltego",
+            d: "Relationship mapping. Domain→PGP, Person→Email, Domain→Phone.",
+            f: ["Transforms", "Visual Graphs"],
+          },
+          {
+            n: "🔬 Recon-ng",
+            d: "Web recon framework. 50+ modules, DNS snoop, exploitation.",
+            f: ["50+ modules", "show info"],
+          },
+          {
+            n: "🕷️ SpiderFoot",
+            d: "Automated OSINT with 200+ modules.",
+            f: ["200+ modules", "Web UI"],
+          },
+          {
+            n: "🗺️ Amass",
+            d: "OWASP subdomain enumeration.",
+            f: ["Active/Passive", "DNS brute"],
+          },
+          {
+            n: "📄 Metagoofil",
+            d: "Document metadata from search engines.",
+            f: ["PDF", "DOC", "XLS"],
+          },
+          {
+            n: "🔎 Exiftool",
+            d: "Read/write file metadata.",
+            f: ["All types", "CLI"],
+          },
+          {
+            n: "👤 whatsmyname.app",
+            d: "Username tracking across 500+ platforms.",
+            f: ["Free", "Web-based"],
+          },
+          {
+            n: "🖼️ PimEyes/Yandex",
+            d: "Reverse image & face recognition search.",
+            f: ["Face search", "Image OSINT"],
+          },
+          {
+            n: "🔧 SPUD (SensePost)",
+            d: "Google search scraping tool (deprecated).",
+            f: ["Screen-scraping", "Violates ToS"],
+          },
+        ],
+      };
+
+      /* ═══════════════════════════════════════════════════════════
+           ENGINE
+           ═══════════════════════════════════════════════════════════ */
+      const U = encodeURIComponent,
+        $ = (id) => document.getElementById(id);
+      const S = {
+        filters: [],
+        ft: new Set(),
+        hist: [],
+        saved: [],
+        fid: 0,
+        manual: false,
+      };
+      const esc = (s) => {
+        const d = document.createElement("div");
+        d.textContent = s;
+        return d.innerHTML;
+      };
+      const trn = (s, m) =>
+        !s ? "" : s.length > m ? s.substring(0, m) + "…" : s;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        buildUI();
+        loadLS();
+        renderH();
+        renderSv();
+        updSt();
+        bindEv();
+        updPv();
+      });
+
+      function buildUI() {
+        // Nav
+        $("NV").innerHTML = DATA.tabs
+          .map(
+            (t, i) =>
+              `<button class="nt${i ? "" : " on"}" data-t="${t.id}">${t.i} ${t.l}</button>`,
+          )
+          .join("");
+        document
+          .querySelectorAll(".nt")
+          .forEach((b) => (b.onclick = () => swT(b.dataset.t, b)));
+
+        // DORKING PANEL
+        $("p-dorking").innerHTML = `<div class="g2">
+<div class="card"><div class="ch"><div class="ci b">🔍</div><div><div class="ct">Advanced Google Dorking Engine</div><div class="cd">Build queries → Auto-search or manual control</div></div></div>
+<div class="fg"><label class="fl">🔑 Keywords</label><input type="text" class="fi" id="kwI" placeholder="e.g., java dsa handwritten notes" autocomplete="off"></div>
+<div style="display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:.65rem">
+<div style="flex:1;min-width:130px"><label class="fl">🔧 Engine</label><select class="fi" id="eS"><option value="google">Google</option><option value="bing">Bing</option><option value="duckduckgo">DuckDuckGo</option></select></div>
+<div style="flex:1;min-width:130px"><label class="fl">💬 Phrase</label><select class="fi" id="pS"><option value="normal">Normal</option><option value="exact">Exact "..."</option></select></div></div>
+<div class="sdiv">⚡ Quick Operators</div>
+<div class="ql mb1">${DATA.qops.map((o) => `<span class="qc" onclick="insOp('${esc(o.replace(/'/g, "\\'"))}')">${esc(o)}</span>`).join("")}</div>
+<div class="bf mt2">
+<button class="btn b1" onclick="doS()">🔍 Search</button>
+<button class="btn b2" onclick="cpQ()">📋 Copy</button>
+<button class="btn b2" onclick="dupQ()">📑 Duplicate</button>
+<button class="btn bD bs" onclick="clrA()">🗑️ Clear</button>
+<button class="btn bG bs" onclick="opSvM()">💾 Save</button></div></div>
+
+<div class="card cg"><div class="ch"><div class="ci g">🛠️</div><div><div class="ct">Filter Builder</div><div class="cd">Add unlimited operators dynamically</div></div></div>
+<div class="fb mb1"><button class="btn bB bs" onclick="addF()">➕ Add Filter</button><button class="btn b2 bx" onclick="clrF()">Clear</button></div>
+<div class="sy" id="fB"></div>
+<div class="sdiv">📄 File Types</div><div class="ftg" id="fG"></div>
+<div class="sdiv">📅 Date Range</div>
+<div style="display:flex;gap:.45rem;flex-wrap:wrap">
+<div style="flex:1;min-width:110px"><label class="fl">After</label><input type="date" class="fi" id="dA"></div>
+<div style="flex:1;min-width:110px"><label class="fl">Before</label><input type="date" class="fi" id="dB"></div></div></div></div>
+
+<div class="card cp" style="margin-top:.95rem"><div class="ch"><div class="ci p">📡</div><div><div class="ct">Real-Time Query Preview</div><div class="cd">Live preview — edit manually below</div></div></div>
+<div class="qp" id="qP"><span class="em">Build your query above...</span></div>
+<div class="fg mt1"><label class="fl">✏️ Manual Edit</label><textarea class="fi" id="mE" rows="2" placeholder="Or type query directly..."></textarea></div>
+<div class="fb mt1"><span style="font-size:.64rem;color:var(--t3)"><kbd>Enter</kbd> = search</span><button class="btn b1 bs" onclick="doS()">🚀 Execute</button></div></div>
+
+<div class="card co" style="margin-top:.95rem"><div class="ch"><div class="ci y">📚</div><div><div class="ct">Preset Categories — Click = Auto-Fill + Auto-Search!</div><div class="cd">One click loads the query AND opens results instantly</div></div></div>
+<div class="pg" id="prG"></div>
+<div class="sdiv">⭐ Saved Presets</div>
+<div class="sy" id="svB"><div style="color:var(--t3);font-size:.7rem;text-align:center;padding:.4rem">No saved presets</div></div></div>`;
+
+        // Filetype grid
+        const fg = $("fG");
+        DATA.ft.forEach((f) => {
+          const l = document.createElement("label");
+          l.className = "ftc";
+          l.id = `ft-${f}`;
+          l.innerHTML = `<input type="checkbox"><span>${f.toUpperCase()}</span>`;
+          l.onclick = (e) => {
+            e.preventDefault();
+            togFT(f);
+          };
+          fg.appendChild(l);
+        });
+
+        // Preset grid with auto-execute
+        $("prG").innerHTML = DATA.presets
+          .map(
+            (p, i) =>
+              `<button class="pb" id="pr-${i}" onclick="firePreset(${i})">${p.i} ${p.n}</button>`,
+          )
+          .join("");
+
+        // HOWTO
+        $("p-howto").innerHTML =
+          `<div class="card" style="border-color:rgba(0,200,255,.18);margin-bottom:.95rem"><div class="ch"><div class="ci c">🎓</div><div><div class="ct">📖 How to Use — Step by Step Guide</div></div></div>
+<div class="tip">💡 Click any preset or example → query auto-fills AND search opens in new tab automatically!</div></div>
+${DATA.examples
+  .map((ex) => {
+    let h = `<div class="ex"><div class="ex-t">${ex.t}</div>`;
+    if (ex.steps)
+      ex.steps.forEach((s, j) => {
+        h += `<div class="stp"><div class="sn">${j + 1}</div><div class="stx">${s}</div></div>`;
+      });
+    else h += `<div class="stx mb1"><code>${esc(ex.q)}</code></div>`;
+    return (
+      h +
+      `<button class="btn b1 bs" onclick="fireEx('${ex.id}')">🚀 Auto-Fill + Search Now!</button></div>`
+    );
+  })
+  .join("")}
+<div class="g2" style="margin-top:.95rem">
+<div class="card"><div class="ch"><div class="ci y">🔘</div><div><div class="ct">Button Reference</div></div></div><div class="syl"><table class="rt"><tbody>${DATA.btnRef.map((b) => `<tr><td><strong>${b[0]}</strong></td><td>${b[1]}</td></tr>`).join("")}</tbody></table></div></div>
+<div class="card"><div class="ch"><div class="ci b">📝</div><div><div class="ct">Operators Explained</div></div></div><div class="syl"><table class="rt"><thead><tr><th>Op</th><th>What It Does</th><th>Example</th></tr></thead><tbody>${DATA.opsEx.map((o) => `<tr><td><code>${o[0]}</code></td><td>${o[1]}</td><td><code>${o[2]}</code></td></tr>`).join("")}</tbody></table></div></div></div>`;
+
+        // CHEATSHEET
+        const cs = DATA.cs;
+        $("p-cheatsheet").innerHTML = `
+<div class="card" style="margin-bottom:.95rem"><div class="ch"><div class="ci b">🔍</div><div><div class="ct">Google Dorking Tricks</div><div class="cd">🔍 Load = auto-fill + auto-search | 📋 = copy</div></div></div>
+${cs.dorks
+  .map((d) => {
+    const k = d.k || d.c;
+    return `<div class="dr"><span class="dr-c">${esc(d.c)}</span><span class="dr-d">${d.d}</span><div class="dr-a"><button class="btn bB bx" onclick="fireDork('${esc(k.replace(/'/g, "\\'"))}')">🔍 Load+Search</button><button class="btn b2 bx" onclick="cpT('${esc(k.replace(/'/g, "\\'"))}')">📋</button></div></div>`;
+  })
+  .join("")}</div>
+<div class="card" style="margin-bottom:.95rem"><div class="ch"><div class="ci o">🔓</div><div><div class="ct">Access & Bypass Tricks</div></div></div>
+${cs.access.map((a) => `<div class="cs-card"><div class="cs-t" style="color:var(--no)">🔓 ${a.t}</div><p>${a.d}</p></div>`).join("")}
+<div class="warn mt1">⚠️ Educational purposes only. Never attempt unauthorized access.</div></div>
+<div class="card" style="margin-bottom:.95rem"><div class="ch"><div class="ci p">🌐</div><div><div class="ct">OSINT Tricks</div></div></div>
+${cs.osint.map((o) => `<div class="cs-card"><div class="cs-t" style="color:var(--np)">${o.t}</div><p>${o.d}</p></div>`).join("")}</div>
+<div class="card" style="margin-bottom:.95rem"><div class="ch"><div class="ci g">💻</div><div><div class="ct">Bash Commands — 📋 = copy command</div></div></div>
+${cs.bash.map((b) => `<div class="br"><span class="br-c">${esc(b.c)}</span><span class="br-d">${b.d}</span><button class="btn bG bx" onclick="cpT('${esc(b.c.replace(/'/g, "\\'"))}')">📋</button></div>`).join("")}</div>
+<div class="card cr"><div class="ch"><div class="ci r">🛡️</div><div><div class="ct">Shimba's Security Rules</div></div></div>
+${cs.rules.map((r) => `<div class="rr"><span class="rr-i">${r.i}</span><div class="rr-t"><strong>${r.t}:</strong> ${r.d}</div></div>`).join("")}</div>`;
+
+        // OSINT
+        $("p-osint").innerHTML = `<div class="g2">
+<div class="card"><div class="ch"><div class="ci o">🌐</div><div><div class="ct">Social Media OSINT</div></div></div>
+<div class="fg"><label class="fl">🔑 Keyword / Name</label><input type="text" class="fi" id="sK" placeholder="Enter name or keyword"></div>
+<div class="bf">${DATA.social.map((s) => `<button class="btn ${s.c}" onclick="socGo('${s.id}')">${s.i} ${s.n}</button>`).join("")}</div>
+<div class="sdiv">🎯 People Search</div>
+<div class="fg"><label class="fl">Name</label><input type="text" class="fi" id="pN" placeholder="Full Name"></div>
+<div style="display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:.65rem">
+<div style="flex:1;min-width:115px"><label class="fl">Location</label><input type="text" class="fi" id="pL" placeholder="City"></div>
+<div style="flex:1;min-width:115px"><label class="fl">Org</label><input type="text" class="fi" id="pO" placeholder="Company"></div></div>
+<button class="btn b1" onclick="pplGo()">🔍 Search Person</button></div>
+
+<div class="card"><div class="ch"><div class="ci c">📦</div><div><div class="ct">Archive & Recon</div></div></div>
+<div class="fg"><label class="fl">🔗 URL</label><input type="text" class="fi" id="aU" placeholder="https://..."></div>
+<div class="bf">${DATA.arc.map((a) => `<button class="btn ${a.c} bs" onclick="arcGo('${a.id}')">${a.i} ${a.n}</button>`).join("")}</div>
+<div class="sdiv">🔗 Cache + &strip=1</div>
+<div class="fg"><label class="fl">URL</label><input type="text" class="fi" id="stU" placeholder="https://..."></div>
+<button class="btn bC bs" onclick="cStr()">📋 Cache + strip=1</button>
+
+<div class="sdiv">🌊 Shodan — IoT & Device Search</div>
+<div class="fg"><label class="fl">🔎 Shodan Query</label><input type="text" class="fi" id="shQ" placeholder="webcam, apache, port:22, country:US"></div>
+<button class="btn bC" onclick="shGo()">🌊 Search Shodan</button>
+<div class="bf mt1">${DATA.shodan.map((p) => `<button class="btn b2 bs" onclick="shPr('${esc(p.q.replace(/'/g, "\\'"))}')">${p.i} ${p.n}</button>`).join("")}</div>
+
+<div class="sdiv">🔍 WHOIS / DNS / Security</div>
+<div class="fg"><label class="fl">🌐 Domain</label><input type="text" class="fi" id="whD" placeholder="example.com"></div>
+<div class="bf">${DATA.whois.map((w) => `<button class="btn ${w.c} bs" onclick="whGo('${w.id}')">${w.n}</button>`).join("")}</div></div></div>
+
+<div class="card" style="margin-top:.95rem"><div class="ch"><div class="ci c">🔧</div><div><div class="ct">Recon Tools</div></div></div>
+<div class="g3" style="gap:.5rem">${DATA.recon.map((r) => `<div class="cs-card"><div class="cs-t" style="color:var(--nc)">${r.n}</div><div class="fg"><input type="text" class="fi" id="rc-${r.id}" placeholder="${r.ph}"></div><button class="btn bC bs" onclick="rcGo('${r.id}')">🔍 Lookup</button></div>`).join("")}</div></div>
+
+<div class="card" style="margin-top:.95rem"><div class="ch"><div class="ci r">💀</div><div><div class="ct">GHDB — Click = Auto-Fill + Auto-Search!</div></div></div>
+<div class="pg">${DATA.ghdb.map((g) => `<button class="pb" onclick="fireDork('${esc(g.q.replace(/'/g, "\\'"))}')">${g.i} ${g.n}</button>`).join("")}</div></div>`;
+
+        // REFERENCE
+        $("p-reference").innerHTML = `<div class="g2">
+<div class="card"><div class="ch"><div class="ci b">📘</div><div><div class="ct">Google Directives</div></div></div><div class="syl"><table class="rt"><thead><tr><th>Op</th><th>Description</th><th>Example</th></tr></thead><tbody>${DATA.dir.map((d) => `<tr><td><code>${d.o}</code></td><td>${d.d}</td><td><code style="color:var(--ng)">${d.e}</code></td></tr>`).join("")}</tbody></table></div></div>
+<div class="card"><div class="ch"><div class="ci g">📗</div><div><div class="ct">Modifiers & Engine Differences</div></div></div><div class="syl">
+<div class="cs-card"><div class="cs-t" style="color:var(--ng)">🔤 Google Modifiers</div><table class="rt"><tbody>${DATA.mods.map((m) => `<tr><td><code>${esc(m.m)}</code></td><td>${m.f}</td></tr>`).join("")}</tbody></table></div>
+<div class="cs-card"><div class="cs-t" style="color:var(--nb)">🔵 Bing</div><p>Supports: site:, inurl:, intitle:, filetype:. Uses NOT instead of -</p></div>
+<div class="cs-card"><div class="cs-t" style="color:var(--ny)">🦆 DuckDuckGo</div><p>Supports: site:, intitle:, filetype:. Uses - and ! bang commands</p></div>
+<div class="cs-card"><div class="cs-t" style="color:var(--nr)">⚠️ Google Automation Warning</div><p>SOAP API stopped 2006. Shunning: search ban → 2hr ban → IP ban</p></div></div></div></div>
+<div class="card" style="margin-top:.95rem"><div class="ch"><div class="ci p">📖</div><div><div class="ct">Full Operator Table</div></div></div><div class="syl"><table class="rt"><thead><tr><th>Op</th><th>Desc</th><th>Example</th><th>Engines</th></tr></thead><tbody>${DATA.fullOps.map((o) => `<tr><td><code>${esc(o.o)}</code></td><td>${o.d}</td><td><code style="color:var(--ng)">${esc(o.e)}</code></td><td style="font-size:.62rem;color:var(--t3)">${o.g}</td></tr>`).join("")}</tbody></table></div></div>`;
+
+        // TOOLS
+        $("p-tools").innerHTML =
+          `<div class="g2" style="gap:.7rem">${DATA.tools.map((t) => `<div class="tc2"><div class="tc-n">${t.n}</div><div class="tc-d">${t.d}</div>${t.f ? `<div class="tc-tags">${t.f.map((f) => `<span class="tc-tag">${esc(f)}</span>`).join("")}</div>` : ""}</div>`).join("")}</div>`;
+
+        // HISTORY
+        $("p-history").innerHTML = `<div class="g2">
+<div class="card"><div class="ch"><div class="ci b">🕒</div><div><div class="ct">Query History</div></div></div>
+<div class="fb mb1"><span style="font-size:.68rem;color:var(--t3)" id="hC">0</span><button class="btn bD bx" onclick="clrH()">🗑️</button></div>
+<div class="syl" id="hB"><div style="color:var(--t3);font-size:.7rem;text-align:center;padding:.5rem">No history</div></div></div>
+<div class="card"><div class="ch"><div class="ci g">💾</div><div><div class="ct">Saved Presets</div></div></div>
+<div class="fb mb1"><span style="font-size:.68rem;color:var(--t3)" id="sC">0</span><div class="bf"><button class="btn b2 bx" onclick="opM('ioM')">📦</button><button class="btn bD bx" onclick="clrSvAll()">🗑️</button></div></div>
+<div class="syl" id="svBF"><div style="color:var(--t3);font-size:.7rem;text-align:center;padding:.5rem">No presets</div></div></div></div>`;
+      }
+
+      // ═══ EVENTS ═══
+      function bindEv() {
+        $("kwI").oninput = () => {
+          S.manual = false;
+          updPv();
+        };
+        $("dA").onchange = $("dB").onchange = () => {
+          S.manual = false;
+          updPv();
+        };
+        $("eS").onchange = updSt;
+        $("pS").onchange = () => {
+          S.manual = false;
+          updPv();
+        };
+        $("mE").oninput = () => {
+          S.manual = true;
+          updMP();
+          updSt();
+        };
+        document.onkeydown = (e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            const a = document.activeElement;
+            if (["svN", "impA", "expA"].includes(a.id)) return;
+            if (a.id === "mE" || a.id === "kwI") {
+              e.preventDefault();
+              doS();
+            }
+            if (a.id === "sK") {
+              e.preventDefault();
+              socGo("linkedin");
+            }
+            if (a.id === "shQ") {
+              e.preventDefault();
+              shGo();
+            }
+          }
+        };
+      }
+
+      // ═══ TABS ═══
+      function swT(id, b) {
+        document
+          .querySelectorAll(".nt")
+          .forEach((t) => t.classList.remove("on"));
+        if (b) b.classList.add("on");
+        document
+          .querySelectorAll(".pnl")
+          .forEach((p) => p.classList.remove("on"));
+        $(`p-${id}`)?.classList.add("on");
+      }
+
+      // ═══ FILETYPE ═══
+      function togFT(f) {
+        if (S.ft.has(f)) {
+          S.ft.delete(f);
+          $(`ft-${f}`).classList.remove("ac");
+        } else {
+          S.ft.add(f);
+          $(`ft-${f}`).classList.add("ac");
+        }
+        S.manual = false;
+        updPv();
+      }
+
+      // ═══ FILTERS ═══
+      function addF() {
+        const id = ++S.fid;
+        S.filters.push({ id, op: "intitle", val: "" });
+        const r = document.createElement("div");
+        r.className = "fr";
+        r.id = `f-${id}`;
+        r.innerHTML = `<select onchange="ufO(${id},this.value)">${DATA.ops
+          .filter((o) => !["before", "after"].includes(o.v))
+          .map((o) => `<option value="${o.v}">${o.l}</option>`)
+          .join(
+            "",
+          )}</select><input placeholder="Value..." oninput="ufV(${id},this.value)"><button class="rx" onclick="rmF(${id})">&times;</button>`;
+        $("fB").appendChild(r);
+        S.manual = false;
+        updPv();
+      }
+      function ufO(id, o) {
+        const f = S.filters.find((x) => x.id === id);
+        if (f) {
+          f.op = o;
+          S.manual = false;
+          updPv();
+        }
+      }
+      function ufV(id, v) {
+        const f = S.filters.find((x) => x.id === id);
+        if (f) {
+          f.val = v;
+          S.manual = false;
+          updPv();
+        }
+      }
+      function rmF(id) {
+        S.filters = S.filters.filter((x) => x.id !== id);
+        const r = $(`f-${id}`);
+        if (r) {
+          r.style.cssText =
+            "opacity:0;transform:translateX(12px);transition:.3s";
+          setTimeout(() => r.remove(), 300);
+        }
+        S.manual = false;
+        updPv();
+      }
+      function clrF() {
+        S.filters = [];
+        $("fB").innerHTML = "";
+        S.manual = false;
+        updPv();
+      }
+
+      // ═══ QUERY BUILDER ═══
+      function bldQ() {
+        const p = [],
+          kw = $("kwI").value.trim(),
+          pm = $("pS").value;
+        if (kw) p.push(pm === "exact" ? `"${kw}"` : kw);
+        S.filters.forEach((f) => {
+          if (!f.val.trim()) return;
+          const v = f.val.trim();
+          if (f.op === "exclude") p.push(`-${v}`);
+          else if (f.op === "or") p.push(`OR ${v}`);
+          else {
+            const nq =
+              v.includes(" ") &&
+              ![
+                "site",
+                "filetype",
+                "ext",
+                "related",
+                "cache",
+                "define",
+                "info",
+              ].includes(f.op);
+            p.push(`${f.op}:${nq ? '"' + v + '"' : v}`);
+          }
+        });
+        const ft = Array.from(S.ft);
+        if (ft.length === 1) p.push(`filetype:${ft[0]}`);
+        else if (ft.length > 1)
+          p.push(`(${ft.map((f) => `filetype:${f}`).join(" OR ")})`);
+        if ($("dA").value) p.push(`after:${$("dA").value}`);
+        if ($("dB").value) p.push(`before:${$("dB").value}`);
+        return p.join(" ");
+      }
+      function getQ() {
+        return S.manual ? $("mE").value.trim() : bldQ();
+      }
+      function updPv() {
+        const q = bldQ(),
+          p = $("qP"),
+          m = $("mE");
+        if (!q) {
+          p.innerHTML = '<span class="em">Build your query above...</span>';
+          if (!S.manual) m.value = "";
+        } else {
+          p.innerHTML = colQ(q);
+          if (!S.manual) m.value = q;
+        }
+        updSt();
+      }
+      function updMP() {
+        const q = $("mE").value.trim();
+        $("qP").innerHTML = q
+          ? colQ(q)
+          : '<span class="em">Type query...</span>';
+      }
+      function colQ(q) {
+        let s = q
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+        [
+          "allintitle:",
+          "allinurl:",
+          "allintext:",
+          "intitle:",
+          "inurl:",
+          "intext:",
+          "site:",
+          "filetype:",
+          "ext:",
+          "before:",
+          "after:",
+          "related:",
+          "cache:",
+          "define:",
+          "info:",
+          "link:",
+        ].forEach((o) => {
+          s = s.replace(
+            new RegExp(o.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"),
+            `<span class="op">${o}</span>`,
+          );
+        });
+        s = s.replace(/\bOR\b/g, '<span class="op">OR</span>');
+        s = s.replace(/\bAROUND\(\d+\)/g, '<span class="op">$&</span>');
+        s = s.replace(/"([^"]*)"/g, '<span class="vl">"$1"</span>');
+        s = s.replace(/(-\w+)/g, `<span style="color:var(--nr)">$1</span>`);
+        return s;
+      }
+
+      // ═══ SEARCH ═══
+      function doS() {
+        const q = getQ();
+        if (!q) {
+          toast("Enter keywords first!", "er");
+          $("kwI").focus();
+          return;
+        }
+        const e = $("eS").value;
+        window.open(DATA.eng[e] + U(q), "_blank", "noopener,noreferrer");
+        addH(q, e);
+        toast(`✅ Search opened (${e})`, "ok");
+      }
+
+      // ═══ 🔥 AUTO-EXECUTE FUNCTIONS (THE KEY CHANGE!) ═══
+
+      /** Fire a preset: auto-fill + auto-search + visual feedback */
+      function firePreset(idx) {
+        const p = DATA.presets[idx];
+        if (!p) return;
+        // Visual flash on button
+        const btn = $(`pr-${idx}`);
+        if (btn) {
+          btn.classList.add("fired");
+          setTimeout(() => btn.classList.remove("fired"), 600);
+        }
+        // Auto-fill
+        $("mE").value = p.q;
+        $("kwI").value = "";
+        S.manual = true;
+        updMP();
+        updSt();
+        // Auto-search
+        const e = $("eS").value;
+        window.open(DATA.eng[e] + U(p.q), "_blank", "noopener,noreferrer");
+        addH(p.q, e);
+        toast(`🚀 "${p.n}" → Search opened!`, "ok");
+      }
+
+      /** Fire a dork/GHDB: auto-fill + auto-search */
+      function fireDork(d) {
+        $("mE").value = d;
+        $("kwI").value = "";
+        S.manual = true;
+        updMP();
+        updSt();
+        swT("dorking", document.querySelector('[data-t="dorking"]'));
+        const e = $("eS").value;
+        window.open(DATA.eng[e] + U(d), "_blank", "noopener,noreferrer");
+        addH(d, e);
+        toast("🚀 Dork loaded + Search opened!", "ok");
+      }
+
+      /** Fire an example: auto-fill + auto-search */
+      function fireEx(id) {
+        const ex = DATA.examples.find((e) => e.id === id);
+        if (!ex) return;
+        $("mE").value = ex.q;
+        $("kwI").value = "";
+        S.manual = true;
+        updMP();
+        updSt();
+        swT("dorking", document.querySelector('[data-t="dorking"]'));
+        const e = $("eS").value;
+        window.open(DATA.eng[e] + U(ex.q), "_blank", "noopener,noreferrer");
+        addH(ex.q, e);
+        toast(`🚀 "${ex.t}" → Search opened!`, "ok");
+      }
+
+      // ═══ ACTIONS ═══
+      function insOp(o) {
+        const i = $("kwI"),
+          c = i.value.trim();
+        i.value = c ? `${c} ${o}` : o;
+        S.manual = false;
+        updPv();
+        toast(`Added: ${o}`, "in");
+      }
+      function cpQ() {
+        const q = getQ();
+        if (!q) {
+          toast("No query!", "er");
+          return;
+        }
+        clip(q);
+        toast("📋 Copied!", "ok");
+      }
+      function dupQ() {
+        const q = getQ();
+        if (!q) return;
+        $("mE").value = q + " ";
+        S.manual = true;
+        $("mE").focus();
+        toast("Duplicated to editor", "in");
+      }
+      function cpT(t) {
+        clip(t);
+        toast("📋 Copied!", "ok");
+      }
+      function clrA() {
+        $("kwI").value = "";
+        $("mE").value = "";
+        $("dA").value = "";
+        $("dB").value = "";
+        $("pS").value = "normal";
+        clrF();
+        S.ft.clear();
+        DATA.ft.forEach((f) => $(`ft-${f}`).classList.remove("ac"));
+        S.manual = false;
+        updPv();
+        toast("Cleared!", "in");
+      }
+
+      // ═══ SOCIAL ═══
+      function socGo(id) {
+        const kw = $("sK").value.trim();
+        if (!kw) {
+          toast("Enter keyword!", "er");
+          return;
+        }
+        const s = DATA.social.find((x) => x.id === id);
+        if (s) {
+          window.open(s.u(kw), "_blank", "noopener,noreferrer");
+          toast(`${s.n} search opened!`, "ok");
+        }
+      }
+      function pplGo() {
+        const n = $("pN").value.trim();
+        if (!n) {
+          toast("Enter name!", "er");
+          return;
+        }
+        const l = $("pL").value.trim(),
+          o = $("pO").value.trim();
+        let q = `"${n}"`;
+        if (l) q += ` "${l}"`;
+        if (o) q += ` "${o}"`;
+        q +=
+          " (site:linkedin.com OR site:twitter.com OR site:facebook.com OR site:github.com)";
+        window.open(DATA.eng.google + U(q), "_blank", "noopener,noreferrer");
+        addH(q, "google");
+        toast(`People search: ${n}`, "ok");
+      }
+
+      // ═══ ARCHIVE ═══
+      function arcGo(id) {
+        const u = $("aU").value.trim();
+        if (!u || !u.startsWith("http")) {
+          toast("Enter valid URL!", "er");
+          return;
+        }
+        const a = DATA.arc.find((x) => x.id === id);
+        if (a) {
+          window.open(a.u(u), "_blank", "noopener,noreferrer");
+          toast(`${a.n} opened!`, "ok");
+        }
+      }
+      function cStr() {
+        const u = $("stU").value.trim();
+        if (!u) {
+          toast("Enter URL!", "er");
+          return;
+        }
+        window.open(
+          `https://webcache.googleusercontent.com/search?q=cache:${U(u)}&strip=1`,
+          "_blank",
+          "noopener,noreferrer",
+        );
+        toast("Cache+strip=1 opened!", "ok");
+      }
+
+      // ═══ SHODAN ═══
+      function shGo() {
+        const q = $("shQ").value.trim();
+        if (!q) {
+          toast("Enter Shodan query!", "er");
+          return;
+        }
+        window.open(
+          `https://www.shodan.io/search?query=${U(q)}`,
+          "_blank",
+          "noopener,noreferrer",
+        );
+        toast(`Shodan: ${q}`, "ok");
+      }
+      function shPr(q) {
+        $("shQ").value = q;
+        shGo();
+      }
+
+      // ═══ WHOIS ═══
+      function whGo(id) {
+        const d = $("whD").value.trim();
+        if (!d) {
+          toast("Enter domain!", "er");
+          return;
+        }
+        const w = DATA.whois.find((x) => x.id === id);
+        if (w) {
+          window.open(w.u(d), "_blank", "noopener,noreferrer");
+          toast(`${w.n}: ${d}`, "ok");
+        }
+      }
+
+      // ═══ RECON ═══
+      function rcGo(id) {
+        const r = DATA.recon.find((x) => x.id === id);
+        if (!r) return;
+        const v = $(`rc-${id}`).value.trim();
+        if (!v) {
+          toast("Enter value!", "er");
+          return;
+        }
+        window.open(r.u(v), "_blank", "noopener,noreferrer");
+        toast(`${r.n} opened!`, "ok");
+      }
+
+      // ═══ HISTORY ═══
+      function addH(q, e) {
+        const en = {
+          query: q,
+          engine: e,
+          ts: Date.now(),
+          time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        };
+        if (S.hist.length && S.hist[0].query === q) return;
+        S.hist.unshift(en);
+        if (S.hist.length > 100) S.hist.pop();
+        saveLS();
+        renderH();
+        updSt();
+      }
+      function renderH() {
+        const c = $("hB");
+        if ($("hC")) $("hC").textContent = `${S.hist.length} entries`;
+        if (!S.hist.length) {
+          c.innerHTML =
+            '<div style="color:var(--t3);font-size:.7rem;text-align:center;padding:.5rem">No history</div>';
+          return;
+        }
+        c.innerHTML = S.hist
+          .map(
+            (h, i) =>
+              `<div class="hi"><span class="hq" onclick="ldH(${i})">${esc(trn(h.query, 48))}</span><span class="ht2">${h.time}</span><div class="ha"><button class="btn bx b2" onclick="reH(${i})">🔄</button><button class="btn bx b2" onclick="cpT('${esc(h.query.replace(/'/g, "\\'"))}')">📋</button><button class="btn bx b2" onclick="delH(${i})">✕</button></div></div>`,
+          )
+          .join("");
+      }
+      function ldH(i) {
+        const h = S.hist[i];
+        if (!h) return;
+        $("mE").value = h.query;
+        S.manual = true;
+        updMP();
+        swT("dorking", document.querySelector('[data-t="dorking"]'));
+        toast("Loaded!", "in");
+      }
+      function reH(i) {
+        const h = S.hist[i];
+        if (!h) return;
+        window.open(
+          (DATA.eng[h.engine] || DATA.eng.google) + U(h.query),
+          "_blank",
+          "noopener,noreferrer",
+        );
+      }
+      function delH(i) {
+        S.hist.splice(i, 1);
+        saveLS();
+        renderH();
+        updSt();
+      }
+      function clrH() {
+        if (!S.hist.length) return;
+        S.hist = [];
+        saveLS();
+        renderH();
+        updSt();
+        toast("History cleared", "in");
+      }
+
+      // ═══ SAVED ═══
+      function opSvM() {
+        const q = getQ();
+        if (!q) {
+          toast("Build query first!", "er");
+          return;
+        }
+        $("svQ").value = q;
+        $("svN").value = "";
+        opM("svM");
+        setTimeout(() => $("svN").focus(), 100);
+      }
+      function doSave() {
+        const n = $("svN").value.trim(),
+          q = $("svQ").value.trim();
+        if (!n) {
+          toast("Enter name!", "er");
+          return;
+        }
+        if (S.saved.some((p) => p.name.toLowerCase() === n.toLowerCase())) {
+          toast("Name exists!", "er");
+          return;
+        }
+        S.saved.push({
+          name: n,
+          query: q,
+          engine: $("eS").value,
+          ts: Date.now(),
+        });
+        saveLS();
+        renderSv();
+        updSt();
+        clM("svM");
+        toast(`"${n}" saved!`, "ok");
+      }
+      function renderSv() {
+        [$("svB"), $("svBF")].forEach((c) => {
+          if (!c) return;
+          if ($("sC")) $("sC").textContent = `${S.saved.length} presets`;
+          if (!S.saved.length) {
+            c.innerHTML =
+              '<div style="color:var(--t3);font-size:.7rem;text-align:center;padding:.4rem">No presets</div>';
+            return;
+          }
+          c.innerHTML = S.saved
+            .map(
+              (p, i) =>
+                `<div class="hi"><span class="hq" onclick="ldSv(${i})"><strong style="color:var(--nb)">${esc(p.name)}</strong>: ${esc(trn(p.query, 28))}</span><div class="ha"><button class="btn bx bG" onclick="ldSv(${i})">📂</button><button class="btn bx b2" onclick="delSv(${i})">✕</button></div></div>`,
+            )
+            .join("");
+        });
+      }
+      function ldSv(i) {
+        const p = S.saved[i];
+        if (!p) return;
+        $("mE").value = p.query;
+        if (p.engine) $("eS").value = p.engine;
+        S.manual = true;
+        updMP();
+        updSt();
+        swT("dorking", document.querySelector('[data-t="dorking"]'));
+        toast(`Loaded: ${p.name}`, "ok");
+      }
+      function delSv(i) {
+        S.saved.splice(i, 1);
+        saveLS();
+        renderSv();
+        updSt();
+      }
+      function clrSvAll() {
+        if (!S.saved.length) return;
+        S.saved = [];
+        saveLS();
+        renderSv();
+        updSt();
+        toast("Presets cleared", "in");
+      }
+
+      // ═══ MODAL ═══
+      function opM(id) {
+        $(id).classList.add("on");
+        if (id === "ioM") {
+          $("expA").value = JSON.stringify(
+            { history: S.hist, savedPresets: S.saved, v: "5.1" },
+            null,
+            2,
+          );
+          $("impA").value = "";
+        }
+      }
+      function clM(id) {
+        $(id).classList.remove("on");
+      }
+      function cpF(id) {
+        clip($(id).value);
+        toast("Copied!", "ok");
+      }
+      function doImp() {
+        const r = $("impA").value.trim();
+        if (!r) {
+          toast("Paste JSON!", "er");
+          return;
+        }
+        try {
+          const d = JSON.parse(r);
+          if (d.history) {
+            const ex = new Set(S.hist.map((h) => h.query));
+            d.history.forEach((h) => {
+              if (!ex.has(h.query)) S.hist.push(h);
+            });
+          }
+          if (d.savedPresets) {
+            const ex = new Set(S.saved.map((p) => p.name.toLowerCase()));
+            d.savedPresets.forEach((p) => {
+              if (!ex.has(p.name.toLowerCase())) S.saved.push(p);
+            });
+          }
+          saveLS();
+          renderH();
+          renderSv();
+          updSt();
+          clM("ioM");
+          toast("Imported!", "ok");
+        } catch (e) {
+          toast("Invalid JSON!", "er");
+        }
+      }
+
+      // ═══ THEME ═══
+      function togTh() {
+        const h = document.documentElement,
+          n = h.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        h.setAttribute("data-theme", n);
+        $("tB").innerHTML = n === "dark" ? "🌙 Dark" : "☀️ Light";
+        localStorage.setItem("s_th", n);
+      }
+
+      // ═══ STATS ═══
+      function updSt() {
+        const q = getQ();
+        $("xF").textContent = S.filters.length;
+        $("xT").textContent = S.ft.size;
+        $("xL").textContent = q.length;
+        $("xH").textContent = S.hist.length;
+        $("xS").textContent = S.saved.length;
+        const e = $("eS");
+        $("xE").textContent = e.options[e.selectedIndex].text;
+      }
+
+      // ═══ STORAGE ═══
+      function saveLS() {
+        try {
+          localStorage.setItem("s5h", JSON.stringify(S.hist));
+          localStorage.setItem("s5p", JSON.stringify(S.saved));
+        } catch (e) {}
+      }
+      function loadLS() {
+        try {
+          const h = localStorage.getItem("s5h");
+          if (h) S.hist = JSON.parse(h);
+          const p = localStorage.getItem("s5p");
+          if (p) S.saved = JSON.parse(p);
+          const t = localStorage.getItem("s_th");
+          if (t) {
+            document.documentElement.setAttribute("data-theme", t);
+            $("tB").innerHTML = t === "dark" ? "🌙 Dark" : "☀️ Light";
+          }
+        } catch (e) {}
+      }
+
+      // ═══ UTILS ═══
+      function clip(t) {
+        if (navigator.clipboard)
+          navigator.clipboard.writeText(t).catch(() => fbC(t));
+        else fbC(t);
+      }
+      function fbC(t) {
+        const a = document.createElement("textarea");
+        a.value = t;
+        a.style.cssText = "position:fixed;left:-9999px";
+        document.body.appendChild(a);
+        a.select();
+        try {
+          document.execCommand("copy");
+        } catch (e) {}
+        document.body.removeChild(a);
+      }
+      function toast(m, t = "in") {
+        const c = $("TC"),
+          el = document.createElement("div");
+        el.className = `toast ${t}`;
+        el.innerHTML = `<span>${{ ok: "✅", er: "❌", in: "ℹ️" }[t] || "ℹ️"}</span><span>${esc(m)}</span>`;
+        c.appendChild(el);
+        setTimeout(() => {
+          if (el.parentNode) el.remove();
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>
