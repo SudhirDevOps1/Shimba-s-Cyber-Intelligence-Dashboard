@@ -3,63 +3,71 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Shimba's Cyber Intelligence Dashboard v4.0</title>
+    <title>
+      Shimba's Cyber Intelligence Dashboard v5.0 — Ultimate OSINT Suite
+    </title>
     <style>
-      /* ══════════════════════════════════════════
-   THEME VARIABLES — Edit colors here
-   ══════════════════════════════════════════ */
+      /* ═══════════════════════════════════════════════════════
+   THEME SYSTEM — All colors editable here
+   ═══════════════════════════════════════════════════════ */
       :root {
-        --bg1: #0a0e17;
-        --bg2: #111827;
-        --bg3: #1a2332;
-        --bg4: #0d1520;
-        --bdr: #1e3a5f;
-        --t1: #e0e8f0;
-        --t2: #8899aa;
-        --t3: #556677;
-        --nb: #00d4ff;
-        --ng: #00ff88;
-        --np: #a855f7;
-        --no: #ff6b35;
-        --nr: #ff3366;
-        --ny: #ffd600;
-        --nc: #06b6d4;
-        --nk: #ec4899;
-        --grad: linear-gradient(135deg, #00d4ff, #00ff88);
-        --dgrad: linear-gradient(135deg, #ff3366, #ff6b35);
-        --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-        --glow: 0 0 20px rgba(0, 212, 255, 0.3);
-        --glowG: 0 0 20px rgba(0, 255, 136, 0.3);
-        --overlay: rgba(0, 0, 0, 0.75);
+        --bg1: #060b14;
+        --bg2: #0c1322;
+        --bg3: #131d2e;
+        --bg4: #0a1018;
+        --bdr: #1a304d;
+        --t1: #dfe8f2;
+        --t2: #7e95ad;
+        --t3: #4a6178;
+        --nb: #00c8ff;
+        --ng: #00f080;
+        --np: #b06cf5;
+        --no: #ff7040;
+        --nr: #ff3565;
+        --ny: #ffc400;
+        --nc: #00d4d4;
+        --nk: #f06090;
+        --nw: #ffffff;
+        --grad: linear-gradient(135deg, #00c8ff 0%, #00f080 100%);
+        --grad2: linear-gradient(135deg, #b06cf5 0%, #f06090 100%);
+        --grad3: linear-gradient(135deg, #ff7040 0%, #ffc400 100%);
+        --dgrad: linear-gradient(135deg, #ff3565 0%, #ff7040 100%);
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        --glow: 0 0 25px rgba(0, 200, 255, 0.25);
+        --glowG: 0 0 25px rgba(0, 240, 128, 0.2);
+        --glowP: 0 0 25px rgba(176, 108, 245, 0.2);
+        --overlay: rgba(4, 8, 16, 0.85);
         --speed: 0.3s;
+        --fast: 0.15s;
       }
 
       [data-theme="light"] {
-        --bg1: #f0f4f8;
-        --bg2: #e2e8f0;
+        --bg1: #f2f5f9;
+        --bg2: #e4e9f0;
         --bg3: #ffffff;
-        --bg4: #edf2f7;
-        --bdr: #cbd5e0;
-        --t1: #1a202c;
-        --t2: #4a5568;
-        --t3: #a0aec0;
-        --nb: #0077cc;
-        --ng: #00a854;
-        --np: #7c3aed;
-        --no: #e05500;
-        --nr: #dc2626;
-        --ny: #ca8a04;
-        --nc: #0891b2;
-        --nk: #db2777;
-        --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-        --glow: 0 0 15px rgba(0, 119, 204, 0.15);
-        --glowG: 0 0 15px rgba(0, 168, 84, 0.15);
+        --bg4: #edf1f6;
+        --bdr: #c8d2dc;
+        --t1: #131d2e;
+        --t2: #4a5c70;
+        --t3: #90a0b4;
+        --nb: #0080cc;
+        --ng: #009955;
+        --np: #7b40d0;
+        --no: #d95800;
+        --nr: #d02545;
+        --ny: #b08a00;
+        --nc: #008a8a;
+        --nk: #c04070;
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+        --glow: 0 0 20px rgba(0, 128, 204, 0.12);
+        --glowG: 0 0 20px rgba(0, 153, 85, 0.1);
+        --glowP: 0 0 20px rgba(123, 64, 208, 0.1);
         --overlay: rgba(0, 0, 0, 0.4);
       }
 
-      /* ══════════════════════════════════════════
-   RESET & BASE
-   ══════════════════════════════════════════ */
+      /* ═══════════════════════════════════════════════════════
+   RESET
+   ═══════════════════════════════════════════════════════ */
       *,
       *::before,
       *::after {
@@ -78,19 +86,20 @@
           "Segoe UI",
           "Inter",
           -apple-system,
+          system-ui,
           sans-serif;
         background: var(--bg1);
         color: var(--t1);
-        line-height: 1.6;
+        line-height: 1.65;
         min-height: 100vh;
         transition:
-          background var(--speed),
-          color var(--speed);
+          background 0.4s,
+          color 0.4s;
         overflow-x: hidden;
       }
 
       ::-webkit-scrollbar {
-        width: 7px;
+        width: 6px;
       }
 
       ::-webkit-scrollbar-track {
@@ -99,150 +108,235 @@
 
       ::-webkit-scrollbar-thumb {
         background: var(--bdr);
-        border-radius: 4px;
+        border-radius: 3px;
       }
 
       ::-webkit-scrollbar-thumb:hover {
         background: var(--nb);
       }
 
-      /* Grid background */
+      /* Animated Grid Background */
       body::before {
         content: "";
         position: fixed;
         inset: 0;
         background-image:
-          linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
-        background-size: 50px 50px;
+          radial-gradient(
+            circle at 20% 50%,
+            rgba(0, 200, 255, 0.04) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(0, 240, 128, 0.03) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 50% 80%,
+            rgba(176, 108, 245, 0.03) 0%,
+            transparent 50%
+          ),
+          linear-gradient(rgba(0, 200, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 200, 255, 0.02) 1px, transparent 1px);
+        background-size:
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          40px 40px,
+          40px 40px;
         pointer-events: none;
         z-index: 0;
+        animation: bgShift 20s ease-in-out infinite alternate;
+      }
+
+      @keyframes bgShift {
+        0% {
+          opacity: 0.7;
+        }
+
+        50% {
+          opacity: 1;
+        }
+
+        100% {
+          opacity: 0.7;
+        }
       }
 
       [data-theme="light"] body::before {
-        opacity: 0;
+        opacity: 0.3 !important;
       }
 
-      /* ══════════════════════════════════════════
-   HEADER & NAV
-   ══════════════════════════════════════════ */
-      .header {
-        background: var(--bg2);
+      /* ═══════════════════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════════════════ */
+      .hdr {
+        background: rgba(12, 19, 34, 0.92);
         border-bottom: 1px solid var(--bdr);
-        padding: 0.65rem 1.2rem;
+        padding: 0.6rem 1.1rem;
         position: sticky;
         top: 0;
         z-index: 1000;
-        backdrop-filter: blur(16px);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 0.55rem;
+        gap: 0.5rem;
       }
 
-      .h-left {
+      [data-theme="light"] .hdr {
+        background: rgba(228, 233, 240, 0.92);
+      }
+
+      .hdr-l {
         display: flex;
         align-items: center;
-        gap: 0.7rem;
+        gap: 0.65rem;
       }
 
       .logo {
-        width: 38px;
-        height: 38px;
+        width: 40px;
+        height: 40px;
         background: var(--grad);
-        border-radius: 11px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.15rem;
+        font-size: 1.2rem;
         font-weight: 900;
-        color: #0a0e17;
+        color: #060b14;
         box-shadow: var(--glow);
-        animation: pulse 3s ease-in-out infinite;
+        animation: logoBeat 3s ease-in-out infinite;
         flex-shrink: 0;
+        position: relative;
+        overflow: hidden;
       }
 
-      @keyframes pulse {
+      .logo::after {
+        content: "";
+        position: absolute;
+        inset: -50%;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.15),
+          transparent
+        );
+        animation: logoShine 3s ease-in-out infinite;
+      }
+
+      @keyframes logoBeat {
         0%,
         100% {
-          box-shadow: var(--glow);
           transform: scale(1);
+          box-shadow: var(--glow);
         }
 
         50% {
-          box-shadow: 0 0 30px rgba(0, 212, 255, 0.55);
-          transform: scale(1.04);
+          transform: scale(1.06);
+          box-shadow: 0 0 40px rgba(0, 200, 255, 0.5);
         }
       }
 
-      .h-title {
-        font-size: 1.05rem;
+      @keyframes logoShine {
+        0% {
+          transform: translateX(-100%) rotate(45deg);
+        }
+
+        100% {
+          transform: translateX(100%) rotate(45deg);
+        }
+      }
+
+      .hdr-t {
+        font-size: 1rem;
         font-weight: 800;
         background: var(--grad);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+        letter-spacing: -0.3px;
       }
 
-      .h-sub {
-        font-size: 0.6rem;
+      .hdr-s {
+        font-size: 0.58rem;
         color: var(--t3);
-        letter-spacing: 2.5px;
+        letter-spacing: 2px;
         text-transform: uppercase;
       }
 
-      .h-right {
+      .hdr-r {
         display: flex;
         align-items: center;
-        gap: 0.35rem;
+        gap: 0.3rem;
         flex-wrap: wrap;
       }
 
-      .tabs {
+      /* Nav Tabs */
+      .nav {
         display: flex;
-        gap: 0.12rem;
+        gap: 0.1rem;
         background: var(--bg4);
         border-radius: 10px;
-        padding: 0.15rem;
+        padding: 0.12rem;
         border: 1px solid var(--bdr);
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
       }
 
-      .tab {
-        padding: 0.32rem 0.6rem;
+      .nav::-webkit-scrollbar {
+        height: 0;
+      }
+
+      .ntab {
+        padding: 0.3rem 0.55rem;
         border: none;
         border-radius: 8px;
         background: transparent;
         color: var(--t3);
-        font-size: 0.7rem;
+        font-size: 0.68rem;
         font-weight: 600;
         cursor: pointer;
         transition: all var(--speed);
         font-family: inherit;
         white-space: nowrap;
+        position: relative;
       }
 
-      .tab:hover {
+      .ntab:hover {
         color: var(--t1);
         background: var(--bg3);
       }
 
-      .tab.on {
+      .ntab.on {
         background: var(--grad);
-        color: #0a0e17;
-        box-shadow: var(--glow);
+        color: #060b14;
+        box-shadow: 0 2px 12px rgba(0, 200, 255, 0.3);
+      }
+
+      .ntab.on::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 2px;
+        background: var(--grad);
+        border-radius: 1px;
+        filter: blur(2px);
       }
 
       .hbtn {
         background: var(--bg3);
         border: 1px solid var(--bdr);
         color: var(--t2);
-        padding: 0.32rem 0.6rem;
+        padding: 0.3rem 0.55rem;
         border-radius: 8px;
         cursor: pointer;
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         transition: all var(--speed);
         display: flex;
         align-items: center;
@@ -254,44 +348,39 @@
         border-color: var(--nb);
         box-shadow: var(--glow);
         color: var(--ng);
+        transform: translateY(-1px);
       }
 
-      /* ══════════════════════════════════════════
+      /* ═══════════════════════════════════════════════════════
    LAYOUT
-   ══════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════ */
       .wrap {
-        max-width: 1500px;
+        max-width: 1520px;
         margin: 0 auto;
-        padding: 1rem;
+        padding: 0.9rem;
         position: relative;
         z-index: 1;
       }
 
-      .panel {
+      .pnl {
         display: none;
       }
 
-      .panel.on {
+      .pnl.on {
         display: block;
-        animation: fadeIn 0.35s ease;
+        animation: panelIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      @keyframes fadeIn {
+      @keyframes panelIn {
         from {
           opacity: 0;
-          transform: translateY(8px);
+          transform: translateY(12px);
         }
 
         to {
           opacity: 1;
           transform: translateY(0);
         }
-      }
-
-      .g1 {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 1rem;
       }
 
       .g2 {
@@ -312,16 +401,16 @@
         gap: 0.8rem;
       }
 
-      /* ══════════════════════════════════════════
-   CARD
-   ══════════════════════════════════════════ */
+      /* ═══════════════════════════════════════════════════════
+   CARD — Glass Morphism
+   ═══════════════════════════════════════════════════════ */
       .card {
         background: var(--bg3);
         border: 1px solid var(--bdr);
         border-radius: 14px;
-        padding: 1.15rem;
+        padding: 1.1rem;
         box-shadow: var(--shadow);
-        transition: all var(--speed);
+        transition: all var(--speed) cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
       }
@@ -338,9 +427,25 @@
         transition: opacity var(--speed);
       }
 
+      .card::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(
+          circle,
+          rgba(0, 200, 255, 0.03),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.5s;
+      }
+
       .card:hover {
-        border-color: rgba(0, 212, 255, 0.2);
-        transform: translateY(-1px);
+        border-color: rgba(0, 200, 255, 0.2);
+        transform: translateY(-2px);
         box-shadow: var(--shadow), var(--glow);
       }
 
@@ -348,16 +453,20 @@
         opacity: 1;
       }
 
+      .card:hover::after {
+        opacity: 1;
+      }
+
       .card.cg::before {
-        background: linear-gradient(135deg, #00ff88, #06b6d4);
+        background: linear-gradient(135deg, #00f080, #00d4d4);
       }
 
       .card.cp::before {
-        background: linear-gradient(135deg, #a855f7, #ec4899);
+        background: var(--grad2);
       }
 
       .card.co::before {
-        background: linear-gradient(135deg, #ff6b35, #ffd600);
+        background: var(--grad3);
       }
 
       .card.cr::before {
@@ -368,92 +477,97 @@
         display: flex;
         align-items: center;
         gap: 0.55rem;
-        margin-bottom: 0.85rem;
-        padding-bottom: 0.55rem;
+        margin-bottom: 0.8rem;
+        padding-bottom: 0.5rem;
         border-bottom: 1px solid var(--bdr);
       }
 
       .ci {
-        width: 30px;
-        height: 30px;
+        width: 32px;
+        height: 32px;
         border-radius: 9px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.9rem;
+        font-size: 0.92rem;
         flex-shrink: 0;
+        transition: transform 0.3s;
+      }
+
+      .card:hover .ci {
+        transform: scale(1.1) rotate(5deg);
       }
 
       .ci.b {
-        background: rgba(0, 212, 255, 0.1);
+        background: rgba(0, 200, 255, 0.1);
         color: var(--nb);
       }
 
       .ci.g {
-        background: rgba(0, 255, 136, 0.1);
+        background: rgba(0, 240, 128, 0.1);
         color: var(--ng);
       }
 
       .ci.p {
-        background: rgba(168, 85, 247, 0.1);
+        background: rgba(176, 108, 245, 0.1);
         color: var(--np);
       }
 
       .ci.o {
-        background: rgba(255, 107, 53, 0.1);
+        background: rgba(255, 112, 64, 0.1);
         color: var(--no);
       }
 
       .ci.r {
-        background: rgba(255, 51, 102, 0.1);
+        background: rgba(255, 53, 101, 0.1);
         color: var(--nr);
       }
 
       .ci.y {
-        background: rgba(255, 214, 0, 0.1);
+        background: rgba(255, 196, 0, 0.1);
         color: var(--ny);
       }
 
       .ci.c {
-        background: rgba(6, 182, 212, 0.1);
+        background: rgba(0, 212, 212, 0.1);
         color: var(--nc);
       }
 
       .ci.k {
-        background: rgba(236, 72, 153, 0.1);
+        background: rgba(240, 96, 144, 0.1);
         color: var(--nk);
       }
 
       .ct {
-        font-size: 0.85rem;
+        font-size: 0.84rem;
         font-weight: 700;
       }
 
       .cd {
-        font-size: 0.65rem;
+        font-size: 0.64rem;
         color: var(--t3);
       }
 
-      /* ══════════════════════════════════════════
-   FORM
-   ══════════════════════════════════════════ */
+      /* ═══════════════════════════════════════════════════════
+   FORMS
+   ═══════════════════════════════════════════════════════ */
       .fg {
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.7rem;
       }
 
       .fl {
         display: flex;
         align-items: center;
         gap: 0.3rem;
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         font-weight: 600;
         color: var(--t2);
-        margin-bottom: 0.22rem;
+        margin-bottom: 0.2rem;
       }
 
       .fi {
         width: 100%;
-        padding: 0.52rem 0.75rem;
+        padding: 0.5rem 0.72rem;
         background: var(--bg4);
         border: 1px solid var(--bdr);
         border-radius: 9px;
@@ -466,61 +580,89 @@
 
       .fi:focus {
         border-color: var(--nb);
-        box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        box-shadow:
+          0 0 0 3px rgba(0, 200, 255, 0.1),
+          var(--glow);
       }
 
       .fi::placeholder {
         color: var(--t3);
+        transition: opacity 0.2s;
+      }
+
+      .fi:focus::placeholder {
+        opacity: 0.5;
       }
 
       textarea.fi {
         resize: vertical;
-        min-height: 50px;
-        font-family: "Consolas", monospace;
+        min-height: 48px;
+        font-family: "Consolas", "Fira Code", monospace;
       }
 
       select.fi {
         cursor: pointer;
         appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%238899aa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%237e95ad' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right 10px center;
         padding-right: 1.8rem;
       }
 
-      /* ══════════════════════════════════════════
-   BUTTONS
-   ══════════════════════════════════════════ */
+      /* ═══════════════════════════════════════════════════════
+   BUTTONS — Enhanced with animations
+   ═══════════════════════════════════════════════════════ */
       .btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 0.22rem;
-        padding: 0.45rem 0.85rem;
+        padding: 0.44rem 0.82rem;
         border: 1px solid transparent;
         border-radius: 9px;
-        font-size: 0.76rem;
+        font-size: 0.74rem;
         font-weight: 600;
         font-family: inherit;
         cursor: pointer;
-        transition: all var(--speed);
+        transition: all var(--speed) cubic-bezier(0.4, 0, 0.2, 1);
         white-space: nowrap;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.08),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .btn:hover::after {
+        opacity: 1;
       }
 
       .btn:active {
-        transform: scale(0.97);
+        transform: scale(0.96);
       }
 
       .b1 {
         background: var(--grad);
-        color: #0a0e17;
+        color: #060b14;
         border: none;
-        box-shadow: 0 3px 12px rgba(0, 212, 255, 0.2);
+        box-shadow: 0 3px 12px rgba(0, 200, 255, 0.2);
+        font-weight: 700;
       }
 
       .b1:hover {
-        box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
-        transform: translateY(-1px);
+        box-shadow: 0 6px 25px rgba(0, 200, 255, 0.4);
+        transform: translateY(-2px);
       }
 
       .b2 {
@@ -532,6 +674,7 @@
       .b2:hover {
         border-color: var(--nb);
         color: var(--nb);
+        box-shadow: 0 0 12px rgba(0, 200, 255, 0.1);
       }
 
       .bD {
@@ -540,100 +683,117 @@
         border: none;
       }
 
+      .bD:hover {
+        box-shadow: 0 4px 16px rgba(255, 53, 101, 0.3);
+        transform: translateY(-1px);
+      }
+
       .bG {
-        background: rgba(0, 255, 136, 0.1);
-        border: 1px solid rgba(0, 255, 136, 0.2);
+        background: rgba(0, 240, 128, 0.08);
+        border: 1px solid rgba(0, 240, 128, 0.2);
         color: var(--ng);
       }
 
       .bG:hover {
-        background: rgba(0, 255, 136, 0.2);
+        background: rgba(0, 240, 128, 0.16);
         box-shadow: var(--glowG);
+        transform: translateY(-1px);
       }
 
       .bB {
-        background: rgba(0, 212, 255, 0.1);
-        border: 1px solid rgba(0, 212, 255, 0.2);
+        background: rgba(0, 200, 255, 0.08);
+        border: 1px solid rgba(0, 200, 255, 0.2);
         color: var(--nb);
       }
 
       .bB:hover {
-        background: rgba(0, 212, 255, 0.2);
+        background: rgba(0, 200, 255, 0.16);
         box-shadow: var(--glow);
+        transform: translateY(-1px);
       }
 
       .bP {
-        background: rgba(168, 85, 247, 0.1);
-        border: 1px solid rgba(168, 85, 247, 0.2);
+        background: rgba(176, 108, 245, 0.08);
+        border: 1px solid rgba(176, 108, 245, 0.2);
         color: var(--np);
       }
 
+      .bP:hover {
+        background: rgba(176, 108, 245, 0.16);
+        box-shadow: var(--glowP);
+      }
+
       .bO {
-        background: rgba(255, 107, 53, 0.1);
-        border: 1px solid rgba(255, 107, 53, 0.2);
+        background: rgba(255, 112, 64, 0.08);
+        border: 1px solid rgba(255, 112, 64, 0.2);
         color: var(--no);
       }
 
+      .bO:hover {
+        background: rgba(255, 112, 64, 0.16);
+      }
+
       .bY {
-        background: rgba(255, 214, 0, 0.1);
-        border: 1px solid rgba(255, 214, 0, 0.2);
+        background: rgba(255, 196, 0, 0.08);
+        border: 1px solid rgba(255, 196, 0, 0.2);
         color: var(--ny);
       }
 
       .bC {
-        background: rgba(6, 182, 212, 0.1);
-        border: 1px solid rgba(6, 182, 212, 0.2);
+        background: rgba(0, 212, 212, 0.08);
+        border: 1px solid rgba(0, 212, 212, 0.2);
         color: var(--nc);
       }
 
+      .bC:hover {
+        background: rgba(0, 212, 212, 0.16);
+      }
+
       .bK {
-        background: rgba(236, 72, 153, 0.1);
-        border: 1px solid rgba(236, 72, 153, 0.2);
+        background: rgba(240, 96, 144, 0.08);
+        border: 1px solid rgba(240, 96, 144, 0.2);
         color: var(--nk);
       }
 
       .bs {
-        padding: 0.32rem 0.6rem;
-        font-size: 0.7rem;
+        padding: 0.3rem 0.58rem;
+        font-size: 0.68rem;
         border-radius: 7px;
       }
 
       .bx {
-        padding: 0.22rem 0.42rem;
-        font-size: 0.64rem;
+        padding: 0.2rem 0.38rem;
+        font-size: 0.62rem;
         border-radius: 5px;
-      }
-
-      .bl {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.85rem;
       }
 
       .bf {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.32rem;
+        gap: 0.3rem;
+        align-items: center;
       }
 
-      /* ══════════════════════════════════════════
+      /* ═══════════════════════════════════════════════════════
    QUERY PREVIEW
-   ══════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════ */
       .qp {
         background: var(--bg4);
         border: 1px solid var(--bdr);
-        border-radius: 11px;
-        padding: 0.8rem 1rem;
-        font-family: "Consolas", monospace;
-        font-size: 0.8rem;
+        border-radius: 10px;
+        padding: 0.75rem 0.9rem;
+        font-family: "Consolas", "Fira Code", monospace;
+        font-size: 0.78rem;
         color: var(--ng);
         word-break: break-all;
-        min-height: 38px;
+        min-height: 36px;
         line-height: 1.8;
         transition: all var(--speed);
       }
 
       .qp:hover {
         border-color: var(--ng);
+        box-shadow: 0 0 15px rgba(0, 240, 128, 0.08);
       }
 
       .qp .op {
@@ -651,44 +811,45 @@
         font-family: inherit;
       }
 
-      /* ══════════════════════════════════════════
+      /* ═══════════════════════════════════════════════════════
    FILTER ROWS
-   ══════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════ */
       .fr {
         display: flex;
         align-items: center;
-        gap: 0.32rem;
-        padding: 0.32rem 0.5rem;
+        gap: 0.3rem;
+        padding: 0.3rem 0.48rem;
         background: var(--bg4);
         border: 1px solid var(--bdr);
-        border-radius: 9px;
-        margin-bottom: 0.32rem;
+        border-radius: 8px;
+        margin-bottom: 0.3rem;
         flex-wrap: wrap;
-        animation: slideIn 0.3s ease;
+        animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      @keyframes slideIn {
+      @keyframes slideUp {
         from {
           opacity: 0;
-          transform: translateY(-6px);
+          transform: translateY(-6px) scale(0.98);
         }
 
         to {
           opacity: 1;
-          transform: translateY(0);
+          transform: translateY(0) scale(1);
         }
       }
 
       .fr select,
       .fr input {
-        padding: 0.28rem 0.42rem;
+        padding: 0.26rem 0.4rem;
         background: var(--bg3);
         border: 1px solid var(--bdr);
         border-radius: 5px;
         color: var(--t1);
-        font-size: 0.74rem;
+        font-size: 0.72rem;
         font-family: inherit;
         outline: none;
+        transition: border-color var(--fast);
       }
 
       .fr select:focus,
@@ -698,55 +859,58 @@
 
       .fr input {
         flex: 1;
-        min-width: 85px;
+        min-width: 80px;
       }
 
       .fr .rx {
-        background: rgba(255, 51, 102, 0.1);
+        background: rgba(255, 53, 101, 0.08);
         border: none;
         color: var(--nr);
-        width: 21px;
-        height: 21px;
+        width: 20px;
+        height: 20px;
         border-radius: 5px;
         cursor: pointer;
-        font-size: 0.82rem;
+        font-size: 0.78rem;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        transition: all var(--speed);
+        transition: all var(--fast);
       }
 
       .fr .rx:hover {
-        background: rgba(255, 51, 102, 0.25);
+        background: rgba(255, 53, 101, 0.2);
+        transform: scale(1.1);
       }
 
-      /* ══════════════════════════════════════════
+      /* ═══════════════════════════════════════════════════════
    FILETYPE GRID
-   ══════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════ */
       .ftg {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
-        gap: 0.22rem;
+        grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+        gap: 0.2rem;
       }
 
       .ftc {
         display: flex;
         align-items: center;
-        gap: 0.22rem;
-        padding: 0.22rem 0.42rem;
+        justify-content: center;
+        padding: 0.22rem 0.38rem;
         background: var(--bg4);
         border: 1px solid var(--bdr);
-        border-radius: 7px;
+        border-radius: 6px;
         cursor: pointer;
-        font-size: 0.68rem;
+        font-size: 0.66rem;
         color: var(--t2);
         user-select: none;
         transition: all var(--speed);
+        font-weight: 600;
       }
 
       .ftc:hover {
         border-color: var(--nb);
+        transform: scale(1.03);
       }
 
       .ftc input {
@@ -755,57 +919,65 @@
 
       .ftc.ac {
         border-color: var(--nb);
-        background: rgba(0, 212, 255, 0.08);
+        background: rgba(0, 200, 255, 0.1);
         color: var(--nb);
+        box-shadow: 0 0 8px rgba(0, 200, 255, 0.1);
       }
 
-      /* ══════════════════════════════════════════
-   PRESET & HISTORY
-   ══════════════════════════════════════════ */
+      /* ═══════════════════════════════════════════════════════
+   PRESETS & HISTORY
+   ═══════════════════════════════════════════════════════ */
       .pg {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-        gap: 0.35rem;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 0.3rem;
       }
 
       .pb {
-        padding: 0.45rem 0.65rem;
+        padding: 0.42rem 0.6rem;
         background: var(--bg4);
         border: 1px solid var(--bdr);
         border-radius: 9px;
         color: var(--t2);
-        font-size: 0.74rem;
+        font-size: 0.72rem;
         font-family: inherit;
         cursor: pointer;
         transition: all var(--speed);
         text-align: left;
         display: flex;
         align-items: center;
-        gap: 0.32rem;
+        gap: 0.3rem;
       }
 
       .pb:hover {
         border-color: var(--ng);
         color: var(--ng);
         transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 240, 128, 0.08);
+      }
+
+      .pb .pi {
+        font-size: 0.82rem;
+        flex-shrink: 0;
       }
 
       .hi {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0.42rem 0.6rem;
+        padding: 0.38rem 0.55rem;
         background: var(--bg4);
         border: 1px solid var(--bdr);
         border-radius: 7px;
-        margin-bottom: 0.25rem;
-        font-size: 0.74rem;
-        gap: 0.35rem;
-        transition: all var(--speed);
+        margin-bottom: 0.22rem;
+        font-size: 0.72rem;
+        gap: 0.3rem;
+        transition: all var(--fast);
       }
 
       .hi:hover {
         border-color: var(--nb);
+        background: rgba(0, 200, 255, 0.02);
       }
 
       .hq {
@@ -814,7 +986,7 @@
         word-break: break-all;
         flex: 1;
         cursor: pointer;
-        font-size: 0.72rem;
+        font-size: 0.7rem;
       }
 
       .hq:hover {
@@ -823,32 +995,32 @@
 
       .ht {
         color: var(--t3);
-        font-size: 0.62rem;
+        font-size: 0.6rem;
         flex-shrink: 0;
       }
 
       .ha {
         display: flex;
-        gap: 0.15rem;
+        gap: 0.12rem;
         flex-shrink: 0;
       }
 
-      /* ══════════════════════════════════════════
-   QUICK OPS & STATS
-   ══════════════════════════════════════════ */
+      /* ═══════════════════════════════════════════════════════
+   QUICK OPS
+   ═══════════════════════════════════════════════════════ */
       .ql {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.22rem;
+        gap: 0.2rem;
       }
 
       .qc {
-        padding: 0.2rem 0.48rem;
+        padding: 0.18rem 0.44rem;
         background: var(--bg4);
         border: 1px solid var(--bdr);
         border-radius: 5px;
         color: var(--nb);
-        font-size: 0.68rem;
+        font-size: 0.66rem;
         font-family: "Consolas", monospace;
         cursor: pointer;
         transition: all var(--speed);
@@ -856,62 +1028,73 @@
 
       .qc:hover {
         border-color: var(--nb);
-        background: rgba(0, 212, 255, 0.08);
+        background: rgba(0, 200, 255, 0.08);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 200, 255, 0.1);
       }
 
-      .ab {
+      /* ═══════════════════════════════════════════════════════
+   STATS BAR
+   ═══════════════════════════════════════════════════════ */
+      .stats {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.4rem;
+        gap: 0.35rem;
         padding: 0.3rem 0;
         margin-bottom: 0.3rem;
       }
 
-      .sc {
+      .st-chip {
         display: flex;
         align-items: center;
-        gap: 0.22rem;
-        padding: 0.25rem 0.55rem;
+        gap: 0.2rem;
+        padding: 0.22rem 0.5rem;
         background: var(--bg3);
         border: 1px solid var(--bdr);
-        border-radius: 18px;
-        font-size: 0.68rem;
+        border-radius: 16px;
+        font-size: 0.66rem;
         color: var(--t2);
+        transition: all var(--speed);
       }
 
-      .sc b {
+      .st-chip:hover {
+        border-color: rgba(0, 200, 255, 0.2);
+      }
+
+      .st-chip b {
         font-weight: 700;
         color: var(--nb);
       }
 
-      /* ══════════════════════════════════════════
-   TOAST
-   ══════════════════════════════════════════ */
+      /* ═══════════════════════════════════════════════════════
+   TOASTS
+   ═══════════════════════════════════════════════════════ */
       .toasts {
         position: fixed;
-        top: 62px;
+        top: 58px;
         right: 10px;
         z-index: 9999;
         display: flex;
         flex-direction: column;
-        gap: 0.25rem;
+        gap: 0.22rem;
       }
 
       .toast {
-        padding: 0.55rem 0.95rem;
+        padding: 0.5rem 0.85rem;
         background: var(--bg3);
         border: 1px solid var(--bdr);
         border-radius: 9px;
         color: var(--t1);
-        font-size: 0.76rem;
+        font-size: 0.74rem;
         box-shadow: var(--shadow);
         animation:
-          tIn 0.3s ease,
-          tOut 0.3s ease 2.5s forwards;
+          tIn 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+          tOut 0.35s ease 2.5s forwards;
         display: flex;
         align-items: center;
-        gap: 0.32rem;
-        max-width: 310px;
+        gap: 0.3rem;
+        max-width: 300px;
+        backdrop-filter: blur(10px);
       }
 
       .toast.ok {
@@ -929,12 +1112,12 @@
       @keyframes tIn {
         from {
           opacity: 0;
-          transform: translateX(35px);
+          transform: translateX(30px) scale(0.95);
         }
 
         to {
           opacity: 1;
-          transform: translateX(0);
+          transform: translateX(0) scale(1);
         }
       }
 
@@ -945,13 +1128,13 @@
 
         to {
           opacity: 0;
-          transform: translateX(35px);
+          transform: translateX(30px);
         }
       }
 
-      /* ══════════════════════════════════════════
+      /* ═══════════════════════════════════════════════════════
    MODAL
-   ══════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════ */
       .modal {
         position: fixed;
         inset: 0;
@@ -960,8 +1143,8 @@
         display: none;
         align-items: center;
         justify-content: center;
-        padding: 0.8rem;
-        backdrop-filter: blur(5px);
+        padding: 0.7rem;
+        backdrop-filter: blur(8px);
       }
 
       .modal.on {
@@ -972,28 +1155,24 @@
         background: var(--bg3);
         border: 1px solid var(--bdr);
         border-radius: 14px;
-        padding: 1.4rem;
-        max-width: 750px;
+        padding: 1.3rem;
+        max-width: 720px;
         width: 100%;
         max-height: 85vh;
         overflow-y: auto;
         box-shadow: var(--shadow);
-        animation: mIn 0.3s ease;
-      }
-
-      .mbox.wide {
-        max-width: 950px;
+        animation: mIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       @keyframes mIn {
         from {
           opacity: 0;
-          transform: scale(0.95);
+          transform: scale(0.93) translateY(10px);
         }
 
         to {
           opacity: 1;
-          transform: scale(1);
+          transform: scale(1) translateY(0);
         }
       }
 
@@ -1001,13 +1180,13 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 0.9rem;
-        padding-bottom: 0.55rem;
+        margin-bottom: 0.8rem;
+        padding-bottom: 0.5rem;
         border-bottom: 1px solid var(--bdr);
       }
 
       .mti {
-        font-size: 0.95rem;
+        font-size: 0.92rem;
         font-weight: 700;
       }
 
@@ -1017,155 +1196,105 @@
         color: var(--t3);
         font-size: 1.2rem;
         cursor: pointer;
+        transition: all 0.2s;
       }
 
       .mx:hover {
         color: var(--nr);
+        transform: rotate(90deg);
       }
 
-      /* ══════════════════════════════════════════
+      /* ═══════════════════════════════════════════════════════
    SECTION DIVIDER
-   ══════════════════════════════════════════ */
-      .st {
-        font-size: 0.75rem;
+   ═══════════════════════════════════════════════════════ */
+      .sdiv {
+        font-size: 0.72rem;
         font-weight: 700;
         color: var(--t3);
         text-transform: uppercase;
-        letter-spacing: 1.3px;
-        margin-bottom: 0.55rem;
+        letter-spacing: 1.2px;
+        margin: 1rem 0 0.5rem;
         display: flex;
         align-items: center;
         gap: 0.4rem;
       }
 
-      .st::after {
+      .sdiv::after {
         content: "";
         flex: 1;
         height: 1px;
-        background: var(--bdr);
+        background: linear-gradient(90deg, var(--bdr), transparent);
       }
 
-      .sg {
-        margin-top: 1rem;
-      }
-
-      /* ══════════════════════════════════════════
-   CHEAT SHEET — JSON RENDERED
-   ══════════════════════════════════════════ */
-      .cs-card {
-        background: var(--bg4);
-        border: 1px solid var(--bdr);
-        border-radius: 11px;
-        padding: 0.8rem;
-        margin-bottom: 0.5rem;
-        transition: all var(--speed);
-      }
-
-      .cs-card:hover {
-        border-color: rgba(0, 212, 255, 0.2);
-      }
-
-      .cs-t {
-        font-size: 0.82rem;
-        font-weight: 700;
-        margin-bottom: 0.35rem;
-        display: flex;
-        align-items: center;
-        gap: 0.35rem;
-      }
-
-      .cs-card p {
-        font-size: 0.74rem;
-        color: var(--t2);
-        margin-bottom: 0.2rem;
-        line-height: 1.5;
-      }
-
-      .cs-card code {
-        background: rgba(0, 212, 255, 0.07);
-        color: var(--ng);
-        padding: 0.08rem 0.28rem;
-        border-radius: 3px;
-        font-family: "Consolas", monospace;
-        font-size: 0.72rem;
-      }
-
-      .cs-card ul {
-        margin: 0.2rem 0 0.2rem 1rem;
-        font-size: 0.74rem;
-        color: var(--t2);
-      }
-
-      .cs-card ul li {
-        margin-bottom: 0.12rem;
-      }
-
-      /* Dork Row — Clickable */
+      /* ═══════════════════════════════════════════════════════
+   CHEAT SHEET ITEMS
+   ═══════════════════════════════════════════════════════ */
       .dr {
         display: flex;
         align-items: center;
         gap: 0.4rem;
-        padding: 0.48rem 0.65rem;
+        padding: 0.44rem 0.6rem;
         background: var(--bg4);
         border: 1px solid var(--bdr);
-        border-radius: 9px;
-        margin-bottom: 0.32rem;
+        border-radius: 8px;
+        margin-bottom: 0.28rem;
         transition: all var(--speed);
         flex-wrap: wrap;
       }
 
       .dr:hover {
-        border-color: rgba(0, 212, 255, 0.25);
-        background: rgba(0, 212, 255, 0.02);
+        border-color: rgba(0, 200, 255, 0.2);
+        background: rgba(0, 200, 255, 0.02);
+        transform: translateX(3px);
       }
 
       .dr-c {
         font-family: "Consolas", monospace;
         color: var(--ng);
-        font-size: 0.74rem;
+        font-size: 0.72rem;
         font-weight: 600;
         flex-shrink: 0;
-        min-width: 160px;
+        min-width: 155px;
       }
 
       .dr-d {
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         color: var(--t2);
         flex: 1;
-        min-width: 130px;
+        min-width: 120px;
       }
 
       .dr-a {
         display: flex;
-        gap: 0.18rem;
+        gap: 0.15rem;
         flex-shrink: 0;
       }
 
-      /* Bash Row */
       .br {
         display: flex;
         align-items: center;
         gap: 0.4rem;
-        padding: 0.42rem 0.6rem;
-        background: rgba(0, 255, 136, 0.03);
-        border: 1px solid rgba(0, 255, 136, 0.1);
-        border-radius: 9px;
-        margin-bottom: 0.28rem;
+        padding: 0.4rem 0.55rem;
+        background: rgba(0, 240, 128, 0.02);
+        border: 1px solid rgba(0, 240, 128, 0.1);
+        border-radius: 8px;
+        margin-bottom: 0.22rem;
         flex-wrap: wrap;
         transition: all var(--speed);
       }
 
       .br:hover {
-        border-color: rgba(0, 255, 136, 0.25);
+        border-color: rgba(0, 240, 128, 0.25);
+        transform: translateX(3px);
       }
 
       .br-c {
         font-family: "Consolas", monospace;
         color: var(--ng);
-        font-size: 0.74rem;
+        font-size: 0.72rem;
         font-weight: 600;
         flex-shrink: 0;
-        min-width: 150px;
+        min-width: 145px;
       }
 
       .br-c::before {
@@ -1175,32 +1304,36 @@
       }
 
       .br-d {
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         color: var(--t2);
         flex: 1;
-        min-width: 130px;
+        min-width: 120px;
       }
 
-      /* Rule Row */
       .rr {
         display: flex;
         align-items: flex-start;
         gap: 0.5rem;
-        padding: 0.55rem 0.75rem;
-        background: rgba(255, 51, 102, 0.03);
-        border: 1px solid rgba(255, 51, 102, 0.12);
-        border-radius: 9px;
-        margin-bottom: 0.32rem;
+        padding: 0.5rem 0.7rem;
+        background: rgba(255, 53, 101, 0.03);
+        border: 1px solid rgba(255, 53, 101, 0.1);
+        border-radius: 8px;
+        margin-bottom: 0.28rem;
+        transition: all var(--speed);
+      }
+
+      .rr:hover {
+        border-color: rgba(255, 53, 101, 0.2);
       }
 
       .rr-i {
-        font-size: 1rem;
+        font-size: 0.95rem;
         flex-shrink: 0;
         margin-top: 0.1rem;
       }
 
       .rr-t {
-        font-size: 0.76rem;
+        font-size: 0.74rem;
         color: var(--t2);
         line-height: 1.5;
       }
@@ -1209,70 +1342,124 @@
         color: var(--nr);
       }
 
-      /* Tool Card */
-      .tc-card {
+      .cs-card {
         background: var(--bg4);
         border: 1px solid var(--bdr);
-        border-radius: 11px;
-        padding: 0.85rem;
+        border-radius: 10px;
+        padding: 0.75rem;
+        margin-bottom: 0.4rem;
         transition: all var(--speed);
       }
 
-      .tc-card:hover {
-        border-color: rgba(0, 212, 255, 0.2);
-        transform: translateY(-1px);
+      .cs-card:hover {
+        border-color: rgba(0, 200, 255, 0.2);
+        transform: translateX(2px);
       }
 
-      .tc-n {
-        font-size: 0.84rem;
+      .cs-t {
+        font-size: 0.78rem;
         font-weight: 700;
         margin-bottom: 0.3rem;
         display: flex;
         align-items: center;
-        gap: 0.35rem;
+        gap: 0.3rem;
+      }
+
+      .cs-card p {
+        font-size: 0.72rem;
+        color: var(--t2);
+        margin-bottom: 0.18rem;
+        line-height: 1.5;
+      }
+
+      .cs-card code {
+        background: rgba(0, 200, 255, 0.06);
+        color: var(--ng);
+        padding: 0.06rem 0.24rem;
+        border-radius: 3px;
+        font-family: "Consolas", monospace;
+        font-size: 0.7rem;
+      }
+
+      .cs-card ul {
+        margin: 0.18rem 0 0.18rem 0.9rem;
+        font-size: 0.72rem;
+        color: var(--t2);
+      }
+
+      .cs-card ul li {
+        margin-bottom: 0.1rem;
+      }
+
+      /* Tool cards */
+      .tc {
+        background: var(--bg4);
+        border: 1px solid var(--bdr);
+        border-radius: 10px;
+        padding: 0.8rem;
+        transition: all var(--speed);
+      }
+
+      .tc:hover {
+        border-color: rgba(0, 200, 255, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      }
+
+      .tc-n {
+        font-size: 0.82rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
       }
 
       .tc-d {
-        font-size: 0.74rem;
+        font-size: 0.72rem;
         color: var(--t2);
         line-height: 1.5;
-        margin-bottom: 0.3rem;
+        margin-bottom: 0.25rem;
       }
 
       .tc-tags {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.2rem;
+        gap: 0.15rem;
       }
 
       .tc-tag {
-        padding: 0.1rem 0.35rem;
-        background: rgba(0, 212, 255, 0.05);
-        border: 1px solid rgba(0, 212, 255, 0.12);
+        padding: 0.08rem 0.3rem;
+        background: rgba(0, 200, 255, 0.05);
+        border: 1px solid rgba(0, 200, 255, 0.1);
         border-radius: 3px;
-        font-size: 0.62rem;
+        font-size: 0.6rem;
         color: var(--nb);
+        font-family: "Consolas", monospace;
       }
 
-      /* Reference Table */
+      /* Reference table */
       .rt {
         width: 100%;
         border-collapse: collapse;
-        font-size: 0.74rem;
+        font-size: 0.72rem;
       }
 
       .rt th,
       .rt td {
         text-align: left;
-        padding: 0.38rem 0.5rem;
+        padding: 0.35rem 0.48rem;
         border-bottom: 1px solid var(--bdr);
       }
 
       .rt th {
         color: var(--t3);
-        font-size: 0.68rem;
+        font-size: 0.66rem;
         text-transform: uppercase;
         letter-spacing: 0.4px;
+        position: sticky;
+        top: 0;
+        background: var(--bg3);
       }
 
       .rt td {
@@ -1280,32 +1467,42 @@
       }
 
       .rt code {
-        background: rgba(0, 212, 255, 0.07);
+        background: rgba(0, 200, 255, 0.06);
         color: var(--nb);
-        padding: 0.06rem 0.22rem;
+        padding: 0.05rem 0.2rem;
         border-radius: 3px;
         font-family: "Consolas", monospace;
-        font-size: 0.72rem;
+        font-size: 0.7rem;
+      }
+
+      .rt tr:hover {
+        background: rgba(0, 200, 255, 0.02);
       }
 
       /* Example cards */
       .ex {
         background: linear-gradient(
           135deg,
-          rgba(0, 212, 255, 0.05),
-          rgba(0, 255, 136, 0.03)
+          rgba(0, 200, 255, 0.04),
+          rgba(0, 240, 128, 0.02)
         );
-        border: 1px solid rgba(0, 212, 255, 0.18);
+        border: 1px solid rgba(0, 200, 255, 0.15);
         border-radius: 12px;
-        padding: 0.9rem;
-        margin-bottom: 0.7rem;
+        padding: 0.85rem;
+        margin-bottom: 0.6rem;
+        transition: all var(--speed);
+      }
+
+      .ex:hover {
+        border-color: rgba(0, 200, 255, 0.25);
+        box-shadow: 0 4px 16px rgba(0, 200, 255, 0.06);
       }
 
       .ex-t {
-        font-size: 0.82rem;
+        font-size: 0.8rem;
         font-weight: 700;
         color: var(--nc);
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.35rem;
         display: flex;
         align-items: center;
         gap: 0.4rem;
@@ -1313,28 +1510,28 @@
 
       .stp {
         display: flex;
-        gap: 0.55rem;
-        margin-bottom: 0.42rem;
+        gap: 0.5rem;
+        margin-bottom: 0.35rem;
         align-items: flex-start;
       }
 
       .sn {
         background: var(--grad);
-        color: #0a0e17;
-        width: 22px;
-        height: 22px;
+        color: #060b14;
+        width: 20px;
+        height: 20px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.66rem;
+        font-size: 0.62rem;
         font-weight: 800;
         flex-shrink: 0;
         margin-top: 2px;
       }
 
       .stx {
-        font-size: 0.76rem;
+        font-size: 0.74rem;
         color: var(--t2);
         line-height: 1.5;
       }
@@ -1344,45 +1541,45 @@
       }
 
       .stx code {
-        background: rgba(0, 212, 255, 0.07);
+        background: rgba(0, 200, 255, 0.06);
         color: var(--ng);
-        padding: 0.06rem 0.25rem;
+        padding: 0.05rem 0.22rem;
         border-radius: 3px;
         font-family: "Consolas", monospace;
-        font-size: 0.74rem;
+        font-size: 0.72rem;
       }
 
       .tip {
-        background: rgba(0, 255, 136, 0.05);
-        border: 1px solid rgba(0, 255, 136, 0.12);
-        border-radius: 9px;
-        padding: 0.5rem 0.7rem;
-        font-size: 0.74rem;
+        background: rgba(0, 240, 128, 0.04);
+        border: 1px solid rgba(0, 240, 128, 0.1);
+        border-radius: 8px;
+        padding: 0.45rem 0.65rem;
+        font-size: 0.72rem;
         color: var(--ng);
-        margin: 0.35rem 0;
+        margin: 0.3rem 0;
       }
 
       .warn {
-        background: rgba(255, 51, 102, 0.05);
-        border: 1px solid rgba(255, 51, 102, 0.12);
-        border-radius: 9px;
-        padding: 0.5rem 0.7rem;
-        font-size: 0.74rem;
+        background: rgba(255, 53, 101, 0.04);
+        border: 1px solid rgba(255, 53, 101, 0.1);
+        border-radius: 8px;
+        padding: 0.45rem 0.65rem;
+        font-size: 0.72rem;
         color: var(--nr);
-        margin: 0.35rem 0;
+        margin: 0.3rem 0;
       }
 
       /* Scroll */
       .sy {
-        max-height: 230px;
+        max-height: 220px;
         overflow-y: auto;
-        padding-right: 0.15rem;
+        padding-right: 0.1rem;
       }
 
       .syl {
-        max-height: 370px;
+        max-height: 360px;
         overflow-y: auto;
-        padding-right: 0.15rem;
+        padding-right: 0.1rem;
       }
 
       /* Utils */
@@ -1391,11 +1588,11 @@
       }
 
       .mt2 {
-        margin-top: 1rem;
+        margin-top: 0.9rem;
       }
 
       .mb1 {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.4rem;
       }
 
       .fb {
@@ -1403,15 +1600,15 @@
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 0.35rem;
+        gap: 0.3rem;
       }
 
       kbd {
         background: var(--bg4);
-        padding: 0.06rem 0.28rem;
+        padding: 0.04rem 0.22rem;
         border-radius: 3px;
         border: 1px solid var(--bdr);
-        font-size: 0.68rem;
+        font-size: 0.65rem;
         font-family: "Consolas", monospace;
         color: var(--t2);
       }
@@ -1419,30 +1616,42 @@
       /* Footer */
       .footer {
         text-align: center;
-        padding: 1.2rem 0.8rem;
+        padding: 1.1rem 0.7rem;
         border-top: 1px solid var(--bdr);
         color: var(--t3);
-        font-size: 0.72rem;
-        margin-top: 0.8rem;
+        font-size: 0.7rem;
+        margin-top: 0.7rem;
         position: relative;
         z-index: 1;
       }
 
       .footer .disc {
         display: inline-block;
-        padding: 0.35rem 1.1rem;
-        border: 1px solid rgba(255, 51, 102, 0.2);
+        padding: 0.32rem 1rem;
+        border: 1px solid rgba(255, 53, 101, 0.18);
         border-radius: 7px;
-        background: rgba(255, 51, 102, 0.03);
+        background: rgba(255, 53, 101, 0.03);
         color: var(--nr);
         font-weight: 700;
         letter-spacing: 0.4px;
-        margin-bottom: 0.3rem;
+        margin-bottom: 0.25rem;
+        animation: discPulse 4s ease-in-out infinite;
       }
 
-      /* ══════════════════════════════════════════
+      @keyframes discPulse {
+        0%,
+        100% {
+          box-shadow: none;
+        }
+
+        50% {
+          box-shadow: 0 0 12px rgba(255, 53, 101, 0.15);
+        }
+      }
+
+      /* ═══════════════════════════════════════════════════════
    RESPONSIVE
-   ══════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════ */
       @media (max-width: 1100px) {
         .g2 {
           grid-template-columns: 1fr;
@@ -1455,16 +1664,16 @@
       }
 
       @media (max-width: 768px) {
-        .header {
-          padding: 0.5rem 0.65rem;
+        .hdr {
+          padding: 0.45rem 0.6rem;
         }
 
-        .h-title {
-          font-size: 0.88rem;
+        .hdr-t {
+          font-size: 0.85rem;
         }
 
         .wrap {
-          padding: 0.55rem;
+          padding: 0.5rem;
         }
 
         .g3,
@@ -1476,24 +1685,20 @@
           grid-template-columns: 1fr 1fr;
         }
 
-        .tabs {
-          gap: 0.08rem;
+        .nav {
+          gap: 0.05rem;
         }
 
-        .tab {
-          padding: 0.28rem 0.45rem;
-          font-size: 0.66rem;
-        }
-
-        .mbox {
-          padding: 1rem;
+        .ntab {
+          padding: 0.25rem 0.4rem;
+          font-size: 0.64rem;
         }
 
         .dr,
         .br {
           flex-direction: column;
           align-items: flex-start;
-          gap: 0.25rem;
+          gap: 0.2rem;
         }
 
         .dr-c,
@@ -1509,24 +1714,34 @@
 
         .bf {
           flex-direction: column;
+          align-items: stretch;
         }
 
-        .h-right {
+        .bf .btn {
+          justify-content: center;
+        }
+
+        .hdr-r {
           width: 100%;
           justify-content: center;
         }
 
-        .ab {
+        .stats {
           flex-direction: column;
+          gap: 0.2rem;
         }
 
-        .tab {
-          padding: 0.24rem 0.35rem;
-          font-size: 0.62rem;
+        .ntab {
+          padding: 0.22rem 0.32rem;
+          font-size: 0.6rem;
         }
 
         .ftg {
-          grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        }
+
+        .card {
+          padding: 0.85rem;
         }
       }
     </style>
@@ -1539,16 +1754,16 @@
     <div class="modal" id="saveModal">
       <div class="mbox">
         <div class="mh">
-          <span class="mti">💾 Save Preset</span
+          <span class="mti">💾 Save Custom Preset</span
           ><button class="mx" onclick="closeModal('saveModal')">&times;</button>
         </div>
         <div class="fg">
-          <label class="fl">Name</label
+          <label class="fl">Preset Name</label
           ><input
             type="text"
             class="fi"
             id="saveName"
-            placeholder="e.g., Java DSA Search"
+            placeholder="e.g., Java DSA Notes Search"
           />
         </div>
         <div class="fg">
@@ -1556,7 +1771,7 @@
           ><textarea class="fi" id="saveQuery" rows="3" readonly></textarea>
         </div>
         <div class="bf mt1">
-          <button class="btn b1" onclick="confirmSave()">💾 Save</button
+          <button class="btn b1" onclick="confirmSave()">💾 Save Preset</button
           ><button class="btn b2" onclick="closeModal('saveModal')">
             Cancel
           </button>
@@ -1567,577 +1782,108 @@
     <div class="modal" id="ioModal">
       <div class="mbox">
         <div class="mh">
-          <span class="mti">📦 Import / Export</span
+          <span class="mti">📦 Import / Export Data</span
           ><button class="mx" onclick="closeModal('ioModal')">&times;</button>
         </div>
         <div class="fg">
-          <label class="fl">Export JSON</label
+          <label class="fl">📤 Export (JSON)</label
           ><textarea class="fi" id="expArea" rows="4" readonly></textarea
-          ><button class="btn bB bs mt1" onclick="copyField('expArea')">
-            📋 Copy
+          ><button class="btn bB bs mt1" onclick="cpF('expArea')">
+            📋 Copy Export Data
           </button>
         </div>
         <div class="fg mt2">
-          <label class="fl">Import JSON</label
+          <label class="fl">📥 Import (Paste JSON)</label
           ><textarea
             class="fi"
             id="impArea"
             rows="4"
-            placeholder="Paste JSON..."
+            placeholder="Paste exported JSON data here..."
           ></textarea
-          ><button class="btn bG bs mt1" onclick="doImport()">📥 Import</button>
+          ><button class="btn bG bs mt1" onclick="doImport()">
+            📥 Import Data
+          </button>
         </div>
       </div>
     </div>
 
     <!-- ═══ HEADER ═══ -->
-    <header class="header">
-      <div class="h-left">
+    <header class="hdr">
+      <div class="hdr-l">
         <div class="logo">S</div>
         <div>
-          <div class="h-title">Shimba's Cyber Intelligence Dashboard</div>
-          <div class="h-sub">Advanced OSINT &amp; Dorking Suite v4.0</div>
+          <div class="hdr-t">Shimba's Cyber Intelligence Dashboard</div>
+          <div class="hdr-s">Advanced OSINT &amp; Dorking Suite v5.0</div>
         </div>
       </div>
-      <div class="h-right">
-        <nav class="tabs" id="navTabs">
-          <button class="tab on" data-t="dorking">🔍 Dorking</button>
-          <button class="tab" data-t="howto">📖 How-To</button>
-          <button class="tab" data-t="cheatsheet">💀 Cheat Sheet</button>
-          <button class="tab" data-t="osint">🌐 OSINT</button>
-          <button class="tab" data-t="reference">📘 Reference</button>
-          <button class="tab" data-t="tools">🛠️ Tools</button>
-          <button class="tab" data-t="history">🕒 History</button>
-        </nav>
-        <button class="hbtn" onclick="openModal('ioModal')">📦</button>
-        <button class="hbtn" id="themeBtn" onclick="toggleTheme()">
-          🌙 Dark
+      <div class="hdr-r">
+        <nav class="nav" id="navBar"></nav>
+        <button class="hbtn" onclick="openModal('ioModal')">
+          📦 Import/Export
+        </button>
+        <button class="hbtn" id="thBtn" onclick="togTheme()">
+          🌙 Dark Mode
         </button>
       </div>
     </header>
 
     <main class="wrap">
-      <!-- Stats Bar -->
-      <div class="ab">
-        <div class="sc">🔍 Filters: <b id="xF">0</b></div>
-        <div class="sc">📄 Types: <b id="xT">0</b></div>
-        <div class="sc">📝 Len: <b id="xL">0</b></div>
-        <div class="sc">🕒 <b id="xH">0</b></div>
-        <div class="sc">💾 <b id="xS">0</b></div>
-        <div class="sc">🔧 <b id="xE">Google</b></div>
+      <!-- Stats -->
+      <div class="stats">
+        <div class="st-chip">🔍 Filters: <b id="xF">0</b></div>
+        <div class="st-chip">📄 Filetypes: <b id="xT">0</b></div>
+        <div class="st-chip">📝 Query Length: <b id="xL">0</b></div>
+        <div class="st-chip">🕒 History: <b id="xH">0</b></div>
+        <div class="st-chip">💾 Saved: <b id="xS">0</b></div>
+        <div class="st-chip">🔧 Engine: <b id="xE">Google</b></div>
       </div>
 
-      <!-- ════════════════════════════════════════════════
-     PANEL 1: DORKING ENGINE
-     ════════════════════════════════════════════════ -->
-      <div class="panel on" id="p-dorking">
-        <div class="g2">
-          <div class="card">
-            <div class="ch">
-              <div class="ci b">🔍</div>
-              <div>
-                <div class="ct">Advanced Dorking Engine</div>
-                <div class="cd">
-                  Keywords + Filters + Filetypes → Auto Query Builder
-                </div>
-              </div>
-            </div>
-            <div class="fg">
-              <label class="fl">🔑 Keywords</label
-              ><input
-                type="text"
-                class="fi"
-                id="kwInput"
-                placeholder="e.g., java dsa handwritten notes"
-                autocomplete="off"
-              />
-            </div>
-            <div
-              style="
-                display: flex;
-                gap: 0.55rem;
-                flex-wrap: wrap;
-                margin-bottom: 0.75rem;
-              "
-            >
-              <div style="flex: 1; min-width: 140px">
-                <label class="fl">🔧 Engine</label
-                ><select class="fi" id="engSelect">
-                  <option value="google">Google</option>
-                  <option value="bing">Bing</option>
-                  <option value="duckduckgo">DuckDuckGo</option>
-                </select>
-              </div>
-              <div style="flex: 1; min-width: 140px">
-                <label class="fl">💬 Phrase</label
-                ><select class="fi" id="phraseSelect">
-                  <option value="normal">Normal</option>
-                  <option value="exact">Exact "..."</option>
-                </select>
-              </div>
-            </div>
-            <div class="st">⚡ Quick Operators</div>
-            <div class="ql mb1" id="quickOpsContainer"></div>
-            <div class="bf mt2">
-              <button class="btn b1" onclick="execSearch()">🔍 Search</button>
-              <button class="btn b2" onclick="copyQuery()">📋 Copy</button>
-              <button class="btn b2" onclick="dupQuery()">📑 Duplicate</button>
-              <button class="btn bD bs" onclick="clearAll()">🗑️ Clear</button>
-              <button class="btn bG bs" onclick="openSaveModal()">
-                💾 Save
-              </button>
-            </div>
-          </div>
-          <div class="card cg">
-            <div class="ch">
-              <div class="ci g">🛠️</div>
-              <div>
-                <div class="ct">Filter Builder</div>
-                <div class="cd">➕ Add operators dynamically</div>
-              </div>
-            </div>
-            <div class="fb mb1">
-              <button class="btn bB bs" onclick="addFilter()">
-                ➕ Add Filter</button
-              ><button class="btn b2 bx" onclick="clearFilters()">Clear</button>
-            </div>
-            <div class="sy" id="filterBox"></div>
-            <div class="st sg">📄 File Types</div>
-            <div class="ftg" id="ftGrid"></div>
-            <div class="st sg">📅 Date Range</div>
-            <div style="display: flex; gap: 0.55rem; flex-wrap: wrap">
-              <div style="flex: 1; min-width: 120px">
-                <label class="fl">After</label
-                ><input type="date" class="fi" id="dateAfter" />
-              </div>
-              <div style="flex: 1; min-width: 120px">
-                <label class="fl">Before</label
-                ><input type="date" class="fi" id="dateBefore" />
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Query Preview -->
-        <div class="card cp" style="margin-top: 1rem">
-          <div class="ch">
-            <div class="ci p">📡</div>
-            <div>
-              <div class="ct">Real-Time Query Preview</div>
-              <div class="cd">Auto-updates — edit manually below</div>
-            </div>
-          </div>
-          <div class="qp" id="queryPreview">
-            <span class="em">Build your query above...</span>
-          </div>
-          <div class="fg mt1">
-            <label class="fl">✏️ Manual Edit</label
-            ><textarea
-              class="fi"
-              id="manualEdit"
-              rows="2"
-              placeholder="Or type query directly..."
-            ></textarea>
-          </div>
-          <div class="fb mt1">
-            <span style="font-size: 0.68rem; color: var(--t3)"
-              ><kbd>Enter</kbd> = search</span
-            ><button class="btn b1 bs" onclick="execSearch()">
-              🚀 Execute
-            </button>
-          </div>
-        </div>
-        <!-- Presets -->
-        <div class="card co" style="margin-top: 1rem">
-          <div class="ch">
-            <div class="ci y">📚</div>
-            <div>
-              <div class="ct">Preset Categories</div>
-              <div class="cd">One-click query templates</div>
-            </div>
-          </div>
-          <div class="pg" id="presetGrid"></div>
-          <div class="st sg">⭐ Saved Presets</div>
-          <div class="sy" id="savedBox">
-            <div
-              style="
-                color: var(--t3);
-                font-size: 0.74rem;
-                text-align: center;
-                padding: 0.5rem;
-              "
-            >
-              No presets saved yet
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ════════════════════════════════════════════════
-     PANEL 2: HOW-TO
-     ════════════════════════════════════════════════ -->
-      <div class="panel" id="p-howto">
-        <div
-          class="card"
-          style="border-color: rgba(0, 212, 255, 0.25); margin-bottom: 1rem"
-        >
-          <div class="ch">
-            <div class="ci c">🎓</div>
-            <div>
-              <div class="ct">📖 Complete Guide — Kaise Use Kare?</div>
-              <div class="cd">
-                Hindi + English step-by-step with Try-It examples
-              </div>
-            </div>
-          </div>
-          <div class="tip">
-            💡 Ye tool Google/Bing mein advanced queries banata hai. Buttons
-            click karo → Query banta hai → New tab mein results!
-          </div>
-        </div>
-        <div id="howtoExamples"></div>
-        <div class="g2" style="margin-top: 1rem">
-          <div class="card">
-            <div class="ch">
-              <div class="ci y">🔘</div>
-              <div>
-                <div class="ct">Har Button Kya Karta Hai</div>
-              </div>
-            </div>
-            <div class="syl" id="buttonRefTable"></div>
-          </div>
-          <div class="card">
-            <div class="ch">
-              <div class="ci b">📝</div>
-              <div>
-                <div class="ct">Operators — Hindi mein</div>
-              </div>
-            </div>
-            <div class="syl" id="hindiOpsTable"></div>
-          </div>
-        </div>
-        <div class="card" style="margin-top: 1rem">
-          <div class="ch">
-            <div class="ci p">🔐</div>
-            <div>
-              <div class="ct">OSINT Kya Hai? Google Dorking Kya Hai?</div>
-            </div>
-          </div>
-          <div class="g2" style="gap: 0.8rem" id="whatIsSection"></div>
-        </div>
-      </div>
-
-      <!-- ════════════════════════════════════════════════
-     PANEL 3: CHEAT SHEET (JSON Driven)
-     ════════════════════════════════════════════════ -->
-      <div class="panel" id="p-cheatsheet">
-        <div class="card" style="margin-bottom: 1rem">
-          <div class="ch">
-            <div class="ci b">🔍</div>
-            <div>
-              <div class="ct">Google Dorking & Search Tricks</div>
-              <div class="cd">Click 🔍 = load into engine, 📋 = copy</div>
-            </div>
-          </div>
-          <div id="cs-dorks"></div>
-        </div>
-        <div class="card" style="margin-bottom: 1rem">
-          <div class="ch">
-            <div class="ci o">🔓</div>
-            <div>
-              <div class="ct">Access & Bypass Tricks</div>
-              <div class="cd">Educational only</div>
-            </div>
-          </div>
-          <div id="cs-access"></div>
-          <div class="warn mt1">
-            ⚠️ Educational purposes only. Never attempt unauthorized access.
-          </div>
-        </div>
-        <div class="card" style="margin-bottom: 1rem">
-          <div class="ch">
-            <div class="ci p">🌐</div>
-            <div>
-              <div class="ct">OSINT Tricks</div>
-            </div>
-          </div>
-          <div id="cs-osint"></div>
-        </div>
-        <div class="card" style="margin-bottom: 1rem">
-          <div class="ch">
-            <div class="ci g">💻</div>
-            <div>
-              <div class="ct">Bash Commands (Defensive)</div>
-              <div class="cd">📋 = copy command to clipboard</div>
-            </div>
-          </div>
-          <div id="cs-bash"></div>
-        </div>
-        <div class="card cr">
-          <div class="ch">
-            <div class="ci r">🛡️</div>
-            <div>
-              <div class="ct">Shimba's Security Rules</div>
-              <div class="cd">NEVER break these!</div>
-            </div>
-          </div>
-          <div id="cs-rules"></div>
-        </div>
-      </div>
-
-      <!-- ════════════════════════════════════════════════
-     PANEL 4: OSINT
-     ════════════════════════════════════════════════ -->
-      <div class="panel" id="p-osint">
-        <div class="g2">
-          <div class="card">
-            <div class="ch">
-              <div class="ci o">🌐</div>
-              <div>
-                <div class="ct">Social Media OSINT</div>
-              </div>
-            </div>
-            <div class="fg">
-              <label class="fl">🔑 Keyword / Name</label
-              ><input
-                type="text"
-                class="fi"
-                id="socialKw"
-                placeholder="e.g., John Doe"
-              />
-            </div>
-            <div class="bf" id="socialBtns"></div>
-            <div class="st sg">🎯 People Search</div>
-            <div class="fg">
-              <label class="fl">Full Name</label
-              ><input type="text" class="fi" id="pName" placeholder="Name" />
-            </div>
-            <div
-              style="
-                display: flex;
-                gap: 0.55rem;
-                flex-wrap: wrap;
-                margin-bottom: 0.75rem;
-              "
-            >
-              <div style="flex: 1; min-width: 125px">
-                <label class="fl">Location</label
-                ><input type="text" class="fi" id="pLoc" placeholder="City" />
-              </div>
-              <div style="flex: 1; min-width: 125px">
-                <label class="fl">Org</label
-                ><input
-                  type="text"
-                  class="fi"
-                  id="pOrg"
-                  placeholder="Company"
-                />
-              </div>
-            </div>
-            <button class="btn b1" onclick="peopleSearch()">
-              🔍 Search Person
-            </button>
-          </div>
-          <div class="card">
-            <div class="ch">
-              <div class="ci c">📦</div>
-              <div>
-                <div class="ct">Archive & Recon Tools</div>
-              </div>
-            </div>
-            <div class="fg">
-              <label class="fl">🔗 URL</label
-              ><input
-                type="text"
-                class="fi"
-                id="arcUrl"
-                placeholder="https://..."
-              />
-            </div>
-            <div class="bf" id="archiveBtns"></div>
-            <div class="st sg">🔗 Cache + &strip=1</div>
-            <div class="fg">
-              <label class="fl">URL</label
-              ><input
-                type="text"
-                class="fi"
-                id="stripUrl"
-                placeholder="https://..."
-              />
-            </div>
-            <button class="btn bC bs" onclick="cacheStrip()">
-              📋 Cache + strip=1
-            </button>
-            <div class="st sg">🌊 Shodan</div>
-            <div class="fg">
-              <label class="fl">Query</label
-              ><input
-                type="text"
-                class="fi"
-                id="shodanQ"
-                placeholder="webcam, apache, port:22"
-              />
-            </div>
-            <div class="bf">
-              <button class="btn bC" onclick="shodanGo()">🌊 Shodan</button
-              ><button class="btn b2 bs" onclick="shodanPre('webcam')">
-                📹</button
-              ><button class="btn b2 bs" onclick="shodanPre('db')">🗄️</button
-              ><button class="btn b2 bs" onclick="shodanPre('ics')">🏭</button>
-            </div>
-            <div class="st sg">🔍 WHOIS / DNS</div>
-            <div class="fg">
-              <label class="fl">Domain</label
-              ><input
-                type="text"
-                class="fi"
-                id="whoisD"
-                placeholder="example.com"
-              />
-            </div>
-            <div class="bf" id="whoisBtns"></div>
-          </div>
-        </div>
-        <div class="card" style="margin-top: 1rem">
-          <div class="ch">
-            <div class="ci r">💀</div>
-            <div>
-              <div class="ct">GHDB Categories</div>
-              <div class="cd">Auto-loads into Dorking tab</div>
-            </div>
-          </div>
-          <div class="pg" id="ghdbGrid"></div>
-        </div>
-      </div>
-
-      <!-- ════════════════════════════════════════════════
-     PANEL 5: REFERENCE
-     ════════════════════════════════════════════════ -->
-      <div class="panel" id="p-reference">
-        <div class="g2">
-          <div class="card">
-            <div class="ch">
-              <div class="ci b">📘</div>
-              <div>
-                <div class="ct">Google Search Directives</div>
-                <div class="cd">Full operator reference</div>
-              </div>
-            </div>
-            <div class="syl" id="refDirectives"></div>
-          </div>
-          <div class="card">
-            <div class="ch">
-              <div class="ci g">📗</div>
-              <div>
-                <div class="ct">Modifiers & Engine Differences</div>
-              </div>
-            </div>
-            <div class="syl" id="refModifiers"></div>
-          </div>
-        </div>
-        <div class="card" style="margin-top: 1rem">
-          <div class="ch">
-            <div class="ci p">📖</div>
-            <div>
-              <div class="ct">Complete Operator Table</div>
-            </div>
-          </div>
-          <div class="syl" id="refFullOps"></div>
-        </div>
-      </div>
-
-      <!-- ════════════════════════════════════════════════
-     PANEL 6: TOOLS
-     ════════════════════════════════════════════════ -->
-      <div class="panel" id="p-tools">
-        <div class="g2" id="toolsGrid"></div>
-      </div>
-
-      <!-- ════════════════════════════════════════════════
-     PANEL 7: HISTORY
-     ════════════════════════════════════════════════ -->
-      <div class="panel" id="p-history">
-        <div class="g2">
-          <div class="card">
-            <div class="ch">
-              <div class="ci b">🕒</div>
-              <div>
-                <div class="ct">Query History</div>
-              </div>
-            </div>
-            <div class="fb mb1">
-              <span style="font-size: 0.72rem; color: var(--t3)" id="hCount"
-                >0</span
-              ><button class="btn bD bx" onclick="clearHistory()">🗑️</button>
-            </div>
-            <div class="syl" id="histBox">
-              <div
-                style="
-                  color: var(--t3);
-                  font-size: 0.74rem;
-                  text-align: center;
-                  padding: 0.7rem;
-                "
-              >
-                No history yet
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="ch">
-              <div class="ci g">💾</div>
-              <div>
-                <div class="ct">Saved Presets</div>
-              </div>
-            </div>
-            <div class="fb mb1">
-              <span style="font-size: 0.72rem; color: var(--t3)" id="sCount"
-                >0</span
-              >
-              <div class="bf">
-                <button class="btn b2 bx" onclick="openModal('ioModal')">
-                  📦</button
-                ><button class="btn bD bx" onclick="clearSaved()">🗑️</button>
-              </div>
-            </div>
-            <div class="syl" id="savedBoxFull">
-              <div
-                style="
-                  color: var(--t3);
-                  font-size: 0.74rem;
-                  text-align: center;
-                  padding: 0.7rem;
-                "
-              >
-                No presets
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- All panels rendered by JS into these containers -->
+      <div class="pnl on" id="p-dorking"></div>
+      <div class="pnl" id="p-howto"></div>
+      <div class="pnl" id="p-cheatsheet"></div>
+      <div class="pnl" id="p-osint"></div>
+      <div class="pnl" id="p-reference"></div>
+      <div class="pnl" id="p-tools"></div>
+      <div class="pnl" id="p-history"></div>
     </main>
 
     <footer class="footer">
-      <div class="disc">⚠️ For Educational &amp; Defensive Purposes Only</div>
+      <div class="disc">
+        ⚠️ For Educational &amp; Defensive Research Purposes Only
+      </div>
       <p>
-        Shimba's Cyber Intelligence Dashboard v4.0 &bull; Single HTML &bull;
-        Zero Dependencies
+        Shimba's Cyber Intelligence Dashboard v5.0 &bull; Single HTML File
+        &bull; Zero Dependencies &bull; 100% Client-Side
       </p>
-      <p style="margin-top: 0.15rem; font-size: 0.66rem">
-        OSINT Ref: binca via cheatography.com/44948/cs/13288/ &bull; All
-        client-side, no data sent to servers
+      <p style="margin-top: 0.12rem; font-size: 0.64rem">
+        OSINT Reference: binca via cheatography.com/44948/cs/13288/ &bull; No
+        data sent to any server
       </p>
     </footer>
 
     <script>
-      /* ══════════════════════════════════════════════════════════
-           ╔═══════════════════════════════════════════════════════╗
-           ║  DEVELOPER CONFIG — EDIT THIS JSON TO CUSTOMIZE!     ║
-           ║  Add/remove/modify any section easily                ║
-           ╚═══════════════════════════════════════════════════════╝
-           ══════════════════════════════════════════════════════════ */
+      /* ══════════════════════════════════════════════════════════════
+           ╔════════════════════════════════════════════════════════════╗
+           ║  DEVELOPER CONFIGURATION — EDIT THIS JSON OBJECT!        ║
+           ║  Every section is customizable. Add/remove items freely.  ║
+           ║  The UI rebuilds automatically from this data.            ║
+           ╚════════════════════════════════════════════════════════════╝
+           ══════════════════════════════════════════════════════════════ */
 
       const DATA = {
-        /* ─── FILE TYPES (shown in grid) ─── */
+        // ─── NAVIGATION TABS ───
+        tabs: [
+          { id: "dorking", icon: "🔍", label: "Dorking Engine" },
+          { id: "howto", icon: "📖", label: "How-To Guide" },
+          { id: "cheatsheet", icon: "💀", label: "Cheat Sheet" },
+          { id: "osint", icon: "🌐", label: "OSINT Tools" },
+          { id: "reference", icon: "📘", label: "Reference" },
+          { id: "tools", icon: "🛠️", label: "Tools Encyclopedia" },
+          { id: "history", icon: "🕒", label: "History & Saved" },
+        ],
+
+        // ─── FILE TYPES ───
         filetypes: [
           "pdf",
           "doc",
@@ -2145,14 +1891,18 @@
           "xls",
           "xlsx",
           "ppt",
+          "pptx",
           "txt",
           "csv",
           "zip",
           "log",
           "conf",
+          "sql",
+          "xml",
+          "json",
         ],
 
-        /* ─── OPERATORS (used in filter builder dropdown) ─── */
+        // ─── OPERATORS (Filter Builder) ───
         operators: [
           { v: "intitle", l: "intitle:" },
           { v: "allintitle", l: "allintitle:" },
@@ -2174,159 +1924,152 @@
           { v: "after", l: "after:" },
         ],
 
-        /* ─── QUICK OPERATORS (blue chips) — Add/remove easily ─── */
+        // ─── QUICK OPERATORS (Clickable chips) ───
         quickOps: [
           '"index of"',
           "inurl:admin",
           "inurl:backup",
-          "site:edu",
-          "site:gov",
-          "site:drive.google.com",
-          'intitle:"index of"',
           "inurl:login",
           "inurl:wp-login.php",
           "inurl:config",
+          "inurl:phpinfo",
+          "site:edu",
+          "site:gov",
+          "site:drive.google.com",
+          "site:github.com",
+          'intitle:"index of"',
           "ext:sql",
+          "ext:env",
           "AROUND(3)",
           "cache:",
         ],
 
-        /* ─── SEARCH ENGINE URLs ─── */
+        // ─── SEARCH ENGINES ───
         engines: {
           google: "https://www.google.com/search?q=",
           bing: "https://www.bing.com/search?q=",
           duckduckgo: "https://duckduckgo.com/?q=",
         },
 
-        /* ─── PRESET CATEGORIES ─── */
+        // ─── PRESET CATEGORIES ───
         presets: [
           {
-            id: "cyber",
             icon: "🔒",
-            name: "Cybersecurity",
+            name: "Cybersecurity Resources",
             q: 'intitle:"cybersecurity tutorial" site:edu filetype:pdf OR filetype:ppt',
           },
           {
-            id: "prog",
             icon: "💻",
-            name: "Programming",
+            name: "Programming Guides",
             q: 'intitle:"programming guide" intext:beginner filetype:pdf OR filetype:doc',
           },
           {
-            id: "research",
             icon: "📄",
             name: "Research Papers",
             q: 'site:scholar.google.com OR site:researchgate.net filetype:pdf "research paper"',
           },
           {
-            id: "public",
             icon: "📂",
             name: "Public Documents",
-            q: 'intitle:"index of" inurl:documents filetype:pdf',
+            q: 'intitle:"index of" inurl:documents filetype:pdf OR filetype:doc',
           },
           {
-            id: "index",
             icon: "📁",
             name: "Index Listings",
             q: 'intitle:"index of /" "parent directory"',
           },
           {
-            id: "gov",
             icon: "🏛️",
-            name: "Government",
+            name: "Government Reports",
             q: 'site:gov "government report" filetype:pdf OR filetype:doc',
           },
           {
-            id: "edu",
             icon: "🎓",
-            name: "Educational",
+            name: "Educational Materials",
             q: 'site:edu intitle:"course materials" filetype:pdf OR filetype:ppt',
           },
           {
-            id: "tech",
             icon: "📘",
-            name: "Tech Docs",
+            name: "Technical Documentation",
             q: 'intitle:"documentation" inurl:docs filetype:pdf "technical"',
+          },
+          {
+            icon: "📊",
+            name: "Data & Statistics",
+            q: 'filetype:csv OR filetype:xls "statistics" "data" site:gov',
+          },
+          {
+            icon: "🔬",
+            name: "Scientific Journals",
+            q: "site:nature.com OR site:sciencedirect.com filetype:pdf",
           },
         ],
 
-        /* ─── GHDB CATEGORIES ─── */
+        // ─── GHDB CATEGORIES ───
         ghdb: [
           {
-            id: "foot",
             icon: "🦶",
             name: "Footholds",
             q: 'intitle:"index of" "parent directory" "server at"',
           },
           {
-            id: "files",
             icon: "📁",
-            name: "Sensitive Files",
+            name: "Files Containing Info",
             q: "filetype:log inurl:password",
           },
           {
-            id: "dir",
             icon: "📂",
             name: "Directory Listings",
             q: 'intitle:"index of" "last modified" "parent directory"',
           },
           {
-            id: "login",
             icon: "🔐",
             name: "Login Pages",
             q: 'inurl:"/admin/login" OR inurl:"/wp-login.php" intitle:"login"',
           },
           {
-            id: "sens",
             icon: "⚠️",
-            name: "Sensitive Info",
+            name: "Sensitive Information",
             q: 'filetype:sql "insert into" (pass|password|passwd)',
           },
           {
-            id: "vuln",
             icon: "🖥️",
-            name: "Vuln Servers",
+            name: "Vulnerable Servers",
             q: 'intitle:"Apache Status" "Apache Server Status for"',
           },
           {
-            id: "error",
             icon: "❌",
             name: "Error Messages",
             q: 'intitle:"error" "warning" "mysql" filetype:php',
           },
           {
-            id: "web",
             icon: "🌐",
             name: "Web Infrastructure",
             q: '"powered by" inurl:"/phpinfo.php" OR intitle:"phpinfo()"',
           },
           {
-            id: "adv",
             icon: "📋",
-            name: "Advisories",
+            name: "Advisories & Vulnerabilities",
             q: 'site:cve.mitre.org OR site:nvd.nist.gov "vulnerability"',
           },
           {
-            id: "pass",
             icon: "🔑",
             name: "Password Files",
             q: "filetype:txt inurl:password OR filetype:log inurl:password",
           },
           {
-            id: "devices",
             icon: "📡",
-            name: "Network Devices",
+            name: "Network & IoT Devices",
             q: 'intitle:"webcamXP 5" OR intitle:"Network Camera"',
           },
           {
-            id: "db",
             icon: "🗃️",
-            name: "Database Files",
+            name: "Database Files & Dumps",
             q: 'filetype:sql "CREATE TABLE" (email|password|user)',
           },
         ],
 
-        /* ─── SOCIAL PLATFORMS ─── */
+        // ─── SOCIAL PLATFORMS ───
         social: [
           {
             id: "linkedin",
@@ -2339,7 +2082,7 @@
           {
             id: "twitter",
             icon: "🐦",
-            name: "Twitter/X",
+            name: "Twitter / X",
             cls: "bB",
             url: (q) =>
               `https://www.google.com/search?q=site:twitter.com+OR+site:x.com+${E(q)}`,
@@ -2348,7 +2091,7 @@
             id: "github",
             icon: "🐙",
             name: "GitHub",
-            cls: "b2",
+            cls: "bP",
             url: (q) => `https://github.com/search?q=${E(q)}&type=repositories`,
           },
           {
@@ -2375,355 +2118,555 @@
             url: (q) =>
               `https://www.google.com/search?q=site:facebook.com+${E(q)}`,
           },
+          {
+            id: "youtube",
+            icon: "▶️",
+            name: "YouTube",
+            cls: "bO",
+            url: (q) =>
+              `https://www.google.com/search?q=site:youtube.com+${E(q)}`,
+          },
+          {
+            id: "stackoverflow",
+            icon: "📦",
+            name: "StackOverflow",
+            cls: "bY",
+            url: (q) =>
+              `https://www.google.com/search?q=site:stackoverflow.com+${E(q)}`,
+          },
         ],
 
-        /* ─── ARCHIVE SERVICES ─── */
+        // ─── ARCHIVE SERVICES ───
         archives: [
           {
             id: "google",
             icon: "📋",
             name: "Google Cache",
-            cls: "bG bs",
+            cls: "bG",
             url: (u) =>
               `https://webcache.googleusercontent.com/search?q=cache:${E(u)}`,
           },
           {
             id: "wayback",
             icon: "🕰️",
-            name: "Wayback",
-            cls: "bB bs",
+            name: "Wayback Machine",
+            cls: "bB",
             url: (u) => `https://web.archive.org/web/*/${u}`,
           },
           {
             id: "archiveis",
             icon: "🗄️",
             name: "Archive.is",
-            cls: "bP bs",
+            cls: "bP",
             url: (u) => `https://archive.is/newest/${u}`,
           },
           {
             id: "12ft",
             icon: "🪜",
-            name: "12ft.io",
-            cls: "bO bs",
+            name: "12ft.io Paywall Remover",
+            cls: "bO",
             url: (u) => `https://12ft.io/${u}`,
           },
         ],
 
-        /* ─── WHOIS SERVICES ─── */
+        // ─── WHOIS / DNS SERVICES ───
         whois: [
           {
             id: "whois",
-            name: "WHOIS",
-            cls: "bB bs",
+            name: "📋 WHOIS Lookup",
+            cls: "bB",
             url: (d) => `https://www.whois.com/whois/${E(d)}`,
           },
           {
             id: "dns",
-            name: "DNS",
-            cls: "bG bs",
+            name: "🔎 DNS Records",
+            cls: "bG",
             url: (d) => `https://www.nslookup.io/domains/${E(d)}/dns-records/`,
           },
           {
             id: "bw",
-            name: "BuiltWith",
-            cls: "bP bs",
+            name: "🛠️ BuiltWith Technology",
+            cls: "bP",
             url: (d) => `https://builtwith.com/${E(d)}`,
           },
           {
             id: "censys",
-            name: "Censys",
-            cls: "bO bs",
+            name: "🔬 Censys Search",
+            cls: "bO",
             url: (d) =>
               `https://search.censys.io/search?resource=hosts&q=${E(d)}`,
           },
+          {
+            id: "sectrails",
+            name: "🛡️ SecurityTrails",
+            cls: "bC",
+            url: (d) => `https://securitytrails.com/domain/${E(d)}`,
+          },
+          {
+            id: "virustotal",
+            name: "🦠 VirusTotal",
+            cls: "bK",
+            url: (d) => `https://www.virustotal.com/gui/domain/${E(d)}`,
+          },
         ],
 
-        /* ─── SHODAN PRESETS ─── */
-        shodanPresets: {
-          webcam: "webcam has_screenshot:true",
-          db: "product:MySQL OR product:MongoDB OR product:PostgreSQL",
-          ics: '"Siemens" OR "SCADA" OR "PLC" port:102',
-        },
+        // ─── SHODAN PRESETS (Full labels!) ───
+        shodanPresets: [
+          {
+            icon: "📹",
+            name: "Webcams & CCTV",
+            q: "webcam has_screenshot:true",
+          },
+          {
+            icon: "🗄️",
+            name: "Open Databases",
+            q: "product:MySQL OR product:MongoDB OR product:PostgreSQL",
+          },
+          {
+            icon: "🏭",
+            name: "ICS / SCADA Systems",
+            q: '"Siemens" OR "SCADA" OR "PLC" port:102',
+          },
+          { icon: "🔒", name: "SSH Servers", q: 'port:22 "OpenSSH"' },
+          { icon: "💻", name: "RDP Servers", q: 'port:3389 "Remote Desktop"' },
+          { icon: "🌐", name: "Apache Web Servers", q: "apache country:US" },
+          {
+            icon: "📡",
+            name: "IoT Devices",
+            q: '"Server: GoAhead" OR "Server: Boa" has_screenshot:true',
+          },
+          { icon: "📧", name: "Mail Servers", q: 'port:25 "SMTP"' },
+          {
+            icon: "🎮",
+            name: "Game Servers",
+            q: 'port:27015 "Counter-Strike"',
+          },
+          {
+            icon: "🖨️",
+            name: "Printers",
+            q: 'port:9100 "HP" OR "Canon" OR "Epson"',
+          },
+        ],
 
-        /* ──────────────────────────────────────────────
-               CHEAT SHEET — ALL JSON CONFIGURABLE!
-               Add/remove items and they render automatically
-               ────────────────────────────────────────────── */
+        // ─── IP / EMAIL / SUBDOMAIN TOOLS ───
+        recon: [
+          {
+            id: "ip",
+            name: "🌍 IP Geolocation Lookup",
+            placeholder: "Enter IP address (e.g., 8.8.8.8)",
+            url: (v) => `https://www.iplocation.net/ip-lookup?query=${E(v)}`,
+          },
+          {
+            id: "email",
+            name: "📧 Email Address Finder",
+            placeholder: "Enter domain (e.g., google.com)",
+            url: (v) => `https://hunter.io/search/${E(v)}`,
+          },
+          {
+            id: "subdomain",
+            name: "🔍 Subdomain Finder",
+            placeholder: "Enter domain (e.g., example.com)",
+            url: (v) => `https://crt.sh/?q=%25.${E(v)}`,
+          },
+          {
+            id: "headers",
+            name: "📋 HTTP Header Check",
+            placeholder: "Enter URL (e.g., https://example.com)",
+            url: (v) =>
+              `https://securityheaders.com/?q=${E(v)}&followRedirects=on`,
+          },
+          {
+            id: "ssl",
+            name: "🔐 SSL Certificate Check",
+            placeholder: "Enter domain (e.g., example.com)",
+            url: (v) =>
+              `https://www.ssllabs.com/ssltest/analyze.html?d=${E(v)}`,
+          },
+          {
+            id: "techdetect",
+            name: "🛠️ Technology Detector",
+            placeholder: "Enter URL (e.g., https://example.com)",
+            url: (v) => `https://www.wappalyzer.com/lookup/${E(v)}`,
+          },
+        ],
+
+        // ══════════════════════════════════════════════════════
+        //  CHEAT SHEET DATA — Add/remove items here!
+        // ══════════════════════════════════════════════════════
 
         cheatSheet: {
-          /* ─── GOOGLE DORKING TRICKS ─── */
           dorks: [
             {
               code: "filetype:pdf",
-              desc: "Finds specific file formats (books, reports, notes)",
+              desc: "Finds specific file formats (books, reports, notes, PDFs)",
             },
             {
               code: 'intitle:"index of"',
-              desc: "Finds open server directories (direct download links)",
+              desc: "Finds open server directories with direct download links",
             },
             {
               code: "inurl:admin/login",
-              desc: "Finds administrative login portals",
+              desc: "Finds administrative login portals on websites",
             },
             {
               code: "site:edu / site:gov",
-              desc: "Limits to educational or government sites",
+              desc: "Limits results to educational or government sites",
               dork: "site:edu",
             },
             {
               code: "cache:URL",
-              desc: "Opens the version saved by Google (useful if site is down)",
+              desc: "Opens the cached version saved by Google (works when site is down)",
               dork: "cache:",
             },
             {
               code: '"exact phrase"',
-              desc: "Searches for the literal string within quotes",
+              desc: "Searches for the literal exact string within quotes",
               dork: '"exact phrase"',
             },
             {
               code: "-keyword",
-              desc: "Excludes specific words or sites from results",
+              desc: "Excludes specific words or entire sites from search results",
               dork: "-pinterest",
             },
             {
               code: "AROUND(n)",
-              desc: "Finds two words within n words distance",
+              desc: "Finds two words appearing within n words distance of each other",
               dork: "AROUND(3)",
             },
-            { code: "inurl:wp-login.php", desc: "Finds WordPress login pages" },
+            {
+              code: "inurl:wp-login.php",
+              desc: "Finds WordPress admin login pages across the web",
+            },
             {
               code: "inurl:/admin",
-              desc: "Finds admin entry points",
+              desc: "Discovers admin panels and entry points on websites",
               dork: "inurl:admin",
             },
             {
               code: 'filetype:sql "password"',
-              desc: "Finds SQL dumps with password data",
+              desc: "Finds exposed SQL database dumps containing password data",
             },
             {
               code: 'intitle:"index of" /backup',
-              desc: "Finds backup directories on servers",
+              desc: "Discovers backup directories exposed on web servers",
+            },
+            {
+              code: 'filetype:env "DB_PASSWORD"',
+              desc: "Finds exposed .env configuration files with credentials",
+              dork: 'filetype:env "DB_PASSWORD"',
+            },
+            {
+              code: 'inurl:"/wp-content/uploads"',
+              desc: "Finds WordPress upload directories that may be browsable",
+            },
+            {
+              code: "filetype:log username",
+              desc: "Finds log files that may contain usernames and activity data",
             },
           ],
-
-          /* ─── ACCESS & BYPASS TRICKS ─── */
           access: [
             {
               title: "Google Cache + &strip=1",
-              desc: "Views page without JavaScript — often bypasses login popups. Add &strip=1 to Google Cache URL.",
+              desc: "Views a page without JavaScript, often bypassing login popups and paywalls. Append &strip=1 to any Google Cache URL.",
             },
             {
               title: "Wayback Machine (archive.org)",
-              desc: "Access deleted or older versions of websites. Paste URL at web.archive.org.",
+              desc: "Access deleted or older versions of any website. Navigate to web.archive.org and paste the target URL.",
             },
             {
               title: "12ft.io / Archive.is",
-              desc: "Third-party tools to remove paywalls from articles.",
+              desc: "Third-party tools designed to remove paywalls from articles. Simply paste the article URL and read freely.",
             },
             {
-              title: "In-URL Dorking",
-              desc: "Searching for /wp-login.php or /admin to find entry points.",
+              title: "In-URL Dorking for Entry Points",
+              desc: "Search for paths like /wp-login.php, /admin, /dashboard, or /cpanel to discover login and admin pages.",
             },
             {
-              title: "Google Cache Trick",
-              desc: "Search cache:example.com/article to see saved version even if behind paywall.",
+              title: "Google Cache Direct Access",
+              desc: 'Search "cache:example.com/article" in Google to view the saved/cached version even if the original is behind a paywall.',
+            },
+            {
+              title: "Disable JavaScript Method",
+              desc: "Some paywalls rely on JavaScript. Disable JS in browser settings or use Reader Mode to bypass simple overlays.",
             },
           ],
-
-          /* ─── OSINT TRICKS ─── */
           osintTricks: [
             {
               title: "🔍 Reverse Image Search",
-              desc: "Use pimeyes.com or yandex.com/images to find the source of any photo.",
+              desc: "Use pimeyes.com, yandex.com/images, or Google Lens to find the source and all appearances of any photo online.",
             },
             {
               title: "👤 Username Tracking",
-              desc: "Use whatsmyname.app to find accounts across 500+ platforms.",
+              desc: "Use whatsmyname.app or namechk.com to find accounts across 500+ social media platforms using just a username.",
             },
             {
-              title: "🌊 Shodan Search",
-              desc: "Find internet-connected devices — CCTV, servers, IoT. Search at shodan.io.",
+              title: "🌊 Shodan IoT Search",
+              desc: "Find internet-connected devices like CCTV cameras, servers, IoT devices, and industrial systems at shodan.io.",
             },
             {
-              title: "📄 FOCA / Metadata",
-              desc: "Extract hidden info (author, OS, software) from PDF/Doc files. Tools: FOCA, Exiftool, Metagoofil.",
+              title: "📄 FOCA / Metadata Extraction",
+              desc: "Extract hidden metadata (author, OS, software, printer info) from PDF, DOC, PPT files using FOCA, Exiftool, or Metagoofil.",
             },
             {
-              title: "📧 Email OSINT",
-              desc: "Use hunter.io to find email patterns. theHarvester automates this.",
+              title: "📧 Email Intelligence",
+              desc: "Use hunter.io to find email patterns for any company domain. theHarvester automates email discovery from terminal.",
             },
             {
-              title: "🌐 DNS/WHOIS Recon",
-              desc: "Look up domain registration, IP, nameservers. Tools: whois.com, nslookup.io, censys.io.",
+              title: "🌐 DNS & WHOIS Reconnaissance",
+              desc: "Look up domain registration, IP addresses, nameservers using whois.com, nslookup.io, censys.io, securitytrails.com.",
+            },
+            {
+              title: "📡 Wi-Fi Network Mapping",
+              desc: "Use wigle.net to search for Wi-Fi networks by location, SSID, or BSSID for wireless network intelligence.",
+            },
+            {
+              title: "🗺️ Geolocation Intelligence",
+              desc: "Use Google Earth, Sentinel Hub, or Mapillary for satellite imagery analysis and geographic OSINT research.",
             },
           ],
-
-          /* ─── BASH COMMANDS ─── */
           bash: [
             {
               cmd: "ps aux",
-              desc: "Displays ALL running processes — spot suspicious activity",
+              desc: "Displays ALL running processes — use to spot suspicious or unauthorized activity",
             },
             {
               cmd: "ss -tulpn",
-              desc: "Shows all open network ports and active connections",
+              desc: "Shows all open network ports, active connections, and listening services",
             },
             {
               cmd: "sha256sum [file]",
-              desc: "Generates digital fingerprint to verify file safety",
+              desc: "Generates SHA-256 digital fingerprint to verify file integrity and safety",
             },
             {
               cmd: "ls -la",
-              desc: "Shows all files including hidden ones (dot files)",
+              desc: "Shows ALL files including hidden ones (dotfiles starting with .) with permissions",
             },
             {
               cmd: "find . -executable",
-              desc: "Locates files with execute permission (potential malware)",
+              desc: "Locates all files with execute permission — helps identify potential malware",
             },
             {
               cmd: "curl -I [URL]",
-              desc: "Checks HTTP status/headers of a website",
+              desc: "Checks HTTP response headers of a website (status code, server info, etc.)",
             },
             {
               cmd: "netstat -an",
-              desc: "Shows all network connections and listening ports",
+              desc: "Displays all network connections, routing tables, and listening ports",
             },
-            { cmd: "whoami", desc: "Shows current logged-in username" },
-            { cmd: "uname -a", desc: "Shows full system/kernel information" },
+            {
+              cmd: "whoami",
+              desc: "Shows the current logged-in username for identity verification",
+            },
+            {
+              cmd: "uname -a",
+              desc: "Displays full system and kernel information (OS, version, architecture)",
+            },
             {
               cmd: "history",
-              desc: "Shows command history — check what was run",
+              desc: "Shows complete command history — useful to audit what was previously executed",
             },
             {
               cmd: "cat /etc/passwd",
-              desc: "Lists all user accounts on Linux",
+              desc: "Lists all user accounts registered on the Linux/Unix system",
             },
-            { cmd: "chmod 600 [file]", desc: "Only owner can read/write" },
+            {
+              cmd: "chmod 600 [file]",
+              desc: "Sets file permissions so only the owner can read and write (secure files)",
+            },
             {
               cmd: 'grep -r "password" .',
-              desc: 'Recursively searches for "password" in all files',
+              desc: 'Recursively searches for the word "password" in all files in current directory',
             },
             {
               cmd: "nmap -sV [target]",
-              desc: "Scans for open ports and service versions",
+              desc: "Scans target for open ports and identifies running service versions",
             },
             {
               cmd: "dig [domain]",
-              desc: "DNS lookup — find IP addresses for domain",
+              desc: "Performs DNS lookup to resolve domain names to IP addresses",
+            },
+            {
+              cmd: "traceroute [host]",
+              desc: "Traces the network path (hops) between your machine and the target",
+            },
+            {
+              cmd: "whois [domain]",
+              desc: "Queries domain registration information (owner, registrar, dates)",
+            },
+            {
+              cmd: "iptables -L",
+              desc: "Lists all firewall rules currently configured on the system",
+            },
+            {
+              cmd: "last",
+              desc: "Shows recent login history — useful for detecting unauthorized access",
+            },
+            {
+              cmd: "df -h",
+              desc: "Displays disk space usage in human-readable format",
             },
           ],
-
-          /* ─── SHIMBA'S SECURITY RULES ─── */
           rules: [
             {
               icon: "🔍",
               title: "Double Extension Check",
-              desc: "NEVER open files like report.pdf.exe — the real extension is .exe (malware). Check the LAST extension.",
+              desc: "NEVER open files like report.pdf.exe — the real extension is .exe (executable malware). Always verify the LAST extension before opening.",
             },
             {
               icon: "🖥️",
-              title: "The VM Rule",
-              desc: "ALWAYS test unknown scripts/tools inside a Virtual Machine. Never on main system.",
+              title: "The Virtual Machine Rule",
+              desc: "ALWAYS test unknown scripts, suspicious tools, and untrusted downloads inside a Virtual Machine (VirtualBox/VMware). Never execute on your main system.",
             },
             {
               icon: "🔑",
-              title: "No Password Input",
-              desc: 'NEVER enter real credentials on bypassed/"cracked" sites. They could be phishing.',
+              title: "No Real Password Input",
+              desc: 'NEVER enter your real credentials on any bypassed, "cracked", or suspicious website. These are often phishing pages designed to steal your data.',
             },
             {
               icon: "🛡️",
-              title: "HTTPS Always",
-              desc: "Check for https:// and lock icon before entering sensitive data.",
+              title: "HTTPS Always Check",
+              desc: "Always check for https:// and the padlock icon before entering any sensitive data. HTTP sites transmit data without encryption.",
             },
             {
               icon: "🧪",
-              title: "Hash Before Running",
-              desc: "Check sha256sum hash before running any downloaded tool.",
+              title: "Hash Verification Before Running",
+              desc: "Before executing any downloaded tool or script, verify its SHA-256 hash against the official hash provided by the developer.",
             },
             {
               icon: "📡",
-              title: "VPN for OSINT",
-              desc: "Use VPN during OSINT research to protect your IP address.",
+              title: "VPN for OSINT Research",
+              desc: "When conducting OSINT research, always use a VPN to protect your IP address. Your search queries reveal your research interests and identity.",
+            },
+            {
+              icon: "🔄",
+              title: "Regular Updates Rule",
+              desc: "Keep your OS, browser, and all tools updated. Unpatched vulnerabilities are the #1 attack vector for exploitation.",
+            },
+            {
+              icon: "💾",
+              title: "Backup Before Testing",
+              desc: "Always create a full system backup before running any security tools or scripts. This ensures you can recover if something goes wrong.",
             },
           ],
         },
 
-        /* ─── GOOGLE DIRECTIVES (Reference Tab) ─── */
+        // ─── GOOGLE DIRECTIVES (Reference Tab) ───
         directives: [
           {
             op: "site:",
-            desc: "Limits results to a target site or domain",
-            ex: "site:example.com",
+            desc: "Limits results to a specific website or domain",
+            ex: "site:github.com",
           },
           {
             op: "inurl:",
-            desc: "Searches keywords within the URL",
+            desc: "Searches for keywords within the URL path",
             ex: "inurl:admin",
           },
           {
             op: "intitle:",
-            desc: "Searches keywords within the title",
+            desc: "Searches for keywords within the page title",
             ex: 'intitle:"login page"',
           },
           {
             op: "intext:",
-            desc: "Searches keywords within body text",
+            desc: "Searches for keywords within the page body text",
             ex: "intext:confidential",
           },
           {
             op: "link:",
-            desc: "Sites that link to target — useful for social engineering",
+            desc: "Finds pages that link to the target URL — useful for social engineering",
             ex: "link:target.com",
           },
           {
             op: "filetype:",
-            desc: "Files with specific extension",
+            desc: "Searches for files with a specific extension",
             ex: "filetype:pdf",
           },
           {
+            op: "ext:",
+            desc: "Alias for filetype — searches by file extension",
+            ex: "ext:sql",
+          },
+          {
             op: "cache:",
-            desc: "Google cached version",
+            desc: "Shows Google's cached/saved version of a page",
             ex: "cache:example.com",
           },
-          { op: "related:", desc: "Similar sites", ex: "related:github.com" },
-          { op: "define:", desc: "Definition of term", ex: "define:OSINT" },
-          { op: "info:", desc: "Info about a URL", ex: "info:example.com" },
+          {
+            op: "related:",
+            desc: "Finds websites similar to the specified URL",
+            ex: "related:github.com",
+          },
+          {
+            op: "info:",
+            desc: "Shows information Google has about a specific URL",
+            ex: "info:example.com",
+          },
+          {
+            op: "define:",
+            desc: "Shows the dictionary definition of a word or phrase",
+            ex: "define:OSINT",
+          },
           {
             op: "allintitle:",
-            desc: "All keywords must appear in title",
+            desc: "ALL keywords must appear in the page title",
             ex: "allintitle:cyber security",
           },
           {
             op: "allinurl:",
-            desc: "All keywords must appear in URL",
+            desc: "ALL keywords must appear in the URL path",
             ex: "allinurl:admin panel",
           },
           {
             op: "allintext:",
-            desc: "All keywords must appear in body",
+            desc: "ALL keywords must appear in the page body text",
             ex: "allintext:username password",
           },
           {
             op: "before:",
-            desc: "Results before date",
+            desc: "Results published before a specific date",
             ex: "before:2024-01-01",
           },
-          { op: "after:", desc: "Results after date", ex: "after:2023-06-01" },
+          {
+            op: "after:",
+            desc: "Results published after a specific date",
+            ex: "after:2023-06-01",
+          },
         ],
 
-        /* ─── MODIFIERS (Reference Tab) ─── */
+        // ─── MODIFIERS (Reference Tab) ───
         modifiers: [
-          { mod: '"double quotes"', func: "Literal/exact match for string" },
-          { mod: "- (hyphen)", func: "Omits pages — e.g., -site:domain.com" },
-          { mod: "* (asterisk)", func: 'Keyword wildcard — "best * tools"' },
-          { mod: "OR / |", func: "Match either term" },
-          { mod: "( )", func: "Group terms — (inurl:admin OR inurl:login)" },
-          { mod: ".. (range)", func: "Number range — price $100..$500" },
-          { mod: "AROUND(n)", func: "Two words within n words of each other" },
+          {
+            mod: '"double quotes"',
+            func: "Literal/exact match — searches for the exact phrase",
+          },
+          {
+            mod: "- (hyphen/minus)",
+            func: "Excludes pages containing the term — e.g., -site:pinterest.com",
+          },
+          {
+            mod: "* (asterisk wildcard)",
+            func: 'Acts as a word placeholder — "best * for hacking"',
+          },
+          {
+            mod: "OR / | (pipe)",
+            func: "Matches either term — hacking OR pentesting",
+          },
+          {
+            mod: "( ) parentheses",
+            func: "Groups search terms — (inurl:admin OR inurl:login)",
+          },
+          {
+            mod: ".. (double dot range)",
+            func: "Number range search — price $100..$500",
+          },
+          {
+            mod: "AROUND(n)",
+            func: "Two words must appear within n words of each other",
+          },
         ],
 
-        /* ─── FULL OPERATOR TABLE (with engine support) ─── */
+        // ─── FULL OPERATOR TABLE ───
         fullOps: [
           {
             op: "intitle:",
@@ -2733,49 +2676,49 @@
           },
           {
             op: "allintitle:",
-            desc: "All words in title",
+            desc: "All words must be in title",
             ex: "allintitle:cyber security",
             eng: "Google",
           },
           {
             op: "inurl:",
-            desc: "Search in URL",
+            desc: "Search within the URL",
             ex: "inurl:admin",
             eng: "Google, Bing, DDG",
           },
           {
             op: "allinurl:",
-            desc: "All words in URL",
+            desc: "All words must be in URL",
             ex: "allinurl:admin login",
             eng: "Google",
           },
           {
             op: "intext:",
-            desc: "Search in body text",
+            desc: "Search in page body text",
             ex: "intext:password",
             eng: "Google",
           },
           {
             op: "allintext:",
-            desc: "All words in body",
+            desc: "All words in body text",
             ex: "allintext:password reset",
             eng: "Google",
           },
           {
             op: "site:",
-            desc: "Limit to domain",
+            desc: "Limit to specific domain",
             ex: "site:github.com",
             eng: "Google, Bing, DDG",
           },
           {
             op: "filetype:",
-            desc: "File type",
+            desc: "Specific file type",
             ex: "filetype:pdf",
             eng: "Google, Bing, DDG",
           },
           {
             op: "ext:",
-            desc: "Extension (alias)",
+            desc: "File extension (alias)",
             ex: "ext:sql",
             eng: "Google",
           },
@@ -2787,33 +2730,39 @@
           },
           {
             op: "related:",
-            desc: "Related sites",
+            desc: "Similar/related sites",
             ex: "related:github.com",
             eng: "Google",
           },
           {
             op: "cache:",
-            desc: "Cached page",
+            desc: "Cached page version",
             ex: "cache:example.com",
             eng: "Google",
           },
           {
             op: "define:",
-            desc: "Definition",
+            desc: "Dictionary definition",
             ex: "define:phishing",
             eng: "Google",
           },
           {
+            op: "info:",
+            desc: "Page information",
+            ex: "info:example.com",
+            eng: "Google",
+          },
+          {
             op: "-keyword",
-            desc: "Exclude term",
+            desc: "Exclude a term",
             ex: "-pinterest",
             eng: "Google, DDG",
           },
           {
             op: "OR",
-            desc: "Either term",
+            desc: "Match either term",
             ex: "hacking OR pentesting",
-            eng: "All",
+            eng: "All engines",
           },
           {
             op: "AROUND(n)",
@@ -2823,236 +2772,394 @@
           },
           {
             op: "before:",
-            desc: "Before date",
+            desc: "Results before date",
             ex: "before:2024-01-01",
             eng: "Google",
           },
           {
             op: "after:",
-            desc: "After date",
+            desc: "Results after date",
             ex: "after:2023-01-01",
             eng: "Google",
           },
         ],
 
-        /* ─── HOW-TO EXAMPLES ─── */
+        // ─── HOW-TO EXAMPLES ───
         examples: [
           {
             id: "javadsa",
             title: "🎯 Java DSA Handwritten Notes PDF",
             q: '"java dsa handwritten notes" filetype:pdf site:drive.google.com',
             steps: [
-              "Keywords box mein likho: java dsa handwritten notes",
-              'Phrase Mode → "Exact Phrase" select karo',
-              "File Type: PDF pe click karo (blue = selected)",
-              "➕ Filter: site: → drive.google.com",
-              "Query preview auto-update ho jayega",
-              "🔍 Search dabao ya Enter press karo!",
+              "Enter keywords: java dsa handwritten notes",
+              'Set Phrase Mode to "Exact Phrase" for precise matching',
+              "Click PDF in the File Types grid (turns blue = selected)",
+              "Click ➕ Add Filter → select site: → type drive.google.com",
+              "Watch the Query Preview auto-update with your complete query",
+              "Click 🔍 Search or press Enter — results open in new tab!",
             ],
           },
           {
             id: "python",
             title: "💻 Python Tutorial PDF",
             q: 'python tutorial beginner intitle:"python tutorial" filetype:pdf',
-            steps: null,
           },
           {
             id: "cyber",
-            title: "🔒 Cyber Notes (edu)",
+            title: "🔒 Cybersecurity Notes from Universities",
             q: "cybersecurity site:edu (filetype:pdf OR filetype:ppt)",
-            steps: null,
           },
           {
             id: "gate",
-            title: "🎓 GATE/Exam Notes",
+            title: "🎓 GATE Exam Notes & Study Material",
             q: '"gate" "computer science" notes filetype:pdf',
-            steps: null,
           },
           {
             id: "gdrive",
-            title: "📁 Google Drive Books",
+            title: "📁 Google Drive Books & Resources",
             q: 'site:drive.google.com "data structures" filetype:pdf',
-            steps: null,
           },
           {
             id: "cheat",
-            title: "📋 Cheat Sheets",
+            title: "📋 Programming Cheat Sheets",
             q: '"cheat sheet" javascript filetype:pdf',
-            steps: null,
           },
           {
             id: "ebook",
-            title: "📚 Free eBooks",
+            title: "📚 Free eBooks from Open Directories",
             q: 'intitle:"index of" "parent directory" ebook filetype:pdf',
-            steps: null,
           },
           {
             id: "resume",
-            title: "📄 Resume Templates",
+            title: "📄 Resume & CV Templates",
             q: '"resume" OR "cv" filetype:docx site:drive.google.com',
-            steps: null,
           },
           {
             id: "research",
-            title: "📄 Research Papers",
+            title: "🔬 Machine Learning Research Papers",
             q: 'site:researchgate.net OR site:arxiv.org "machine learning" filetype:pdf',
-            steps: null,
+          },
+          {
+            id: "config",
+            title: "⚙️ Exposed Configuration Files",
+            q: 'filetype:env OR filetype:conf "DB_PASSWORD" OR "SECRET_KEY"',
           },
         ],
 
-        /* ─── BUTTON REFERENCE (Hindi) ─── */
+        // ─── BUTTON REFERENCE ───
         buttonRef: [
-          ["🔍 Search", "Query encode karke new tab mein search"],
-          ["📋 Copy", "Query clipboard mein copy"],
-          ["📑 Duplicate", "Query ko edit box mein paste"],
-          ["🗑️ Clear", "Sab fields clear"],
-          ["💾 Save", "Query naam dekar save (localStorage)"],
-          ["➕ Add Filter", "Naya operator row add"],
-          ["Quick Chips", "Click = operator keyword mein add"],
-          ["File Type", "Click = select (blue), phir click = deselect"],
-          ["Presets", "Pre-made query template load"],
-          ["📦 I/O", "JSON export/import"],
+          [
+            "🔍 Search",
+            "Encodes query safely and opens search results in a new browser tab",
+          ],
+          [
+            "📋 Copy Query",
+            "Copies the current generated query to your clipboard",
+          ],
+          [
+            "📑 Duplicate",
+            "Copies query into the manual edit box for fine-tuning",
+          ],
+          [
+            "🗑️ Clear All",
+            "Resets all fields, filters, filetypes, and date ranges",
+          ],
+          [
+            "💾 Save Preset",
+            "Saves current query as a named preset in browser localStorage",
+          ],
+          [
+            "➕ Add Filter",
+            "Adds a new operator filter row (intitle, inurl, site, etc.)",
+          ],
+          [
+            "Quick Operator Chips",
+            "Click any blue chip to instantly add that operator to keywords",
+          ],
+          [
+            "File Type Buttons",
+            "Click to select (turns blue), click again to deselect",
+          ],
+          [
+            "Preset Category Buttons",
+            "Click to load a pre-built query template instantly",
+          ],
+          [
+            "📦 Import/Export",
+            "Export all history & presets as JSON, or import from backup",
+          ],
+          [
+            "🌙/☀️ Theme Toggle",
+            "Switch between Dark Mode and Light Mode (saved automatically)",
+          ],
         ],
 
-        /* ─── HINDI OPERATOR EXPLANATIONS ─── */
-        hindiOps: [
-          ["intitle:", "Page ke title mein dhundho", "intitle:notes"],
-          ["inurl:", "Page ke URL mein dhundho", "inurl:admin"],
-          ["intext:", "Page ke body mein dhundho", "intext:password"],
-          ["site:", "Sirf is website pe dhundho", "site:github.com"],
-          ["filetype:", "Sirf is type ki file", "filetype:pdf"],
-          ['"quotes"', "Exact match — bilkul yehi words", '"java notes"'],
-          ["-minus", "Ye word hatao results se", "-pinterest"],
-          ["OR", "Ya ye ya woh — dono mein se koi", "pdf OR ppt"],
-          ["AROUND(n)", "Do words n words ke andar", "AROUND(3)"],
-          ["cache:", "Google ki saved copy", "cache:example.com"],
+        // ─── OPERATOR EXPLANATIONS ───
+        opsExplained: [
+          {
+            op: "intitle:",
+            meaning: "Searches within the page TITLE only",
+            ex: "intitle:notes",
+          },
+          {
+            op: "inurl:",
+            meaning: "Searches within the page URL/link only",
+            ex: "inurl:admin",
+          },
+          {
+            op: "intext:",
+            meaning: "Searches within the page BODY TEXT only",
+            ex: "intext:password",
+          },
+          {
+            op: "site:",
+            meaning: "Limits search to ONLY this specific website",
+            ex: "site:github.com",
+          },
+          {
+            op: "filetype:",
+            meaning: "Only shows results of THIS file type",
+            ex: "filetype:pdf",
+          },
+          {
+            op: '"quotes"',
+            meaning: "EXACT match — finds these exact words in order",
+            ex: '"java notes"',
+          },
+          {
+            op: "-minus",
+            meaning: "REMOVES/excludes this word from results",
+            ex: "-pinterest",
+          },
+          {
+            op: "OR",
+            meaning: "Shows results matching EITHER term (not both required)",
+            ex: "pdf OR ppt",
+          },
+          {
+            op: "AROUND(n)",
+            meaning: "Two words must appear within N words of each other",
+            ex: "password AROUND(3) leaked",
+          },
+          {
+            op: "cache:",
+            meaning: "Shows Google's SAVED copy of the page",
+            ex: "cache:example.com",
+          },
+          {
+            op: "before:/after:",
+            meaning: "Filters by publication DATE range",
+            ex: "after:2024-01-01",
+          },
         ],
 
-        /* ─── OSINT TOOLS (Tools Tab) ─── */
+        // ─── OSINT TOOLS ENCYCLOPEDIA ───
         tools: [
           {
-            name: "🌊 Shodan",
-            desc: "IoT & Device Search Engine. Finds: medical devices, CCTV/webcams, HVAC, ICS/SCADA, traffic systems, UPS, serial servers.",
+            name: "🌊 Shodan — IoT Search Engine",
+            desc: "The world's first search engine for Internet-connected devices. Finds medical devices, CCTV/webcams, HVAC systems, ICS/SCADA, traffic systems, UPS, serial servers, and more.",
             features: [
-              "port:22 → SSH",
-              "webcam → Webcams",
-              "country:US → US devices",
-              "has_screenshot:true",
-              "product:MongoDB",
+              "port:22 → SSH Servers",
+              "webcam → Cameras",
+              "country:US → Filter by Country",
+              "has_screenshot:true → Visual Results",
+              "product:MongoDB → Database Servers",
+              'org:"Microsoft" → By Organization',
             ],
           },
           {
-            name: "📑 FOCA",
-            desc: "Document Metadata Extraction. Search → Download → Analyze. Extracts: users, folders, printers, software, emails, OS, passwords, servers.",
+            name: "📑 FOCA — Document Metadata Extractor",
+            desc: "Fingerprinting Organizations with Collected Archives. Searches, downloads, and analyzes documents from target domains to extract metadata.",
             features: [
-              "DOC",
-              "PPT",
-              "XLS",
-              "PDF",
-              "ODT",
-              "SVG",
-              "RDP",
-              "INDD",
-              "WPD",
-              "ICA",
+              "Extracts: Users, Folders, Printers, Software, Emails, OS, Passwords, Servers",
+              "Supports: DOC, PPT, XLS, PDF, ODT, SVG, RDP, INDD, WPD, ICA + more",
             ],
           },
           {
-            name: "🌾 theHarvester",
-            desc: "Domain Intelligence. Gathers emails, IPs, domains, subdomains, ports from search engines + Shodan.",
-            features: ["theHarvester -d target.com -b google -l 500"],
-          },
-          {
-            name: "🕸️ Maltego",
-            desc: 'Relationship Mapping. Maps: people ↔ sites ↔ companies using "transforms". Domain→PGP, Person→Email, Domain→Phone.',
+            name: "🌾 theHarvester — Domain Intelligence",
+            desc: "Gathers information from target domains via public sources including email addresses, IP addresses, domain names, subdomains, ports and banners.",
             features: [
-              "CE: max 12 results/transform",
-              "Must register",
-              "API keys expire",
+              "theHarvester -d target.com -b google -l 500",
+              "Sources: Search Engines, PGP Servers, Shodan",
+              "Finds: Emails, IPs, Subdomains, Banners",
             ],
           },
           {
-            name: "🔬 Recon-ng",
-            desc: "Web Recon Framework. 50+ recon modules, DNS cache snoop, interesting files discovery, XPATH & Command Injection.",
-            features: ["show info", "50+ modules", "API keys may cost"],
+            name: "🕸️ Maltego — Relationship Mapping",
+            desc: 'Visual link analysis tool that finds relationships among people, sites, and companies using "transforms" to build hierarchies of related information.',
+            features: [
+              "Domain → PGP Keys",
+              "Person → Email Addresses",
+              "Domain → Phone Numbers",
+              "CE: Max 12 Results per Transform",
+            ],
           },
           {
-            name: "🔧 SPUD (SensePost)",
-            desc: "Converts Google SOAP API requests into website searches. Uses screen-scraping. Violates Google ToS.",
-            features: ["Originally Aura", "Deprecated"],
+            name: "🔬 Recon-ng — Web Recon Framework",
+            desc: "Modular web reconnaissance framework with 50+ modules for discovery, exploitation, and reporting. Supports API key integration.",
+            features: [
+              "50+ Recon Modules",
+              "DNS Cache Snoop",
+              "Interesting Files Discovery",
+              "XPATH & Command Injection",
+              'Use "show info" for Module Details',
+            ],
           },
           {
-            name: "🕷️ SpiderFoot",
-            desc: "Automated OSINT with 200+ modules for comprehensive intelligence gathering.",
-            features: ["200+ modules", "Automated", "Web UI"],
+            name: "🔧 SPUD by SensePost",
+            desc: "Converts Google SOAP API requests into general website searches using screen-scraping to collect, parse, and return results. Originally called Aura.",
+            features: [
+              "Screen-Scraping Method",
+              "Violates Google ToS",
+              "Originally SensePost Aura (Deprecated)",
+            ],
           },
           {
-            name: "🗺️ Amass",
-            desc: "In-depth subdomain enumeration and network mapping.",
-            features: ["OWASP project", "Active/Passive"],
+            name: "🕷️ SpiderFoot — Automated OSINT",
+            desc: "Comprehensive automated OSINT collection platform with 200+ modules for gathering intelligence from numerous data sources.",
+            features: [
+              "200+ Modules",
+              "Web UI Dashboard",
+              "Automated Scanning",
+              "API Integration",
+            ],
           },
           {
-            name: "📄 Metagoofil",
-            desc: "Metadata extraction from public documents found via search engines.",
-            features: ["PDF", "DOC", "XLS", "PPT"],
+            name: "🗺️ Amass — Subdomain Enumeration",
+            desc: "OWASP project for in-depth subdomain enumeration, network mapping, and attack surface discovery.",
+            features: [
+              "OWASP Project",
+              "Active & Passive Modes",
+              "Graph Database",
+              "DNS Brute Force",
+            ],
           },
           {
-            name: "🔎 Exiftool",
-            desc: "Read/write metadata from image and document files.",
-            features: ["All file types", "CLI tool"],
+            name: "📄 Metagoofil — Document Metadata",
+            desc: "Information gathering tool for extracting metadata from public documents found via search engines.",
+            features: [
+              "PDF, DOC, XLS, PPT Support",
+              "Extracts Users & Paths",
+              "Search Engine Integration",
+            ],
           },
           {
-            name: "👤 whatsmyname.app",
-            desc: "Username tracking across 500+ social media platforms.",
-            features: ["Web-based", "Free"],
+            name: "🔎 Exiftool — File Metadata Reader",
+            desc: "Read, write, and manipulate metadata information in image, document, and multimedia files.",
+            features: [
+              "Supports All File Types",
+              "CLI Tool",
+              "Read & Write Metadata",
+              "Cross-Platform",
+            ],
           },
           {
-            name: "🖼️ PimEyes / Yandex",
-            desc: "Reverse image search to find photo origins across the internet.",
-            features: ["Face recognition", "Image search"],
+            name: "👤 whatsmyname.app — Username Tracker",
+            desc: "Searches for a given username across 500+ social media platforms and websites to find all associated accounts.",
+            features: [
+              "500+ Platforms",
+              "Web-Based",
+              "Free to Use",
+              "Real-Time Results",
+            ],
+          },
+          {
+            name: "🖼️ PimEyes / Yandex — Reverse Image",
+            desc: "Facial recognition and reverse image search engines to find all online appearances of a photo.",
+            features: [
+              "Face Recognition",
+              "Image Search",
+              "Source Finding",
+              "PimEyes: Paid, Yandex: Free",
+            ],
           },
         ],
       };
 
-      /* ══════════════════════════════════════════════════════════
-           ENGINE — Don't edit below unless you know what you're doing
-           ══════════════════════════════════════════════════════════ */
+      /* ══════════════════════════════════════════════════════════════
+           ENGINE — Core Application Logic
+           ══════════════════════════════════════════════════════════════ */
 
-      const E = encodeURIComponent;
-      const $ = (id) => document.getElementById(id);
-      const state = {
+      const E = encodeURIComponent,
+        $ = (id) => document.getElementById(id);
+      const S = {
         filters: [],
-        selFT: new Set(),
+        ft: new Set(),
         hist: [],
         saved: [],
         fid: 0,
         manual: false,
       };
 
-      // ── INIT ──
       document.addEventListener("DOMContentLoaded", () => {
-        buildUI();
-        loadStorage();
-        renderHistory();
+        buildAll();
+        loadLS();
+        renderHist();
         renderSaved();
-        updateStats();
-        bindEvents();
-        updatePreview();
+        updStats();
+        bindEv();
+        updPrev();
       });
 
-      // ── BUILD ALL UI FROM JSON ──
-      function buildUI() {
-        // Quick Ops
-        $("quickOpsContainer").innerHTML = DATA.quickOps
+      // ═══ BUILD ENTIRE UI FROM DATA ═══
+      function buildAll() {
+        // Nav tabs
+        $("navBar").innerHTML = DATA.tabs
           .map(
-            (o) =>
-              `<span class="qc" onclick="insertOp('${esc(o.replace(/'/g, "\\'"))}')">${esc(o)}</span>`,
+            (t, i) =>
+              `<button class="ntab${i === 0 ? " on" : ""}" data-t="${t.id}">${t.icon} ${t.label}</button>`,
           )
           .join("");
+        document
+          .querySelectorAll(".ntab")
+          .forEach((b) =>
+            b.addEventListener("click", () => swTab(b.dataset.t, b)),
+          );
 
-        // Filetype Grid
-        const ftg = $("ftGrid");
-        ftg.innerHTML = "";
+        // ── PANEL: DORKING ──
+        $("p-dorking").innerHTML = `
+<div class="g2">
+<div class="card"><div class="ch"><div class="ci b">🔍</div><div><div class="ct">Advanced Google Dorking Engine</div><div class="cd">Build complex search queries dynamically — all operators supported</div></div></div>
+  <div class="fg"><label class="fl">🔑 Main Keywords</label><input type="text" class="fi" id="kwI" placeholder="Enter keywords (e.g., java dsa handwritten notes)" autocomplete="off"></div>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.7rem">
+    <div style="flex:1;min-width:135px"><label class="fl">🔧 Search Engine</label><select class="fi" id="engS"><option value="google">Google</option><option value="bing">Bing</option><option value="duckduckgo">DuckDuckGo</option></select></div>
+    <div style="flex:1;min-width:135px"><label class="fl">💬 Phrase Mode</label><select class="fi" id="phS"><option value="normal">Normal Keywords</option><option value="exact">Exact Phrase "..."</option></select></div>
+  </div>
+  <div class="sdiv">⚡ Quick Operators — Click to Add</div>
+  <div class="ql mb1">${DATA.quickOps.map((o) => `<span class="qc" onclick="insOp('${esc(o.replace(/'/g, "\\'"))}')">${esc(o)}</span>`).join("")}</div>
+  <div class="bf mt2">
+    <button class="btn b1" onclick="doSearch()">🔍 Search</button>
+    <button class="btn b2" onclick="cpQ()">📋 Copy Query</button>
+    <button class="btn b2" onclick="dupQ()">📑 Duplicate</button>
+    <button class="btn bD bs" onclick="clrAll()">🗑️ Clear All</button>
+    <button class="btn bG bs" onclick="openSaveM()">💾 Save Preset</button>
+  </div>
+</div>
+<div class="card cg"><div class="ch"><div class="ci g">🛠️</div><div><div class="ct">Dynamic Filter Builder</div><div class="cd">Add unlimited operator filters — combine intitle, inurl, site, filetype, etc.</div></div></div>
+  <div class="fb mb1"><button class="btn bB bs" onclick="addF()">➕ Add Filter</button><button class="btn b2 bx" onclick="clrF()">Clear Filters</button></div>
+  <div class="sy" id="fBox"></div>
+  <div class="sdiv">📄 File Type Multi-Select</div>
+  <div class="ftg" id="ftG"></div>
+  <div class="sdiv">📅 Date Range Filter</div>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+    <div style="flex:1;min-width:115px"><label class="fl">After Date</label><input type="date" class="fi" id="dA"></div>
+    <div style="flex:1;min-width:115px"><label class="fl">Before Date</label><input type="date" class="fi" id="dB"></div>
+  </div>
+</div>
+</div>
+<div class="card cp" style="margin-top:1rem"><div class="ch"><div class="ci p">📡</div><div><div class="ct">Real-Time Query Preview</div><div class="cd">Updates live as you build — edit manually below for fine-tuning</div></div></div>
+  <div class="qp" id="qPrev"><span class="em">Start building your query above — preview appears here...</span></div>
+  <div class="fg mt1"><label class="fl">✏️ Manual Query Editor</label><textarea class="fi" id="mEdit" rows="2" placeholder="Or type/paste your query directly here..."></textarea></div>
+  <div class="fb mt1"><span style="font-size:.66rem;color:var(--t3)">Press <kbd>Enter</kbd> to search instantly</span><button class="btn b1 bs" onclick="doSearch()">🚀 Execute Search</button></div>
+</div>
+<div class="card co" style="margin-top:1rem"><div class="ch"><div class="ci y">📚</div><div><div class="ct">Preset Query Categories</div><div class="cd">One-click to load pre-built advanced query templates</div></div></div>
+  <div class="pg">${DATA.presets.map((p) => `<button class="pb" onclick="ldPre('${esc(p.q.replace(/'/g, "\\'"))}')"><span class="pi">${p.icon}</span>${p.name}</button>`).join("")}</div>
+  <div class="sdiv">⭐ Your Saved Custom Presets</div>
+  <div class="sy" id="svBox"><div style="color:var(--t3);font-size:.72rem;text-align:center;padding:.5rem">No saved presets yet — use 💾 Save to create one</div></div>
+</div>`;
+
+        // Build filetype grid
+        const ftg = $("ftG");
         DATA.filetypes.forEach((ft) => {
           const l = document.createElement("label");
           l.className = "ftc";
@@ -3060,315 +3167,263 @@
           l.innerHTML = `<input type="checkbox"><span>${ft.toUpperCase()}</span>`;
           l.onclick = (e) => {
             e.preventDefault();
-            toggleFT(ft);
+            togFT(ft);
           };
           ftg.appendChild(l);
         });
 
-        // Preset Grid
-        $("presetGrid").innerHTML = DATA.presets
-          .map(
-            (p) =>
-              `<button class="pb" onclick="loadPreset('${esc(p.q.replace(/'/g, "\\'"))}')"><span>${p.icon}</span> ${p.name}</button>`,
-          )
-          .join("");
-
-        // GHDB Grid
-        $("ghdbGrid").innerHTML = DATA.ghdb
-          .map(
-            (g) =>
-              `<button class="pb" onclick="loadDork('${esc(g.q.replace(/'/g, "\\'"))}')"><span>${g.icon}</span> ${g.name}</button>`,
-          )
-          .join("");
-
-        // Social Buttons
-        $("socialBtns").innerHTML = DATA.social
-          .map(
-            (s) =>
-              `<button class="btn ${s.cls}" onclick="socialSearch('${s.id}')">${s.icon} ${s.name}</button>`,
-          )
-          .join("");
-
-        // Archive Buttons
-        $("archiveBtns").innerHTML = DATA.archives
-          .map(
-            (a) =>
-              `<button class="btn ${a.cls}" onclick="archiveGo('${a.id}')">${a.icon} ${a.name}</button>`,
-          )
-          .join("");
-
-        // WHOIS Buttons
-        $("whoisBtns").innerHTML = DATA.whois
-          .map(
-            (w) =>
-              `<button class="btn ${w.cls}" onclick="whoisGo('${w.id}')">${w.name}</button>`,
-          )
-          .join("");
-
-        // ── CHEAT SHEET ──
-        const cs = DATA.cheatSheet;
-
-        // Dorks
-        $("cs-dorks").innerHTML = cs.dorks
-          .map((d) => {
-            const dork = d.dork || d.code;
-            return `<div class="dr"><span class="dr-c">${esc(d.code)}</span><span class="dr-d">${d.desc}</span><div class="dr-a"><button class="btn bB bx" onclick="loadDork('${esc(dork.replace(/'/g, "\\'"))}')" title="Load">🔍</button><button class="btn b2 bx" onclick="copyText('${esc(dork.replace(/'/g, "\\'"))}')" title="Copy">📋</button></div></div>`;
+        // ── PANEL: HOW-TO ──
+        let exH = DATA.examples
+          .map((ex) => {
+            let inner = `<div class="ex"><div class="ex-t">${ex.title}</div>`;
+            if (ex.steps)
+              ex.steps.forEach((s, j) => {
+                inner += `<div class="stp"><div class="sn">${j + 1}</div><div class="stx">${s}</div></div>`;
+              });
+            else
+              inner += `<div class="stx" style="margin-bottom:.3rem"><code>${esc(ex.q)}</code></div>`;
+            return (
+              inner +
+              `<button class="btn b1 bs" onclick="tryEx('${ex.id}')">🚀 Try This Example — Auto-Fill!</button></div>`
+            );
           })
           .join("");
 
-        // Access
-        $("cs-access").innerHTML = cs.access
-          .map(
-            (a) =>
-              `<div class="cs-card"><div class="cs-t" style="color:var(--no)">🔓 ${a.title}</div><p>${a.desc}</p></div>`,
-          )
-          .join("");
+        $("p-howto").innerHTML = `
+<div class="card" style="border-color:rgba(0,200,255,.2);margin-bottom:1rem"><div class="ch"><div class="ci c">🎓</div><div><div class="ct">📖 Complete User Guide — How to Use Every Feature</div><div class="cd">Step-by-step walkthrough with interactive Try-It examples</div></div></div>
+  <div class="tip">💡 This tool builds advanced search queries for Google/Bing/DuckDuckGo. Click buttons to add operators → query builds automatically → results open in a new tab! No manual typing needed.</div>
+</div>
+${exH}
+<div class="g2" style="margin-top:1rem">
+  <div class="card"><div class="ch"><div class="ci y">🔘</div><div><div class="ct">Button Reference — What Each Button Does</div></div></div><div class="syl"><table class="rt"><tbody>${DATA.buttonRef.map((b) => `<tr><td><strong>${b[0]}</strong></td><td>${b[1]}</td></tr>`).join("")}</tbody></table></div></div>
+  <div class="card"><div class="ch"><div class="ci b">📝</div><div><div class="ct">Search Operators Explained (Simple English)</div></div></div><div class="syl"><table class="rt"><thead><tr><th>Operator</th><th>What It Does</th><th>Example</th></tr></thead><tbody>${DATA.opsExplained.map((o) => `<tr><td><code>${o.op}</code></td><td>${o.meaning}</td><td><code>${o.ex}</code></td></tr>`).join("")}</tbody></table></div></div>
+</div>
+<div class="card" style="margin-top:1rem"><div class="ch"><div class="ci p">🔐</div><div><div class="ct">What is OSINT? What is Google Dorking?</div></div></div>
+<div class="g2" style="gap:.8rem">
+  <div class="cs-card"><div class="cs-t" style="color:var(--nc)">🌐 OSINT (Open Source Intelligence)</div><p><strong>OSINT</strong> = Collecting and analyzing information from publicly available sources for intelligence purposes.</p><ul><li>🔍 Search Engines (Google, Bing, DuckDuckGo)</li><li>📱 Social Media (LinkedIn, Twitter, GitHub)</li><li>📋 Public Records, WHOIS, DNS Data</li><li>🗄️ Web Archives (Wayback Machine)</li><li>📡 IoT Device Search (Shodan)</li><li>📄 Document Metadata Analysis</li></ul><p style="color:var(--ng);margin-top:.3rem">✅ Completely legal when using public data for authorized purposes.</p></div>
+  <div class="cs-card"><div class="cs-t" style="color:var(--nc)">💀 Google Dorking (Google Hacking)</div><p><strong>Google Dorking</strong> = Using advanced search operators to find specific information that normal searches miss.</p><p>Normal search: <code>java notes pdf</code> → generic results</p><p>Dorking: <code>"java notes" filetype:pdf site:drive.google.com</code> → precise results!</p><p><strong>GHDB</strong> = Google Hacking Database — a curated repository of thousands of tested dork queries maintained by Offensive Security.</p><div class="warn">⚠️ Always use responsibly and ethically. Unauthorized access attempts are illegal!</div></div>
+</div></div>`;
 
-        // OSINT Tricks
-        $("cs-osint").innerHTML = cs.osintTricks
-          .map(
-            (o) =>
-              `<div class="cs-card"><div class="cs-t" style="color:var(--np)">${o.title}</div><p>${o.desc}</p></div>`,
-          )
-          .join("");
+        // ── PANEL: CHEAT SHEET ──
+        const cs = DATA.cheatSheet;
+        $("p-cheatsheet").innerHTML = `
+<div class="card" style="margin-bottom:1rem"><div class="ch"><div class="ci b">🔍</div><div><div class="ct">Google Dorking & Search Tricks</div><div class="cd">Click 🔍 Load to auto-fill the Dorking Engine, or 📋 Copy to clipboard</div></div></div>
+${cs.dorks
+  .map((d) => {
+    const dk = d.dork || d.code;
+    return `<div class="dr"><span class="dr-c">${esc(d.code)}</span><span class="dr-d">${d.desc}</span><div class="dr-a"><button class="btn bB bx" onclick="ldDork('${esc(dk.replace(/'/g, "\\'"))}')">🔍 Load</button><button class="btn b2 bx" onclick="cpTxt('${esc(dk.replace(/'/g, "\\'"))}')">📋 Copy</button></div></div>`;
+  })
+  .join("")}
+</div>
+<div class="card" style="margin-bottom:1rem"><div class="ch"><div class="ci o">🔓</div><div><div class="ct">Access & Bypass Tricks (Educational Only)</div><div class="cd">Cached pages, web archives, paywall removal techniques</div></div></div>
+${cs.access.map((a) => `<div class="cs-card"><div class="cs-t" style="color:var(--no)">🔓 ${a.title}</div><p>${a.desc}</p></div>`).join("")}
+<div class="warn mt1">⚠️ These techniques are strictly for educational purposes. Never attempt unauthorized access to any system or service.</div></div>
+<div class="card" style="margin-bottom:1rem"><div class="ch"><div class="ci p">🌐</div><div><div class="ct">OSINT Information Gathering Tricks</div><div class="cd">Open source intelligence collection methods and tools</div></div></div>
+${cs.osintTricks.map((o) => `<div class="cs-card"><div class="cs-t" style="color:var(--np)">${o.title}</div><p>${o.desc}</p></div>`).join("")}</div>
+<div class="card" style="margin-bottom:1rem"><div class="ch"><div class="ci g">💻</div><div><div class="ct">Bash Scripting Commands (Defensive & Monitoring)</div><div class="cd">Terminal commands for security monitoring — click 📋 Copy to copy any command</div></div></div>
+${cs.bash.map((b) => `<div class="br"><span class="br-c">${esc(b.cmd)}</span><span class="br-d">${b.desc}</span><button class="btn bG bx" onclick="cpTxt('${esc(b.cmd.replace(/'/g, "\\'"))}')">📋 Copy</button></div>`).join("")}</div>
+<div class="card cr"><div class="ch"><div class="ci r">🛡️</div><div><div class="ct">Shimba's Security Rules — NEVER Break These!</div><div class="cd">Essential security practices for safe research and testing</div></div></div>
+${cs.rules.map((r) => `<div class="rr"><span class="rr-i">${r.icon}</span><div class="rr-t"><strong>${r.title}:</strong> ${r.desc}</div></div>`).join("")}</div>`;
 
-        // Bash
-        $("cs-bash").innerHTML = cs.bash
-          .map(
-            (b) =>
-              `<div class="br"><span class="br-c">${esc(b.cmd)}</span><span class="br-d">${b.desc}</span><button class="btn bG bx" onclick="copyText('${esc(b.cmd.replace(/'/g, "\\'"))}')" title="Copy">📋</button></div>`,
-          )
-          .join("");
+        // ── PANEL: OSINT ──
+        $("p-osint").innerHTML = `
+<div class="g2">
+<div class="card"><div class="ch"><div class="ci o">🌐</div><div><div class="ct">Social Media OSINT Search</div><div class="cd">Search for people, usernames, and keywords across platforms</div></div></div>
+  <div class="fg"><label class="fl">🔑 Search Keyword / Name / Username</label><input type="text" class="fi" id="socKw" placeholder="Enter name, @handle, or keyword to search"></div>
+  <div class="bf">${DATA.social.map((s) => `<button class="btn ${s.cls}" onclick="socGo('${s.id}')">${s.icon} ${s.name}</button>`).join("")}</div>
+  <div class="sdiv">🎯 Advanced People Search</div>
+  <div class="fg"><label class="fl">Full Name</label><input type="text" class="fi" id="pN" placeholder="John Doe"></div>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.7rem">
+    <div style="flex:1;min-width:120px"><label class="fl">Location</label><input type="text" class="fi" id="pL" placeholder="New York"></div>
+    <div style="flex:1;min-width:120px"><label class="fl">Organization</label><input type="text" class="fi" id="pO" placeholder="Google"></div>
+  </div>
+  <button class="btn b1" onclick="pplGo()">🔍 Search Person Across Platforms</button>
+</div>
+<div class="card"><div class="ch"><div class="ci c">📦</div><div><div class="ct">Archive Access & Recon Tools</div><div class="cd">Access cached pages, archives, and paywall-free versions</div></div></div>
+  <div class="fg"><label class="fl">🔗 Target URL</label><input type="text" class="fi" id="arcU" placeholder="https://example.com/article..."></div>
+  <div class="bf">${DATA.archives.map((a) => `<button class="btn ${a.cls} bs" onclick="arcGo('${a.id}')">${a.icon} ${a.name}</button>`).join("")}</div>
+  <div class="sdiv">🔗 Google Cache + Strip JavaScript</div>
+  <div class="fg"><label class="fl">URL (for &strip=1 bypass trick)</label><input type="text" class="fi" id="stripU" placeholder="https://example.com/paywalled-article"></div>
+  <button class="btn bC bs" onclick="cStrip()">📋 Open Google Cache + &strip=1</button>
+  <div class="sdiv">🌊 Shodan — IoT & Device Search Engine</div>
+  <div class="fg"><label class="fl">🔎 Shodan Search Query</label><input type="text" class="fi" id="shQ" placeholder="e.g., webcam, apache, port:22, country:US"></div>
+  <div class="bf"><button class="btn bC" onclick="shGo()">🌊 Search Shodan</button></div>
+  <div class="bf mt1">${DATA.shodanPresets.map((p) => `<button class="btn b2 bs" onclick="shPre('${esc(p.q.replace(/'/g, "\\'"))}')">${p.icon} ${p.name}</button>`).join("")}</div>
+  <div class="sdiv">🔍 WHOIS / DNS / Technology Lookup</div>
+  <div class="fg"><label class="fl">🌐 Domain Name</label><input type="text" class="fi" id="whD" placeholder="example.com"></div>
+  <div class="bf">${DATA.whois.map((w) => `<button class="btn ${w.cls}" onclick="whGo('${w.id}')">${w.name}</button>`).join("")}</div>
+</div>
+</div>
+<div class="card" style="margin-top:1rem"><div class="ch"><div class="ci c">🔧</div><div><div class="ct">IP, Email, Subdomain & Security Reconnaissance Tools</div><div class="cd">Quick lookup tools — enter a value and click to open results in new tab</div></div></div>
+<div class="g3" style="gap:.6rem">${DATA.recon.map((r) => `<div class="cs-card"><div class="cs-t" style="color:var(--nc)">${r.name}</div><div class="fg"><input type="text" class="fi" id="rc-${r.id}" placeholder="${r.placeholder}"></div><button class="btn bC bs" onclick="reconGo('${r.id}')">🔍 Lookup</button></div>`).join("")}</div>
+</div>
+<div class="card" style="margin-top:1rem"><div class="ch"><div class="ci r">💀</div><div><div class="ct">Google Hacking Database (GHDB) Categories</div><div class="cd">Click any category to auto-load the dork query into the Dorking Engine</div></div></div>
+<div class="pg">${DATA.ghdb.map((g) => `<button class="pb" onclick="ldDork('${esc(g.q.replace(/'/g, "\\'"))}')">${g.icon} ${g.name}</button>`).join("")}</div></div>`;
 
-        // Rules
-        $("cs-rules").innerHTML = cs.rules
-          .map(
-            (r) =>
-              `<div class="rr"><span class="rr-i">${r.icon}</span><div class="rr-t"><strong>${r.title}:</strong> ${r.desc}</div></div>`,
-          )
-          .join("");
+        // ── PANEL: REFERENCE ──
+        $("p-reference").innerHTML = `
+<div class="g2">
+  <div class="card"><div class="ch"><div class="ci b">📘</div><div><div class="ct">Google Search Engine Directives</div><div class="cd">Complete operator reference with descriptions and examples</div></div></div>
+  <div class="syl"><table class="rt"><thead><tr><th>Operator</th><th>Description</th><th>Example</th></tr></thead><tbody>${DATA.directives.map((d) => `<tr><td><code>${d.op}</code></td><td>${d.desc}</td><td><code style="color:var(--ng)">${d.ex}</code></td></tr>`).join("")}</tbody></table></div></div>
+  <div class="card"><div class="ch"><div class="ci g">📗</div><div><div class="ct">Search Modifiers & Engine Differences</div><div class="cd">Google vs Bing vs DuckDuckGo syntax differences</div></div></div>
+  <div class="syl">
+    <div class="cs-card"><div class="cs-t" style="color:var(--ng)">🔤 Google Modifiers</div><table class="rt"><tbody>${DATA.modifiers.map((m) => `<tr><td><code>${esc(m.mod)}</code></td><td>${m.func}</td></tr>`).join("")}</tbody></table></div>
+    <div class="cs-card"><div class="cs-t" style="color:var(--nb)">🔵 Bing Search Engine</div><p>Supports: <code>site:</code>, <code>inurl:</code>, <code>intitle:</code>, <code>filetype:</code></p><p>Uses <code>NOT</code> keyword instead of <code>-</code> (hyphen) for exclusions.</p><p>Additional: <code>feed:</code>, <code>hasfeed:</code>, <code>url:</code>, <code>ip:</code>, <code>loc:</code>, <code>prefer:</code></p></div>
+    <div class="cs-card"><div class="cs-t" style="color:var(--ny)">🦆 DuckDuckGo</div><p>Supports: <code>site:</code>, <code>intitle:</code>, <code>filetype:</code>, <code>inurl:</code></p><p>Uses <code>-</code> for exclusions (same as Google). Supports <code>!</code> bang commands for direct site searches.</p></div>
+    <div class="cs-card"><div class="cs-t" style="color:var(--nr)">⚠️ Google Automation Warning</div><p><strong>Google SOAP API:</strong> Stopped issuing keys in December 2006.</p><p><strong>Google Shunning Progression:</strong> Single search ban → 2-hour ban → Full IP ban.</p><p style="color:var(--nr)">Excessive automated querying violates Google's Terms of Service. Always use responsibly.</p></div>
+    <div class="cs-card"><div class="cs-t" style="color:var(--np)">💀 Google Hacking Database (GHDB)</div><p>A curated repository of search syntax known as "Google Dorks" maintained by Offensive Security. Contains thousands of tested queries that can discover interesting and potentially sensitive information. Works with most search engines with proper syntax adjustments.</p><p>Source: <code>exploit-db.com/google-hacking-database</code></p></div>
+  </div></div>
+</div>
+<div class="card" style="margin-top:1rem"><div class="ch"><div class="ci p">📖</div><div><div class="ct">Complete Operator Reference Table — All Search Engines</div><div class="cd">Every supported operator with descriptions, examples, and engine compatibility</div></div></div>
+<div class="syl"><table class="rt"><thead><tr><th>Operator</th><th>Description</th><th>Example</th><th>Supported Engines</th></tr></thead><tbody>${DATA.fullOps.map((o) => `<tr><td><code>${esc(o.op)}</code></td><td>${o.desc}</td><td><code style="color:var(--ng)">${esc(o.ex)}</code></td><td style="font-size:.64rem;color:var(--t3)">${o.eng}</td></tr>`).join("")}</tbody></table></div></div>`;
 
-        // ── HOW-TO ──
-        let exH = "";
-        DATA.examples.forEach((ex, i) => {
-          exH += `<div class="ex"><div class="ex-t">${ex.title}</div>`;
-          if (ex.steps) {
-            ex.steps.forEach((s, j) => {
-              exH += `<div class="stp"><div class="sn">${j + 1}</div><div class="stx">${s}</div></div>`;
-            });
-          } else {
-            exH += `<div class="stx" style="margin-bottom:.4rem"><code>${esc(ex.q)}</code></div>`;
-          }
-          exH += `<button class="btn b1 bs" onclick="tryExample('${ex.id}')">🚀 Try This!</button></div>`;
-        });
-        $("howtoExamples").innerHTML = exH;
+        // ── PANEL: TOOLS ──
+        $("p-tools").innerHTML =
+          `<div class="g2" style="gap:.8rem">${DATA.tools.map((t) => `<div class="tc"><div class="tc-n">${t.name}</div><div class="tc-d">${t.desc}</div>${t.features ? `<div class="tc-tags">${t.features.map((f) => `<span class="tc-tag">${esc(f)}</span>`).join("")}</div>` : ""}</div>`).join("")}</div>`;
 
-        // Button Reference Table
-        $("buttonRefTable").innerHTML =
-          `<table class="rt"><tbody>${DATA.buttonRef
-            .map(
-              (b) =>
-                `<tr><td><strong>${b[0]}</strong></td><td>${b[1]}</td></tr>`,
-            )
-            .join("")}</tbody></table>`;
-
-        // Hindi Ops
-        $("hindiOpsTable").innerHTML =
-          `<table class="rt"><thead><tr><th>Operator</th><th>Matlab</th><th>Example</th></tr></thead><tbody>${DATA.hindiOps
-            .map(
-              (o) =>
-                `<tr><td><code>${o[0]}</code></td><td>${o[1]}</td><td><code>${o[2]}</code></td></tr>`,
-            )
-            .join("")}</tbody></table>`;
-
-        // What is OSINT/Dorking
-        $("whatIsSection").innerHTML = `
-    <div class="cs-card"><div class="cs-t" style="color:var(--nc)">🌐 OSINT (Open Source Intelligence)</div>
-    <p><strong>OSINT</strong> = Publicly available information ko collect aur analyze karna.</p>
-    <ul><li>🔍 Search Engines</li><li>📱 Social Media</li><li>📋 Public Records & WHOIS</li><li>🗄️ Web Archives</li><li>📡 Device Search (Shodan)</li><li>📄 Documents & Metadata</li></ul>
-    <p style="color:var(--ng);margin-top:.3rem">✅ Legal hai jab tak public data use karo.</p></div>
-    <div class="cs-card"><div class="cs-t" style="color:var(--nc)">💀 Google Dorking</div>
-    <p><strong>Google Dorking</strong> = Advanced search operators use karke specific info dhundhna.</p>
-    <p>Normal: <code>java notes pdf</code> → basic results</p>
-    <p>Dorking: <code>"java notes" filetype:pdf site:drive.google.com</code> → precise!</p>
-    <p><strong>GHDB</strong> = Google Hacking Database — thousands of tested dork queries by Offensive Security.</p>
-    <div class="warn">⚠️ Hamesha ethical aur legal use karo!</div></div>`;
-
-        // ── REFERENCE TAB ──
-        $("refDirectives").innerHTML =
-          `<table class="rt"><thead><tr><th>Operator</th><th>Description</th><th>Example</th></tr></thead><tbody>${DATA.directives
-            .map(
-              (d) =>
-                `<tr><td><code>${d.op}</code></td><td>${d.desc}</td><td><code style="color:var(--ng)">${d.ex}</code></td></tr>`,
-            )
-            .join("")}</tbody></table>`;
-
-        let modH = `<div class="cs-card"><div class="cs-t" style="color:var(--ng)">🔤 Google Modifiers</div><table class="rt"><tbody>${DATA.modifiers
-          .map(
-            (m) =>
-              `<tr><td><code>${esc(m.mod)}</code></td><td>${m.func}</td></tr>`,
-          )
-          .join("")}</tbody></table></div>`;
-        modH += `<div class="cs-card"><div class="cs-t" style="color:var(--nb)">🔵 Bing</div><p>Supports: site:, inurl:, intitle:, filetype:</p><p>Uses <code>NOT</code> instead of <code>-</code></p><p>Also: feed:, hasfeed:, url:, ip:, loc:, prefer:</p></div>`;
-        modH += `<div class="cs-card"><div class="cs-t" style="color:var(--ny)">🦆 DuckDuckGo</div><p>Supports: site:, intitle:, filetype:, inurl:</p><p>Uses <code>-</code> for exclusions. Supports <code>!</code> bang commands.</p></div>`;
-        modH += `<div class="cs-card"><div class="cs-t" style="color:var(--nr)">⚠️ Google Automation Warning</div><p>SOAP API: Stopped 2006. <strong>Google Shunning:</strong> search ban → 2hr ban → IP ban.</p></div>`;
-        $("refModifiers").innerHTML = modH;
-
-        $("refFullOps").innerHTML =
-          `<table class="rt"><thead><tr><th>Operator</th><th>Description</th><th>Example</th><th>Engines</th></tr></thead><tbody>${DATA.fullOps
-            .map(
-              (o) =>
-                `<tr><td><code>${esc(o.op)}</code></td><td>${o.desc}</td><td><code style="color:var(--ng)">${esc(o.ex)}</code></td><td style="font-size:.66rem;color:var(--t3)">${o.eng}</td></tr>`,
-            )
-            .join("")}</tbody></table>`;
-
-        // ── TOOLS TAB ──
-        $("toolsGrid").innerHTML = DATA.tools
-          .map(
-            (t) =>
-              `<div class="tc-card"><div class="tc-n">${t.name}</div><div class="tc-d">${t.desc}</div>${t.features ? `<div class="tc-tags">${t.features.map((f) => `<span class="tc-tag">${esc(f)}</span>`).join("")}</div>` : ""}</div>`,
-          )
-          .join("");
-
-        // Tab click handlers
-        document.querySelectorAll(".tab").forEach((btn) => {
-          btn.addEventListener("click", () => switchTab(btn.dataset.t, btn));
-        });
+        // ── PANEL: HISTORY ──
+        $("p-history").innerHTML = `<div class="g2">
+<div class="card"><div class="ch"><div class="ci b">🕒</div><div><div class="ct">Search Query History</div><div class="cd">All your recent searches stored locally in your browser</div></div></div>
+  <div class="fb mb1"><span style="font-size:.7rem;color:var(--t3)" id="hCnt">0 entries</span><button class="btn bD bx" onclick="clrHist()">🗑️ Clear All History</button></div>
+  <div class="syl" id="hBox"><div style="color:var(--t3);font-size:.72rem;text-align:center;padding:.6rem">No search history yet — perform a search to see it here</div></div></div>
+<div class="card"><div class="ch"><div class="ci g">💾</div><div><div class="ct">Saved Custom Presets</div><div class="cd">Your saved query templates for quick access</div></div></div>
+  <div class="fb mb1"><span style="font-size:.7rem;color:var(--t3)" id="sCnt">0 presets</span><div class="bf"><button class="btn b2 bx" onclick="openModal('ioModal')">📦 Import/Export</button><button class="btn bD bx" onclick="clrSaved()">🗑️ Clear All</button></div></div>
+  <div class="syl" id="svBoxFull"><div style="color:var(--t3);font-size:.72rem;text-align:center;padding:.6rem">No saved presets yet</div></div></div>
+</div>`;
       }
 
-      // ── EVENTS ──
-      function bindEvents() {
-        $("kwInput").addEventListener("input", () => {
-          state.manual = false;
-          updatePreview();
+      // ═══ EVENTS ═══
+      function bindEv() {
+        $("kwI").addEventListener("input", () => {
+          S.manual = false;
+          updPrev();
         });
-        $("dateAfter").addEventListener("change", () => {
-          state.manual = false;
-          updatePreview();
+        $("dA").addEventListener("change", () => {
+          S.manual = false;
+          updPrev();
         });
-        $("dateBefore").addEventListener("change", () => {
-          state.manual = false;
-          updatePreview();
+        $("dB").addEventListener("change", () => {
+          S.manual = false;
+          updPrev();
         });
-        $("engSelect").addEventListener("change", updateStats);
-        $("phraseSelect").addEventListener("change", () => {
-          state.manual = false;
-          updatePreview();
+        $("engS").addEventListener("change", updStats);
+        $("phS").addEventListener("change", () => {
+          S.manual = false;
+          updPrev();
         });
-        $("manualEdit").addEventListener("input", () => {
-          state.manual = true;
-          updateManualPreview();
-          updateStats();
+        $("mEdit").addEventListener("input", () => {
+          S.manual = true;
+          updMPrev();
+          updStats();
         });
-
         document.addEventListener("keydown", (e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             const a = document.activeElement;
             if (["saveName", "impArea", "expArea"].includes(a.id)) return;
-            if (a.id === "manualEdit" || a.id === "kwInput") {
+            if (a.id === "mEdit" || a.id === "kwI") {
               e.preventDefault();
-              execSearch();
+              doSearch();
             }
-            if (a.id === "socialKw") {
+            if (a.id === "socKw") {
               e.preventDefault();
-              socialSearch("linkedin");
+              socGo("linkedin");
             }
-            if (a.id === "shodanQ") {
+            if (a.id === "shQ") {
               e.preventDefault();
-              shodanGo();
+              shGo();
             }
           }
         });
       }
 
-      // ── TABS ──
-      function switchTab(id, btn) {
+      // ═══ TABS ═══
+      function swTab(id, btn) {
         document
-          .querySelectorAll(".tab")
+          .querySelectorAll(".ntab")
           .forEach((t) => t.classList.remove("on"));
         if (btn) btn.classList.add("on");
         document
-          .querySelectorAll(".panel")
+          .querySelectorAll(".pnl")
           .forEach((p) => p.classList.remove("on"));
         const p = $(`p-${id}`);
         if (p) p.classList.add("on");
       }
 
-      // ── FILETYPE ──
-      function toggleFT(ft) {
-        if (state.selFT.has(ft)) {
-          state.selFT.delete(ft);
+      // ═══ FILETYPE ═══
+      function togFT(ft) {
+        if (S.ft.has(ft)) {
+          S.ft.delete(ft);
           $(`ft-${ft}`).classList.remove("ac");
         } else {
-          state.selFT.add(ft);
+          S.ft.add(ft);
           $(`ft-${ft}`).classList.add("ac");
         }
-        state.manual = false;
-        updatePreview();
+        S.manual = false;
+        updPrev();
       }
 
-      // ── FILTERS ──
-      function addFilter() {
-        const id = ++state.fid;
-        state.filters.push({ id, op: "intitle", val: "" });
-        const box = $("filterBox"),
-          row = document.createElement("div");
-        row.className = "fr";
-        row.id = `f-${id}`;
-        const opts = DATA.operators
+      // ═══ FILTERS ═══
+      function addF() {
+        const id = ++S.fid;
+        S.filters.push({ id, op: "intitle", val: "" });
+        const r = document.createElement("div");
+        r.className = "fr";
+        r.id = `f-${id}`;
+        r.innerHTML = `<select onchange="ufO(${id},this.value)">${DATA.operators
           .filter((o) => !["before", "after"].includes(o.v))
           .map((o) => `<option value="${o.v}">${o.l}</option>`)
-          .join("");
-        row.innerHTML = `<select onchange="updFOp(${id},this.value)">${opts}</select><input placeholder="Value..." oninput="updFVal(${id},this.value)"><button class="rx" onclick="rmFilter(${id})">&times;</button>`;
-        box.appendChild(row);
-        state.manual = false;
-        updatePreview();
+          .join(
+            "",
+          )}</select><input placeholder="Enter filter value..." oninput="ufV(${id},this.value)"><button class="rx" onclick="rmF(${id})" title="Remove this filter">&times;</button>`;
+        $("fBox").appendChild(r);
+        S.manual = false;
+        updPrev();
       }
-      function updFOp(id, op) {
-        const f = state.filters.find((x) => x.id === id);
+      function ufO(id, op) {
+        const f = S.filters.find((x) => x.id === id);
         if (f) {
           f.op = op;
-          state.manual = false;
-          updatePreview();
+          S.manual = false;
+          updPrev();
         }
       }
-      function updFVal(id, v) {
-        const f = state.filters.find((x) => x.id === id);
+      function ufV(id, v) {
+        const f = S.filters.find((x) => x.id === id);
         if (f) {
           f.val = v;
-          state.manual = false;
-          updatePreview();
+          S.manual = false;
+          updPrev();
         }
       }
-      function rmFilter(id) {
-        state.filters = state.filters.filter((x) => x.id !== id);
+      function rmF(id) {
+        S.filters = S.filters.filter((x) => x.id !== id);
         const r = $(`f-${id}`);
         if (r) {
           r.style.cssText =
-            "opacity:0;transform:translateX(15px);transition:all .3s";
+            "opacity:0;transform:translateX(15px) scale(.95);transition:all .3s";
           setTimeout(() => r.remove(), 300);
         }
-        state.manual = false;
-        updatePreview();
+        S.manual = false;
+        updPrev();
       }
-      function clearFilters() {
-        state.filters = [];
-        $("filterBox").innerHTML = "";
-        state.manual = false;
-        updatePreview();
+      function clrF() {
+        S.filters = [];
+        $("fBox").innerHTML = "";
+        S.manual = false;
+        updPrev();
       }
 
-      // ── QUERY BUILDER ──
-      function buildQuery() {
-        const parts = [],
-          kw = $("kwInput").value.trim(),
-          pm = $("phraseSelect").value;
-        if (kw) parts.push(pm === "exact" ? `"${kw}"` : kw);
-        state.filters.forEach((f) => {
+      // ═══ QUERY BUILDER ═══
+      function buildQ() {
+        const p = [],
+          kw = $("kwI").value.trim(),
+          pm = $("phS").value;
+        if (kw) p.push(pm === "exact" ? `"${kw}"` : kw);
+        S.filters.forEach((f) => {
           if (!f.val.trim()) return;
           const v = f.val.trim();
-          if (f.op === "exclude") parts.push(`-${v}`);
-          else if (f.op === "or") parts.push(`OR ${v}`);
+          if (f.op === "exclude") p.push(`-${v}`);
+          else if (f.op === "or") p.push(`OR ${v}`);
           else {
             const nq =
               v.includes(" ") &&
@@ -3381,41 +3436,41 @@
                 "define",
                 "info",
               ].includes(f.op);
-            parts.push(`${f.op}:${nq ? '"' + v + '"' : v}`);
+            p.push(`${f.op}:${nq ? '"' + v + '"' : v}`);
           }
         });
-        const ft = Array.from(state.selFT);
-        if (ft.length === 1) parts.push(`filetype:${ft[0]}`);
+        const ft = Array.from(S.ft);
+        if (ft.length === 1) p.push(`filetype:${ft[0]}`);
         else if (ft.length > 1)
-          parts.push(`(${ft.map((f) => `filetype:${f}`).join(" OR ")})`);
-        if ($("dateAfter").value) parts.push(`after:${$("dateAfter").value}`);
-        if ($("dateBefore").value)
-          parts.push(`before:${$("dateBefore").value}`);
-        return parts.join(" ");
+          p.push(`(${ft.map((f) => `filetype:${f}`).join(" OR ")})`);
+        if ($("dA").value) p.push(`after:${$("dA").value}`);
+        if ($("dB").value) p.push(`before:${$("dB").value}`);
+        return p.join(" ");
       }
-      function getQuery() {
-        return state.manual ? $("manualEdit").value.trim() : buildQuery();
+      function getQ() {
+        return S.manual ? $("mEdit").value.trim() : buildQ();
       }
-      function updatePreview() {
-        const q = buildQuery(),
-          p = $("queryPreview"),
-          m = $("manualEdit");
+      function updPrev() {
+        const q = buildQ(),
+          p = $("qPrev"),
+          m = $("mEdit");
         if (!q) {
-          p.innerHTML = '<span class="em">Build your query above...</span>';
-          if (!state.manual) m.value = "";
+          p.innerHTML =
+            '<span class="em">Start building your query above — preview appears here...</span>';
+          if (!S.manual) m.value = "";
         } else {
-          p.innerHTML = colorize(q);
-          if (!state.manual) m.value = q;
+          p.innerHTML = colorQ(q);
+          if (!S.manual) m.value = q;
         }
-        updateStats();
+        updStats();
       }
-      function updateManualPreview() {
-        const q = $("manualEdit").value.trim();
-        $("queryPreview").innerHTML = q
-          ? colorize(q)
+      function updMPrev() {
+        const q = $("mEdit").value.trim();
+        $("qPrev").innerHTML = q
+          ? colorQ(q)
           : '<span class="em">Type a query...</span>';
       }
-      function colorize(q) {
+      function colorQ(q) {
         let s = q
           .replace(/&/g, "&amp;")
           .replace(/</g, "&lt;")
@@ -3446,110 +3501,110 @@
         s = s.replace(/\bOR\b/g, '<span class="op">OR</span>');
         s = s.replace(/\bAROUND\(\d+\)/g, '<span class="op">$&</span>');
         s = s.replace(/"([^"]*)"/g, '<span class="vl">"$1"</span>');
-        s = s.replace(/(-\w+)/g, '<span style="color:var(--nr)">$1</span>');
+        s = s.replace(/(-\w+)/g, `<span style="color:var(--nr)">$1</span>`);
         return s;
       }
 
-      // ── SEARCH ──
-      function execSearch() {
-        const q = getQuery();
+      // ═══ SEARCH ═══
+      function doSearch() {
+        const q = getQ();
         if (!q) {
-          toast("Query banao pehle!", "err");
-          $("kwInput").focus();
+          toast("Please enter keywords or build a query first!", "err");
+          $("kwI").focus();
           return;
         }
-        const eng = $("engSelect").value;
+        const eng = $("engS").value;
         window.open(DATA.engines[eng] + E(q), "_blank", "noopener,noreferrer");
-        addHistory(q, eng);
-        toast(`Search opened (${eng})`, "ok");
+        addHist(q, eng);
+        toast(`Search opened in new tab (${eng})`, "ok");
       }
 
-      // ── ACTIONS ──
-      function insertOp(op) {
-        const i = $("kwInput"),
+      // ═══ ACTIONS ═══
+      function insOp(op) {
+        const i = $("kwI"),
           c = i.value.trim();
         i.value = c ? `${c} ${op}` : op;
-        state.manual = false;
-        updatePreview();
-        toast(`Added: ${op}`, "inf");
+        S.manual = false;
+        updPrev();
+        toast(`Added operator: ${op}`, "inf");
       }
-      function loadDork(d) {
-        $("manualEdit").value = d;
-        $("kwInput").value = "";
-        state.manual = true;
-        updateManualPreview();
-        updateStats();
-        switchTab("dorking", document.querySelector('[data-t="dorking"]'));
-        toast("Dork loaded! 🔍 Search dabao", "ok");
+      function ldDork(d) {
+        $("mEdit").value = d;
+        $("kwI").value = "";
+        S.manual = true;
+        updMPrev();
+        updStats();
+        swTab("dorking", document.querySelector('[data-t="dorking"]'));
+        toast("Dork loaded into engine — click Search!", "ok");
       }
-      function loadPreset(q) {
-        $("manualEdit").value = q;
-        $("kwInput").value = "";
-        state.manual = true;
-        updateManualPreview();
-        updateStats();
-        toast("Preset loaded!", "ok");
+      function ldPre(q) {
+        $("mEdit").value = q;
+        $("kwI").value = "";
+        S.manual = true;
+        updMPrev();
+        updStats();
+        toast("Preset query loaded!", "ok");
       }
-      function tryExample(id) {
+      function tryEx(id) {
         const ex = DATA.examples.find((e) => e.id === id);
-        if (!ex) return;
-        loadDork(ex.q);
+        if (ex) ldDork(ex.q);
       }
-      function copyQuery() {
-        const q = getQuery();
+      function cpQ() {
+        const q = getQ();
         if (!q) {
-          toast("No query!", "err");
+          toast("No query to copy!", "err");
           return;
         }
         clip(q);
-        toast("Copied! 📋", "ok");
+        toast("Query copied to clipboard!", "ok");
       }
-      function dupQuery() {
-        const q = getQuery();
+      function dupQ() {
+        const q = getQ();
         if (!q) return;
-        $("manualEdit").value = q + " ";
-        state.manual = true;
-        $("manualEdit").focus();
-        toast("Duplicated!", "inf");
+        $("mEdit").value = q + " ";
+        S.manual = true;
+        $("mEdit").focus();
+        toast("Query duplicated to manual editor!", "inf");
       }
-      function copyText(t) {
+      function cpTxt(t) {
         clip(t);
-        toast("Copied! 📋", "ok");
+        toast("Copied to clipboard!", "ok");
       }
-      function clearAll() {
-        $("kwInput").value = "";
-        $("manualEdit").value = "";
-        $("dateAfter").value = "";
-        $("dateBefore").value = "";
-        $("phraseSelect").value = "normal";
-        clearFilters();
-        state.selFT.clear();
+      function clrAll() {
+        $("kwI").value = "";
+        $("mEdit").value = "";
+        $("dA").value = "";
+        $("dB").value = "";
+        $("phS").value = "normal";
+        clrF();
+        S.ft.clear();
         DATA.filetypes.forEach((ft) => $(`ft-${ft}`).classList.remove("ac"));
-        state.manual = false;
-        updatePreview();
-        toast("Cleared! ✨", "inf");
+        S.manual = false;
+        updPrev();
+        toast("All fields cleared!", "inf");
       }
 
-      // ── SOCIAL ──
-      function socialSearch(id) {
-        const kw = $("socialKw").value.trim();
+      // ═══ SOCIAL ═══
+      function socGo(id) {
+        const kw = $("socKw").value.trim();
         if (!kw) {
-          toast("Keyword likho!", "err");
+          toast("Please enter a keyword or name to search!", "err");
           return;
         }
         const s = DATA.social.find((x) => x.id === id);
-        if (!s) return;
-        window.open(s.url(kw), "_blank", "noopener,noreferrer");
-        toast(`${s.name} search opened`, "ok");
+        if (s) {
+          window.open(s.url(kw), "_blank", "noopener,noreferrer");
+          toast(`${s.name} search opened!`, "ok");
+        }
       }
-      function peopleSearch() {
-        const n = $("pName").value.trim();
+      function pplGo() {
+        const n = $("pN").value.trim();
         if (!n) {
-          toast("Name likho!", "err");
+          toast("Please enter a name!", "err");
           return;
         }
-        const l = $("pLoc").value.trim(),
-          o = $("pOrg").value.trim();
+        const l = $("pL").value.trim(),
+          o = $("pO").value.trim();
         let q = `"${n}"`;
         if (l) q += ` "${l}"`;
         if (o) q += ` "${o}"`;
@@ -3560,30 +3615,31 @@
           "_blank",
           "noopener,noreferrer",
         );
-        addHistory(q, "google");
-        toast(`People search: ${n}`, "ok");
+        addHist(q, "google");
+        toast(`People search for "${n}" opened!`, "ok");
       }
 
-      // ── ARCHIVE ──
-      function archiveGo(id) {
-        const u = $("arcUrl").value.trim();
+      // ═══ ARCHIVE ═══
+      function arcGo(id) {
+        const u = $("arcU").value.trim();
         if (!u) {
-          toast("URL paste karo!", "err");
+          toast("Please paste a URL first!", "err");
           return;
         }
         if (!u.startsWith("http")) {
-          toast("Valid URL (http/https)!", "err");
+          toast("Please enter a valid URL (http:// or https://)", "err");
           return;
         }
         const a = DATA.archives.find((x) => x.id === id);
-        if (!a) return;
-        window.open(a.url(u), "_blank", "noopener,noreferrer");
-        toast(`${a.name} opened`, "ok");
+        if (a) {
+          window.open(a.url(u), "_blank", "noopener,noreferrer");
+          toast(`${a.name} opened!`, "ok");
+        }
       }
-      function cacheStrip() {
-        const u = $("stripUrl").value.trim();
+      function cStrip() {
+        const u = $("stripU").value.trim();
         if (!u) {
-          toast("URL paste karo!", "err");
+          toast("Please paste a URL!", "err");
           return;
         }
         window.open(
@@ -3591,14 +3647,14 @@
           "_blank",
           "noopener,noreferrer",
         );
-        toast("Cache + strip=1 opened!", "ok");
+        toast("Google Cache with &strip=1 opened!", "ok");
       }
 
-      // ── SHODAN ──
-      function shodanGo() {
-        const q = $("shodanQ").value.trim();
+      // ═══ SHODAN ═══
+      function shGo() {
+        const q = $("shQ").value.trim();
         if (!q) {
-          toast("Query!", "err");
+          toast("Please enter a Shodan search query!", "err");
           return;
         }
         window.open(
@@ -3606,28 +3662,42 @@
           "_blank",
           "noopener,noreferrer",
         );
-        toast(`Shodan: ${q}`, "ok");
+        toast(`Shodan search: ${q}`, "ok");
       }
-      function shodanPre(k) {
-        $("shodanQ").value = DATA.shodanPresets[k] || "";
-        shodanGo();
+      function shPre(q) {
+        $("shQ").value = q;
+        shGo();
       }
 
-      // ── WHOIS ──
-      function whoisGo(id) {
-        const d = $("whoisD").value.trim();
+      // ═══ WHOIS ═══
+      function whGo(id) {
+        const d = $("whD").value.trim();
         if (!d) {
-          toast("Domain!", "err");
+          toast("Please enter a domain name!", "err");
           return;
         }
         const w = DATA.whois.find((x) => x.id === id);
-        if (!w) return;
-        window.open(w.url(d), "_blank", "noopener,noreferrer");
-        toast(`${w.name}: ${d}`, "ok");
+        if (w) {
+          window.open(w.url(d), "_blank", "noopener,noreferrer");
+          toast(`${w.name}: ${d}`, "ok");
+        }
       }
 
-      // ── HISTORY ──
-      function addHistory(q, eng) {
+      // ═══ RECON TOOLS ═══
+      function reconGo(id) {
+        const r = DATA.recon.find((x) => x.id === id);
+        if (!r) return;
+        const v = $(`rc-${id}`).value.trim();
+        if (!v) {
+          toast(`Please enter a value for ${r.name}!`, "err");
+          return;
+        }
+        window.open(r.url(v), "_blank", "noopener,noreferrer");
+        toast(`${r.name} lookup opened!`, "ok");
+      }
+
+      // ═══ HISTORY ═══
+      function addHist(q, eng) {
         const e = {
           query: q,
           engine: eng,
@@ -3637,40 +3707,39 @@
             minute: "2-digit",
           }),
         };
-        if (state.hist.length && state.hist[0].query === q) return;
-        state.hist.unshift(e);
-        if (state.hist.length > 100) state.hist.pop();
-        saveStorage();
-        renderHistory();
-        updateStats();
+        if (S.hist.length && S.hist[0].query === q) return;
+        S.hist.unshift(e);
+        if (S.hist.length > 100) S.hist.pop();
+        saveLS();
+        renderHist();
+        updStats();
       }
-      function renderHistory() {
-        const c = $("histBox");
-        if ($("hCount"))
-          $("hCount").textContent = `${state.hist.length} entries`;
-        if (!state.hist.length) {
+      function renderHist() {
+        const c = $("hBox");
+        if ($("hCnt")) $("hCnt").textContent = `${S.hist.length} entries`;
+        if (!S.hist.length) {
           c.innerHTML =
-            '<div style="color:var(--t3);font-size:.74rem;text-align:center;padding:.7rem">No history yet</div>';
+            '<div style="color:var(--t3);font-size:.72rem;text-align:center;padding:.6rem">No search history yet</div>';
           return;
         }
-        c.innerHTML = state.hist
+        c.innerHTML = S.hist
           .map(
             (h, i) =>
-              `<div class="hi"><span class="hq" onclick="loadHist(${i})">${esc(trunc(h.query, 55))}</span><span class="ht">${h.time}</span><div class="ha"><button class="btn bx b2" onclick="rerunHist(${i})">🔄</button><button class="btn bx b2" onclick="clip('${esc(h.query.replace(/'/g, "\\'"))}');toast('Copied!','ok')">📋</button><button class="btn bx b2" onclick="delHist(${i})">✕</button></div></div>`,
+              `<div class="hi"><span class="hq" onclick="ldH(${i})">${esc(trunc(h.query, 50))}</span><span class="ht">${h.time}</span><div class="ha"><button class="btn bx b2" onclick="reH(${i})" title="Re-run Search">🔄</button><button class="btn bx b2" onclick="cpTxt('${esc(h.query.replace(/'/g, "\\'"))}')" title="Copy Query">📋</button><button class="btn bx b2" onclick="delH(${i})" title="Delete">✕</button></div></div>`,
           )
           .join("");
       }
-      function loadHist(i) {
-        const h = state.hist[i];
+      function ldH(i) {
+        const h = S.hist[i];
         if (!h) return;
-        $("manualEdit").value = h.query;
-        state.manual = true;
-        updateManualPreview();
-        switchTab("dorking", document.querySelector('[data-t="dorking"]'));
-        toast("Loaded!", "inf");
+        $("mEdit").value = h.query;
+        S.manual = true;
+        updMPrev();
+        swTab("dorking", document.querySelector('[data-t="dorking"]'));
+        toast("Query loaded from history!", "inf");
       }
-      function rerunHist(i) {
-        const h = state.hist[i];
+      function reH(i) {
+        const h = S.hist[i];
         if (!h) return;
         window.open(
           (DATA.engines[h.engine] || DATA.engines.google) + E(h.query),
@@ -3678,26 +3747,26 @@
           "noopener,noreferrer",
         );
       }
-      function delHist(i) {
-        state.hist.splice(i, 1);
-        saveStorage();
-        renderHistory();
-        updateStats();
+      function delH(i) {
+        S.hist.splice(i, 1);
+        saveLS();
+        renderHist();
+        updStats();
       }
-      function clearHistory() {
-        if (!state.hist.length) return;
-        state.hist = [];
-        saveStorage();
-        renderHistory();
-        updateStats();
-        toast("History cleared", "inf");
+      function clrHist() {
+        if (!S.hist.length) return;
+        S.hist = [];
+        saveLS();
+        renderHist();
+        updStats();
+        toast("Search history cleared!", "inf");
       }
 
-      // ── SAVED ──
-      function openSaveModal() {
-        const q = getQuery();
+      // ═══ SAVED PRESETS ═══
+      function openSaveM() {
+        const q = getQ();
         if (!q) {
-          toast("Query banao!", "err");
+          toast("Build a query before saving!", "err");
           return;
         }
         $("saveQuery").value = q;
@@ -3709,76 +3778,80 @@
         const n = $("saveName").value.trim(),
           q = $("saveQuery").value.trim();
         if (!n) {
-          toast("Naam do!", "err");
+          toast("Please enter a preset name!", "err");
           return;
         }
         if (!q) return;
-        if (state.saved.some((p) => p.name.toLowerCase() === n.toLowerCase())) {
-          toast("Naam already hai!", "err");
+        if (S.saved.some((p) => p.name.toLowerCase() === n.toLowerCase())) {
+          toast("A preset with this name already exists!", "err");
           return;
         }
-        state.saved.push({
+        S.saved.push({
           name: n,
           query: q,
-          engine: $("engSelect").value,
+          engine: $("engS").value,
           ts: Date.now(),
         });
-        saveStorage();
+        saveLS();
         renderSaved();
-        updateStats();
+        updStats();
         closeModal("saveModal");
-        toast(`"${n}" saved!`, "ok");
+        toast(`Preset "${n}" saved successfully!`, "ok");
       }
       function renderSaved() {
-        [$("savedBox"), $("savedBoxFull")].forEach((c) => {
+        [$("svBox"), $("svBoxFull")].forEach((c) => {
           if (!c) return;
-          if ($("sCount"))
-            $("sCount").textContent = `${state.saved.length} presets`;
-          if (!state.saved.length) {
+          if ($("sCnt")) $("sCnt").textContent = `${S.saved.length} presets`;
+          if (!S.saved.length) {
             c.innerHTML =
-              '<div style="color:var(--t3);font-size:.74rem;text-align:center;padding:.5rem">No presets</div>';
+              '<div style="color:var(--t3);font-size:.72rem;text-align:center;padding:.5rem">No saved presets yet</div>';
             return;
           }
-          c.innerHTML = state.saved
+          c.innerHTML = S.saved
             .map(
               (p, i) =>
-                `<div class="hi"><span class="hq" onclick="loadSaved(${i})"><strong style="color:var(--nb)">${esc(p.name)}</strong>: ${esc(trunc(p.query, 30))}</span><div class="ha"><button class="btn bx bG" onclick="loadSaved(${i})">📂</button><button class="btn bx b2" onclick="delSaved(${i})">✕</button></div></div>`,
+                `<div class="hi"><span class="hq" onclick="ldSv(${i})"><strong style="color:var(--nb)">${esc(p.name)}</strong>: ${esc(trunc(p.query, 30))}</span><div class="ha"><button class="btn bx bG" onclick="ldSv(${i})" title="Load Preset">📂</button><button class="btn bx b2" onclick="delSv(${i})" title="Delete">✕</button></div></div>`,
             )
             .join("");
         });
       }
-      function loadSaved(i) {
-        const p = state.saved[i];
+      function ldSv(i) {
+        const p = S.saved[i];
         if (!p) return;
-        $("manualEdit").value = p.query;
-        if (p.engine) $("engSelect").value = p.engine;
-        state.manual = true;
-        updateManualPreview();
-        updateStats();
-        switchTab("dorking", document.querySelector('[data-t="dorking"]'));
-        toast(`Loaded: ${p.name}`, "ok");
+        $("mEdit").value = p.query;
+        if (p.engine) $("engS").value = p.engine;
+        S.manual = true;
+        updMPrev();
+        updStats();
+        swTab("dorking", document.querySelector('[data-t="dorking"]'));
+        toast(`Loaded preset: ${p.name}`, "ok");
       }
-      function delSaved(i) {
-        state.saved.splice(i, 1);
-        saveStorage();
+      function delSv(i) {
+        S.saved.splice(i, 1);
+        saveLS();
         renderSaved();
-        updateStats();
+        updStats();
       }
-      function clearSaved() {
-        if (!state.saved.length) return;
-        state.saved = [];
-        saveStorage();
+      function clrSaved() {
+        if (!S.saved.length) return;
+        S.saved = [];
+        saveLS();
         renderSaved();
-        updateStats();
-        toast("Presets cleared", "inf");
+        updStats();
+        toast("All saved presets cleared!", "inf");
       }
 
-      // ── IMPORT/EXPORT ──
+      // ═══ IMPORT/EXPORT ═══
       function openModal(id) {
         $(id).classList.add("on");
         if (id === "ioModal") {
           $("expArea").value = JSON.stringify(
-            { history: state.hist, savedPresets: state.saved, v: "4.0" },
+            {
+              history: S.hist,
+              savedPresets: S.saved,
+              version: "5.0",
+              exportedAt: new Date().toISOString(),
+            },
             null,
             2,
           );
@@ -3788,90 +3861,91 @@
       function closeModal(id) {
         $(id).classList.remove("on");
       }
-      function copyField(id) {
+      function cpF(id) {
         clip($(id).value);
-        toast("Copied!", "ok");
+        toast("Data copied to clipboard!", "ok");
       }
       function doImport() {
         const r = $("impArea").value.trim();
         if (!r) {
-          toast("JSON paste karo!", "err");
+          toast("Please paste JSON data to import!", "err");
           return;
         }
         try {
           const d = JSON.parse(r);
           if (d.history) {
-            const ex = new Set(state.hist.map((h) => h.query));
+            const ex = new Set(S.hist.map((h) => h.query));
             d.history.forEach((h) => {
-              if (!ex.has(h.query)) state.hist.push(h);
+              if (!ex.has(h.query)) S.hist.push(h);
             });
           }
           if (d.savedPresets) {
-            const ex = new Set(state.saved.map((p) => p.name.toLowerCase()));
+            const ex = new Set(S.saved.map((p) => p.name.toLowerCase()));
             d.savedPresets.forEach((p) => {
-              if (!ex.has(p.name.toLowerCase())) state.saved.push(p);
+              if (!ex.has(p.name.toLowerCase())) S.saved.push(p);
             });
           }
-          saveStorage();
-          renderHistory();
+          saveLS();
+          renderHist();
           renderSaved();
-          updateStats();
+          updStats();
           closeModal("ioModal");
-          toast("Imported! ✅", "ok");
+          toast("Data imported successfully!", "ok");
         } catch (e) {
-          toast("Invalid JSON!", "err");
+          toast("Invalid JSON format! Please check your data.", "err");
         }
       }
 
-      // ── THEME ──
-      function toggleTheme() {
+      // ═══ THEME ═══
+      function togTheme() {
         const h = document.documentElement,
           n = h.getAttribute("data-theme") === "dark" ? "light" : "dark";
         h.setAttribute("data-theme", n);
-        $("themeBtn").innerHTML = n === "dark" ? "🌙 Dark" : "☀️ Light";
-        localStorage.setItem("s_theme", n);
+        $("thBtn").innerHTML = n === "dark" ? "🌙 Dark Mode" : "☀️ Light Mode";
+        localStorage.setItem("s_th", n);
       }
 
-      // ── STATS ──
-      function updateStats() {
-        const q = getQuery();
-        $("xF").textContent = state.filters.length;
-        $("xT").textContent = state.selFT.size;
+      // ═══ STATS ═══
+      function updStats() {
+        const q = getQ();
+        $("xF").textContent = S.filters.length;
+        $("xT").textContent = S.ft.size;
         $("xL").textContent = q.length;
-        $("xH").textContent = state.hist.length;
-        $("xS").textContent = state.saved.length;
-        const e = $("engSelect");
+        $("xH").textContent = S.hist.length;
+        $("xS").textContent = S.saved.length;
+        const e = $("engS");
         $("xE").textContent = e.options[e.selectedIndex].text;
       }
 
-      // ── STORAGE ──
-      function saveStorage() {
+      // ═══ STORAGE ═══
+      function saveLS() {
         try {
-          localStorage.setItem("s4_h", JSON.stringify(state.hist));
-          localStorage.setItem("s4_p", JSON.stringify(state.saved));
+          localStorage.setItem("s5h", JSON.stringify(S.hist));
+          localStorage.setItem("s5p", JSON.stringify(S.saved));
         } catch (e) {}
       }
-      function loadStorage() {
+      function loadLS() {
         try {
-          const h = localStorage.getItem("s4_h");
-          if (h) state.hist = JSON.parse(h);
-          const p = localStorage.getItem("s4_p");
-          if (p) state.saved = JSON.parse(p);
-          const t = localStorage.getItem("s_theme");
+          const h = localStorage.getItem("s5h");
+          if (h) S.hist = JSON.parse(h);
+          const p = localStorage.getItem("s5p");
+          if (p) S.saved = JSON.parse(p);
+          const t = localStorage.getItem("s_th");
           if (t) {
             document.documentElement.setAttribute("data-theme", t);
-            $("themeBtn").innerHTML = t === "dark" ? "🌙 Dark" : "☀️ Light";
+            $("thBtn").innerHTML =
+              t === "dark" ? "🌙 Dark Mode" : "☀️ Light Mode";
           }
         } catch (e) {}
       }
 
-      // ── UTILITIES ──
+      // ═══ UTILITIES ═══
       function clip(t) {
         if (navigator.clipboard)
-          navigator.clipboard.writeText(t).catch(() => fbClip(t));
-        else fbClip(t);
+          navigator.clipboard.writeText(t).catch(() => fbC(t));
+        else fbC(t);
       }
-      function fbClip(t) {
+      function fbC(t) {
         const a = document.createElement("textarea");
         a.value = t;
         a.style.cssText = "position:fixed;left:-9999px";
