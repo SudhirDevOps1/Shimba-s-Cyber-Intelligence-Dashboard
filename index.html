@@ -1,0 +1,2835 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shimba's Cyber Intelligence Dashboard — Advanced OSINT Suite</title>
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-card: #1a2332;
+            --bg-card-hover: #1f2b3d;
+            --bg-input: #0d1520;
+            --border-color: #1e3a5f;
+            --text-primary: #e0e8f0;
+            --text-secondary: #8899aa;
+            --text-muted: #556677;
+            --neon-blue: #00d4ff;
+            --neon-green: #00ff88;
+            --neon-purple: #a855f7;
+            --neon-orange: #ff6b35;
+            --neon-red: #ff3366;
+            --neon-yellow: #ffd600;
+            --neon-cyan: #06b6d4;
+            --neon-pink: #ec4899;
+            --accent-gradient: linear-gradient(135deg, #00d4ff, #00ff88);
+            --danger-gradient: linear-gradient(135deg, #ff3366, #ff6b35);
+            --purple-gradient: linear-gradient(135deg, #a855f7, #ec4899);
+            --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --glow-blue: 0 0 20px rgba(0, 212, 255, 0.3);
+            --glow-green: 0 0 20px rgba(0, 255, 136, 0.3);
+            --glow-purple: 0 0 20px rgba(168, 85, 247, 0.3);
+            --scrollbar-thumb: #1e3a5f;
+            --scrollbar-track: #0a0e17;
+            --tooltip-bg: #1a2332;
+            --overlay-bg: rgba(0, 0, 0, 0.75);
+            --transition-speed: 0.3s;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f0f4f8;
+            --bg-secondary: #e2e8f0;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f7fafc;
+            --bg-input: #edf2f7;
+            --border-color: #cbd5e0;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --text-muted: #a0aec0;
+            --neon-blue: #0077cc;
+            --neon-green: #00a854;
+            --neon-purple: #7c3aed;
+            --neon-orange: #e05500;
+            --neon-red: #dc2626;
+            --neon-yellow: #ca8a04;
+            --neon-cyan: #0891b2;
+            --neon-pink: #db2777;
+            --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            --glow-blue: 0 0 15px rgba(0, 119, 204, 0.15);
+            --glow-green: 0 0 15px rgba(0, 168, 84, 0.15);
+            --glow-purple: 0 0 15px rgba(124, 58, 237, 0.15);
+            --scrollbar-thumb: #cbd5e0;
+            --scrollbar-track: #f0f4f8;
+            --tooltip-bg: #2d3748;
+            --overlay-bg: rgba(0, 0, 0, 0.4);
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: background var(--transition-speed), color var(--transition-speed);
+            overflow-x: hidden
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--scrollbar-track)
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 4px
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-blue)
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0
+        }
+
+        [data-theme="light"] body::before {
+            opacity: 0
+        }
+
+        /* HEADER */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.8rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.7rem
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--accent-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #0a0e17;
+            box-shadow: var(--glow-blue);
+            animation: logoPulse 3s ease-in-out infinite;
+            flex-shrink: 0
+        }
+
+        @keyframes logoPulse {
+
+            0%,
+            100% {
+                box-shadow: var(--glow-blue);
+                transform: scale(1)
+            }
+
+            50% {
+                box-shadow: 0 0 35px rgba(0, 212, 255, 0.6);
+                transform: scale(1.05)
+            }
+        }
+
+        .header-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .header-subtitle {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            letter-spacing: 2.5px;
+            text-transform: uppercase
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            flex-wrap: wrap
+        }
+
+        /* NAV TABS */
+        .nav-tabs {
+            display: flex;
+            gap: 0.2rem;
+            background: var(--bg-input);
+            border-radius: 10px;
+            padding: 0.2rem;
+            border: 1px solid var(--border-color)
+        }
+
+        .nav-tab {
+            padding: 0.38rem 0.75rem;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            font-family: inherit;
+            white-space: nowrap
+        }
+
+        .nav-tab:hover {
+            color: var(--text-primary);
+            background: var(--bg-card)
+        }
+
+        .nav-tab.active {
+            background: var(--accent-gradient);
+            color: #0a0e17;
+            box-shadow: var(--glow-blue)
+        }
+
+        .theme-toggle,
+        .header-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.78rem;
+            transition: all var(--transition-speed);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-family: inherit
+        }
+
+        .theme-toggle:hover,
+        .header-btn:hover {
+            border-color: var(--neon-blue);
+            box-shadow: var(--glow-blue)
+        }
+
+        .header-btn {
+            color: var(--text-secondary)
+        }
+
+        .header-btn:hover {
+            color: var(--neon-green);
+            border-color: var(--neon-green)
+        }
+
+        /* MAIN */
+        .main-container {
+            max-width: 1480px;
+            margin: 0 auto;
+            padding: 1.2rem;
+            position: relative;
+            z-index: 1
+        }
+
+        .tab-panel {
+            display: none
+        }
+
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.4s ease
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem
+        }
+
+        /* CARD */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.3rem;
+            box-shadow: var(--card-shadow);
+            transition: all var(--transition-speed);
+            position: relative;
+            overflow: hidden
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity var(--transition-speed)
+        }
+
+        .card:hover {
+            border-color: rgba(0, 212, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow), var(--glow-blue)
+        }
+
+        .card:hover::before {
+            opacity: 1
+        }
+
+        .card.green-accent::before {
+            background: linear-gradient(135deg, #00ff88, #06b6d4)
+        }
+
+        .card.purple-accent::before {
+            background: var(--purple-gradient)
+        }
+
+        .card.orange-accent::before {
+            background: linear-gradient(135deg, #ff6b35, #ffd600)
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.65rem;
+            border-bottom: 1px solid var(--border-color)
+        }
+
+        .card-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0
+        }
+
+        .card-icon.blue {
+            background: rgba(0, 212, 255, 0.12);
+            color: var(--neon-blue)
+        }
+
+        .card-icon.green {
+            background: rgba(0, 255, 136, 0.12);
+            color: var(--neon-green)
+        }
+
+        .card-icon.purple {
+            background: rgba(168, 85, 247, 0.12);
+            color: var(--neon-purple)
+        }
+
+        .card-icon.orange {
+            background: rgba(255, 107, 53, 0.12);
+            color: var(--neon-orange)
+        }
+
+        .card-icon.red {
+            background: rgba(255, 51, 102, 0.12);
+            color: var(--neon-red)
+        }
+
+        .card-icon.yellow {
+            background: rgba(255, 214, 0, 0.12);
+            color: var(--neon-yellow)
+        }
+
+        .card-icon.cyan {
+            background: rgba(6, 182, 212, 0.12);
+            color: var(--neon-cyan)
+        }
+
+        .card-icon.pink {
+            background: rgba(236, 72, 153, 0.12);
+            color: var(--neon-pink)
+        }
+
+        .card-title {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--text-primary)
+        }
+
+        .card-desc {
+            font-size: 0.7rem;
+            color: var(--text-muted)
+        }
+
+        /* FORMS */
+        .input-group {
+            margin-bottom: 0.85rem
+        }
+
+        .input-label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+            letter-spacing: 0.5px
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.6rem 0.85rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.86rem;
+            font-family: inherit;
+            transition: all var(--transition-speed);
+            outline: none
+        }
+
+        .input-field:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.12)
+        }
+
+        .input-field::placeholder {
+            color: var(--text-muted)
+        }
+
+        textarea.input-field {
+            resize: vertical;
+            min-height: 60px;
+            font-family: 'Consolas', 'Courier New', monospace
+        }
+
+        select.input-field {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238899aa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 2rem
+        }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            padding: 0.52rem 1rem;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            text-decoration: none;
+            white-space: nowrap
+        }
+
+        .btn:active {
+            transform: scale(0.97)
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: #0a0e17;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.25)
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 25px rgba(0, 212, 255, 0.45);
+            transform: translateY(-1px)
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary)
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--neon-blue);
+            color: var(--neon-blue)
+        }
+
+        .btn-danger {
+            background: var(--danger-gradient);
+            color: #fff;
+            border: none
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.35)
+        }
+
+        .btn-green {
+            background: rgba(0, 255, 136, 0.12);
+            border: 1px solid rgba(0, 255, 136, 0.25);
+            color: var(--neon-green)
+        }
+
+        .btn-green:hover {
+            background: rgba(0, 255, 136, 0.22);
+            box-shadow: var(--glow-green)
+        }
+
+        .btn-blue {
+            background: rgba(0, 212, 255, 0.12);
+            border: 1px solid rgba(0, 212, 255, 0.25);
+            color: var(--neon-blue)
+        }
+
+        .btn-blue:hover {
+            background: rgba(0, 212, 255, 0.22);
+            box-shadow: var(--glow-blue)
+        }
+
+        .btn-purple {
+            background: rgba(168, 85, 247, 0.12);
+            border: 1px solid rgba(168, 85, 247, 0.25);
+            color: var(--neon-purple)
+        }
+
+        .btn-purple:hover {
+            background: rgba(168, 85, 247, 0.22);
+            box-shadow: var(--glow-purple)
+        }
+
+        .btn-orange {
+            background: rgba(255, 107, 53, 0.12);
+            border: 1px solid rgba(255, 107, 53, 0.25);
+            color: var(--neon-orange)
+        }
+
+        .btn-orange:hover {
+            background: rgba(255, 107, 53, 0.22)
+        }
+
+        .btn-yellow {
+            background: rgba(255, 214, 0, 0.12);
+            border: 1px solid rgba(255, 214, 0, 0.25);
+            color: var(--neon-yellow)
+        }
+
+        .btn-yellow:hover {
+            background: rgba(255, 214, 0, 0.22)
+        }
+
+        .btn-cyan {
+            background: rgba(6, 182, 212, 0.12);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            color: var(--neon-cyan)
+        }
+
+        .btn-cyan:hover {
+            background: rgba(6, 182, 212, 0.22)
+        }
+
+        .btn-pink {
+            background: rgba(236, 72, 153, 0.12);
+            border: 1px solid rgba(236, 72, 153, 0.25);
+            color: var(--neon-pink)
+        }
+
+        .btn-pink:hover {
+            background: rgba(236, 72, 153, 0.22)
+        }
+
+        .btn-sm {
+            padding: 0.38rem 0.7rem;
+            font-size: 0.74rem;
+            border-radius: 8px
+        }
+
+        .btn-xs {
+            padding: 0.26rem 0.5rem;
+            font-size: 0.68rem;
+            border-radius: 6px
+        }
+
+        .btn-lg {
+            padding: 0.7rem 1.4rem;
+            font-size: 0.9rem;
+            border-radius: 12px
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem
+        }
+
+        /* QUERY PREVIEW */
+        .query-preview {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.9rem 1.1rem;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.84rem;
+            color: var(--neon-green);
+            word-break: break-all;
+            min-height: 44px;
+            transition: all var(--transition-speed);
+            line-height: 1.8
+        }
+
+        .query-preview:hover {
+            border-color: var(--neon-green)
+        }
+
+        .query-preview .op {
+            color: var(--neon-blue);
+            font-weight: 700
+        }
+
+        .query-preview .val {
+            color: var(--neon-green)
+        }
+
+        .query-preview .empty-msg {
+            color: var(--text-muted);
+            font-style: italic;
+            font-family: inherit
+        }
+
+        /* FILTER ROWS */
+        .filter-row {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.6rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 0.4rem;
+            flex-wrap: wrap;
+            animation: slideIn 0.3s ease
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .filter-row select,
+        .filter-row input {
+            padding: 0.35rem 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.78rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color var(--transition-speed)
+        }
+
+        .filter-row select:focus,
+        .filter-row input:focus {
+            border-color: var(--neon-blue)
+        }
+
+        .filter-row input {
+            flex: 1;
+            min-width: 100px
+        }
+
+        .filter-row .remove-filter {
+            background: rgba(255, 51, 102, 0.12);
+            border: none;
+            color: var(--neon-red);
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-speed);
+            flex-shrink: 0
+        }
+
+        .filter-row .remove-filter:hover {
+            background: rgba(255, 51, 102, 0.3)
+        }
+
+        /* FILETYPE GRID */
+        .filetype-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
+            gap: 0.3rem
+        }
+
+        .ft-check {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.28rem 0.5rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            font-size: 0.73rem;
+            color: var(--text-secondary);
+            user-select: none
+        }
+
+        .ft-check:hover {
+            border-color: var(--neon-blue)
+        }
+
+        .ft-check input {
+            display: none
+        }
+
+        .ft-check.active {
+            border-color: var(--neon-blue);
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--neon-blue)
+        }
+
+        /* PRESETS */
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 0.45rem
+        }
+
+        .preset-btn {
+            padding: 0.55rem 0.8rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem
+        }
+
+        .preset-btn:hover {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            background: rgba(0, 255, 136, 0.04);
+            transform: translateY(-1px)
+        }
+
+        .preset-btn .p-icon {
+            font-size: 0.9rem;
+            flex-shrink: 0
+        }
+
+        /* HISTORY */
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 0.7rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 0.3rem;
+            font-size: 0.78rem;
+            transition: all var(--transition-speed);
+            gap: 0.4rem
+        }
+
+        .history-item:hover {
+            border-color: var(--neon-blue)
+        }
+
+        .history-query {
+            font-family: 'Consolas', monospace;
+            color: var(--neon-green);
+            word-break: break-all;
+            flex: 1;
+            cursor: pointer
+        }
+
+        .history-query:hover {
+            text-decoration: underline
+        }
+
+        .history-time {
+            color: var(--text-muted);
+            font-size: 0.68rem;
+            flex-shrink: 0
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 0.2rem;
+            flex-shrink: 0
+        }
+
+        /* QUICK OPS */
+        .quick-ops-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem
+        }
+
+        .quick-op-chip {
+            padding: 0.25rem 0.55rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--neon-blue);
+            font-size: 0.72rem;
+            font-family: 'Consolas', monospace;
+            cursor: pointer;
+            transition: all var(--transition-speed)
+        }
+
+        .quick-op-chip:hover {
+            border-color: var(--neon-blue);
+            background: rgba(0, 212, 255, 0.1)
+        }
+
+        /* ANALYTICS */
+        .analytics-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.4rem 0;
+            margin-bottom: 0.4rem
+        }
+
+        .stat-chip {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.65rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.73rem;
+            color: var(--text-secondary)
+        }
+
+        .stat-chip .stat-val {
+            font-weight: 700;
+            color: var(--neon-blue)
+        }
+
+        /* TOAST */
+        .toast-container {
+            position: fixed;
+            top: 70px;
+            right: 14px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem
+        }
+
+        .toast {
+            padding: 0.65rem 1.1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            box-shadow: var(--card-shadow);
+            animation: toastIn 0.35s ease, toastOut 0.35s ease 2.6s forwards;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            max-width: 340px
+        }
+
+        .toast.success {
+            border-left: 3px solid var(--neon-green)
+        }
+
+        .toast.error {
+            border-left: 3px solid var(--neon-red)
+        }
+
+        .toast.info {
+            border-left: 3px solid var(--neon-blue)
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(40px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0)
+            }
+        }
+
+        @keyframes toastOut {
+            from {
+                opacity: 1
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(40px)
+            }
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--overlay-bg);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            backdrop-filter: blur(6px)
+        }
+
+        .modal-overlay.active {
+            display: flex
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.6rem;
+            max-width: 720px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: var(--card-shadow);
+            animation: modalIn 0.3s ease
+        }
+
+        .modal-content.wide {
+            max-width: 920px
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0)
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.1rem;
+            padding-bottom: 0.65rem;
+            border-bottom: 1px solid var(--border-color)
+        }
+
+        .modal-title {
+            font-size: 1rem;
+            font-weight: 700
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: color var(--transition-speed);
+            padding: 0.2rem
+        }
+
+        .modal-close:hover {
+            color: var(--neon-red)
+        }
+
+        /* SECTION */
+        .section-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 0.65rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color)
+        }
+
+        .section-gap {
+            margin-top: 1.2rem
+        }
+
+        /* WALKTHROUGH / EXAMPLE CARDS */
+        .example-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.06), rgba(0, 255, 136, 0.04));
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 14px;
+            padding: 1.1rem;
+            margin-bottom: 0.9rem;
+            position: relative
+        }
+
+        .example-card .ex-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem
+        }
+
+        .example-card .ex-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 0.6rem
+        }
+
+        .example-card code {
+            background: rgba(0, 212, 255, 0.08);
+            color: var(--neon-green);
+            padding: 0.12rem 0.35rem;
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.78rem
+        }
+
+        .example-card .try-btn {
+            margin-top: 0.5rem
+        }
+
+        /* STEP INDICATOR */
+        .step-box {
+            display: flex;
+            gap: 0.7rem;
+            margin-bottom: 0.6rem;
+            align-items: flex-start
+        }
+
+        .step-num {
+            background: var(--accent-gradient);
+            color: #0a0e17;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 800;
+            flex-shrink: 0;
+            margin-top: 2px
+        }
+
+        .step-text {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.6
+        }
+
+        .step-text strong {
+            color: var(--text-primary)
+        }
+
+        .step-text code {
+            background: rgba(0, 212, 255, 0.08);
+            color: var(--neon-green);
+            padding: 0.1rem 0.35rem;
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.78rem
+        }
+
+        .tip-box {
+            background: rgba(0, 255, 136, 0.06);
+            border: 1px solid rgba(0, 255, 136, 0.15);
+            border-radius: 10px;
+            padding: 0.6rem 0.85rem;
+            font-size: 0.78rem;
+            color: var(--neon-green);
+            margin: 0.5rem 0;
+            display: flex;
+            gap: 0.4rem;
+            align-items: flex-start
+        }
+
+        .warn-box {
+            background: rgba(255, 51, 102, 0.06);
+            border: 1px solid rgba(255, 51, 102, 0.15);
+            border-radius: 10px;
+            padding: 0.6rem 0.85rem;
+            font-size: 0.78rem;
+            color: var(--neon-red);
+            margin: 0.5rem 0
+        }
+
+        /* REF TABLE */
+        .ref-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+            margin-top: 0.4rem
+        }
+
+        .ref-table th,
+        .ref-table td {
+            text-align: left;
+            padding: 0.45rem 0.6rem;
+            border-bottom: 1px solid var(--border-color)
+        }
+
+        .ref-table th {
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px
+        }
+
+        .ref-table td {
+            color: var(--text-secondary)
+        }
+
+        .ref-table code {
+            background: rgba(0, 212, 255, 0.08);
+            color: var(--neon-blue);
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.76rem
+        }
+
+        .ref-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.9rem;
+            margin-bottom: 0.65rem;
+            transition: all var(--transition-speed)
+        }
+
+        .ref-card:hover {
+            border-color: rgba(0, 212, 255, 0.25)
+        }
+
+        .ref-card-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--neon-blue);
+            margin-bottom: 0.45rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem
+        }
+
+        .ref-card p {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+            line-height: 1.55
+        }
+
+        .ref-card code {
+            background: rgba(0, 212, 255, 0.08);
+            color: var(--neon-green);
+            padding: 0.12rem 0.35rem;
+            border-radius: 3px;
+            font-size: 0.76rem;
+            font-family: 'Consolas', monospace
+        }
+
+        .ref-card ul {
+            margin: 0.3rem 0 0.3rem 1.1rem;
+            font-size: 0.78rem;
+            color: var(--text-secondary)
+        }
+
+        .ref-card ul li {
+            margin-bottom: 0.15rem
+        }
+
+        .tool-features {
+            margin-top: 0.4rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem
+        }
+
+        .tool-tag {
+            padding: 0.12rem 0.4rem;
+            background: rgba(0, 212, 255, 0.06);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            border-radius: 4px;
+            font-size: 0.66rem;
+            color: var(--neon-blue)
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.76rem;
+            margin-top: 1rem;
+            position: relative;
+            z-index: 1
+        }
+
+        .footer .disclaimer {
+            display: inline-block;
+            padding: 0.4rem 1.3rem;
+            border: 1px solid rgba(255, 51, 102, 0.25);
+            border-radius: 8px;
+            background: rgba(255, 51, 102, 0.04);
+            color: var(--neon-red);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.4rem
+        }
+
+        .scroll-y {
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 0.2rem
+        }
+
+        .scroll-y-lg {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.2rem
+        }
+
+        .mt-1 {
+            margin-top: 0.5rem
+        }
+
+        .mt-2 {
+            margin-top: 1rem
+        }
+
+        .mb-1 {
+            margin-bottom: 0.5rem
+        }
+
+        .flex-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem
+        }
+
+        kbd {
+            background: var(--bg-input);
+            padding: 0.1rem 0.35rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            font-size: 0.73rem;
+            font-family: 'Consolas', monospace;
+            color: var(--text-secondary)
+        }
+
+        /* WALKTHROUGH HIGHLIGHT PULSE */
+        .highlight-pulse {
+            animation: highlightPulse 2s ease-in-out 3
+        }
+
+        @keyframes highlightPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 212, 255, 0)
+            }
+
+            50% {
+                box-shadow: 0 0 0 6px rgba(0, 212, 255, 0.3)
+            }
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:1100px) {
+            .grid-2 {
+                grid-template-columns: 1fr
+            }
+
+            .grid-3 {
+                grid-template-columns: 1fr 1fr
+            }
+        }
+
+        @media(max-width:768px) {
+            .header {
+                padding: 0.6rem 0.8rem
+            }
+
+            .header-title {
+                font-size: 0.95rem
+            }
+
+            .main-container {
+                padding: 0.7rem
+            }
+
+            .grid-3 {
+                grid-template-columns: 1fr
+            }
+
+            .preset-grid {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .nav-tabs {
+                overflow-x: auto
+            }
+
+            .modal-content {
+                padding: 1.1rem
+            }
+        }
+
+        @media(max-width:480px) {
+            .preset-grid {
+                grid-template-columns: 1fr
+            }
+
+            .btn-group {
+                flex-direction: column
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: center
+            }
+
+            .analytics-bar {
+                flex-direction: column
+            }
+
+            .nav-tab {
+                padding: 0.3rem 0.55rem;
+                font-size: 0.7rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- MODAL: SAVE PRESET -->
+    <div class="modal-overlay" id="savePresetModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">💾 Save Custom Preset</span>
+                <button class="modal-close" onclick="closeSaveModal()">&times;</button>
+            </div>
+            <div class="input-group"><label class="input-label">Preset Name</label><input type="text"
+                    class="input-field" id="presetNameInput" placeholder="e.g., Java DSA Notes Search"></div>
+            <div class="input-group"><label class="input-label">Query</label><textarea class="input-field"
+                    id="presetQueryInput" rows="3" readonly></textarea></div>
+            <div class="btn-group mt-1"><button class="btn btn-primary" onclick="confirmSavePreset()">💾
+                    Save</button><button class="btn btn-secondary" onclick="closeSaveModal()">Cancel</button></div>
+        </div>
+    </div>
+
+    <!-- MODAL: IMPORT/EXPORT -->
+    <div class="modal-overlay" id="importExportModal">
+        <div class="modal-content">
+            <div class="modal-header"><span class="modal-title">📦 Import / Export</span><button class="modal-close"
+                    onclick="closeImportExportModal()">&times;</button></div>
+            <div class="input-group"><label class="input-label">Export (JSON)</label><textarea class="input-field"
+                    id="exportArea" rows="5" readonly></textarea><button class="btn btn-blue btn-sm mt-1"
+                    onclick="copyExportData()">📋 Copy</button></div>
+            <div class="input-group mt-2"><label class="input-label">Import (Paste JSON)</label><textarea
+                    class="input-field" id="importArea" rows="5" placeholder='Paste JSON here...'></textarea><button
+                    class="btn btn-green btn-sm mt-1" onclick="importData()">📥 Import</button></div>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-icon">S</div>
+            <div>
+                <div class="header-title">Shimba's Cyber Intelligence Dashboard</div>
+                <div class="header-subtitle">Advanced OSINT &amp; Dorking Suite v2.0</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <nav class="nav-tabs">
+                <button class="nav-tab active" onclick="switchTab('dorking',this)">🔍 Dorking</button>
+                <button class="nav-tab" onclick="switchTab('howto',this)">📖 How-To</button>
+                <button class="nav-tab" onclick="switchTab('osint',this)">🌐 OSINT</button>
+                <button class="nav-tab" onclick="switchTab('reference',this)">📘 Reference</button>
+                <button class="nav-tab" onclick="switchTab('tools',this)">🛠️ Tools</button>
+                <button class="nav-tab" onclick="switchTab('history',this)">🕒 History</button>
+            </nav>
+            <button class="header-btn" onclick="openImportExportModal()">📦</button>
+            <button class="theme-toggle" onclick="toggleTheme()"><span id="themeIcon">🌙</span><span
+                    id="themeLabel">Dark</span></button>
+        </div>
+    </header>
+
+    <main class="main-container">
+
+        <!-- ANALYTICS BAR -->
+        <div class="analytics-bar">
+            <div class="stat-chip">🔍 Filters: <span class="stat-val" id="statFilters">0</span></div>
+            <div class="stat-chip">📄 Filetypes: <span class="stat-val" id="statFiletypes">0</span></div>
+            <div class="stat-chip">📝 Length: <span class="stat-val" id="statLength">0</span></div>
+            <div class="stat-chip">🕒 History: <span class="stat-val" id="statHistory">0</span></div>
+            <div class="stat-chip">💾 Saved: <span class="stat-val" id="statSaved">0</span></div>
+            <div class="stat-chip">🔧 <span class="stat-val" id="statEngine">Google</span></div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════
+     TAB: HOW TO USE (Hindi + English Guide)
+     ═══════════════════════════════════════════ -->
+        <div class="tab-panel" id="panel-howto">
+
+            <!-- WELCOME -->
+            <div class="card" style="border-color:rgba(0,212,255,0.3);margin-bottom:1.2rem;">
+                <div class="card-header">
+                    <div class="card-icon cyan">🎓</div>
+                    <div>
+                        <div class="card-title">📖 Complete Guide — Kaise Use Kare? (Hindi + English)</div>
+                        <div class="card-desc">Step-by-step samjho har feature — with live Try-It examples</div>
+                    </div>
+                </div>
+                <div class="tip-box">💡 <strong>Sabse pehle samjho:</strong> Ye tool Google/Bing mein advanced search
+                    queries banata hai. Tum manually operators type karne ki jagah, buttons click karke powerful queries
+                    bana sakte ho — aur results new tab mein khulte hain!</div>
+            </div>
+
+            <!-- EXAMPLE 1: Java DSA Handwritten Notes -->
+            <div class="example-card">
+                <div class="ex-title">🎯 Example 1: "Mujhe Java DSA ke Handwritten Notes PDF chahiye"</div>
+                <div class="ex-desc">Yeh sabse common use case hai — koi specific topic ki PDF dhundhna. Dekho
+                    step-by-step:</div>
+                <div class="step-box">
+                    <div class="step-num">1</div>
+                    <div class="step-text"><strong>Keywords box mein likho:</strong>
+                        <code>java dsa handwritten notes</code><br>Yeh main search term hai — Google isko dhundhega
+                    </div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">2</div>
+                    <div class="step-text"><strong>Phrase Mode → "Exact Phrase" select karo</strong><br>Isse query
+                        <code>"java dsa handwritten notes"</code> ban jayega (quotes mein) — exact match milega
+                    </div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">3</div>
+                    <div class="step-text"><strong>Right side mein File Types section mein PDF pe click
+                            karo</strong><br>Blue ho jayega = selected ✅ — query mein <code>filetype:pdf</code> add ho
+                        jayega</div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">4</div>
+                    <div class="step-text"><strong>"➕ Add Filter" button dabao</strong> → Dropdown mein
+                        <code>site:</code> choose karo → Value mein likho <code>drive.google.com</code><br>Isse sirf
+                        Google Drive ke results aayenge
+                    </div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">5</div>
+                    <div class="step-text"><strong>Query Preview automatically update
+                            hoga:</strong><br><code>"java dsa handwritten notes" site:drive.google.com filetype:pdf</code>
+                    </div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">6</div>
+                    <div class="step-text"><strong>🔍 Search button dabao</strong> ya <kbd>Enter</kbd> press karo — New
+                        tab mein Google results khulenge!</div>
+                </div>
+                <button class="btn btn-primary try-btn" onclick="tryExample('javadsa')">🚀 Try This Example — Auto Fill
+                    Karo!</button>
+            </div>
+
+            <!-- EXAMPLE 2 -->
+            <div class="example-card">
+                <div class="ex-title">🎯 Example 2: "Python Tutorial PDF free download"</div>
+                <div class="ex-desc">Programming books aur tutorials PDF mein dhundhna:</div>
+                <div class="step-box">
+                    <div class="step-num">1</div>
+                    <div class="step-text">Keywords: <code>python tutorial beginner</code></div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">2</div>
+                    <div class="step-text">File Type: <code>PDF</code> select karo</div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">3</div>
+                    <div class="step-text">Filter add karo: <code>intitle:</code> → value: <code>python tutorial</code>
+                    </div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">4</div>
+                    <div class="step-text">Final query:
+                        <code>python tutorial beginner intitle:"python tutorial" filetype:pdf</code>
+                    </div>
+                </div>
+                <button class="btn btn-primary try-btn" onclick="tryExample('python')">🚀 Try This Example</button>
+            </div>
+
+            <!-- EXAMPLE 3 -->
+            <div class="example-card">
+                <div class="ex-title">🎯 Example 3: "Cybersecurity Notes site:edu"</div>
+                <div class="ex-desc">University websites se educational materials dhundhna:</div>
+                <div class="step-box">
+                    <div class="step-num">1</div>
+                    <div class="step-text">Keywords: <code>cybersecurity</code></div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">2</div>
+                    <div class="step-text">Quick Operators mein <code>site:edu</code> click karo</div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">3</div>
+                    <div class="step-text">File Types: <code>PDF</code> + <code>PPT</code> select karo</div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">4</div>
+                    <div class="step-text">Final: <code>cybersecurity site:edu (filetype:pdf OR filetype:ppt)</code>
+                    </div>
+                </div>
+                <button class="btn btn-primary try-btn" onclick="tryExample('cyber')">🚀 Try This Example</button>
+            </div>
+
+            <!-- EXAMPLE 4 -->
+            <div class="example-card">
+                <div class="ex-title">🎯 Example 4: "Kisi ka LinkedIn profile dhundhna"</div>
+                <div class="ex-desc">Social Media OSINT tab use karo:</div>
+                <div class="step-box">
+                    <div class="step-num">1</div>
+                    <div class="step-text"><strong>🌐 OSINT tab pe jao</strong> (upar tab mein)</div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">2</div>
+                    <div class="step-text"><strong>Social Media section mein</strong> name likho: <code>John Doe</code>
+                    </div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">3</div>
+                    <div class="step-text"><strong>🔗 LinkedIn button</strong> dabao → Google
+                        <code>site:linkedin.com/in "John Doe"</code> search karega
+                    </div>
+                </div>
+                <button class="btn btn-blue try-btn"
+                    onclick="switchTab('osint',document.querySelectorAll('.nav-tab')[2])">🌐 Go to OSINT Tab</button>
+            </div>
+
+            <!-- EXAMPLE 5 -->
+            <div class="example-card">
+                <div class="ex-title">🎯 Example 5: "Paywalled article padhna (free mein)"</div>
+                <div class="ex-desc">Archive Access tool use karo:</div>
+                <div class="step-box">
+                    <div class="step-num">1</div>
+                    <div class="step-text"><strong>🌐 OSINT tab pe jao</strong></div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">2</div>
+                    <div class="step-text"><strong>Archive section mein URL paste karo:</strong>
+                        <code>https://example.com/article</code>
+                    </div>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">3</div>
+                    <div class="step-text"><strong>Google Cache / Wayback / 12ft.io</strong> button dabao — archived
+                        version khulega</div>
+                </div>
+            </div>
+
+            <div class="grid-2" style="margin-top:1.2rem;">
+                <!-- HAR BUTTON KYA KARTA HAI -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon yellow">🔘</div>
+                        <div>
+                            <div class="card-title">Har Button Kya Karta Hai?</div>
+                            <div class="card-desc">Complete button reference</div>
+                        </div>
+                    </div>
+                    <div class="scroll-y-lg">
+                        <table class="ref-table">
+                            <thead>
+                                <tr>
+                                    <th>Button</th>
+                                    <th>Kya Karta Hai</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>🔍 Search</strong></td>
+                                    <td>Query ko encode karke Google/Bing/DDG mein new tab mein open karta hai</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>📋 Copy</strong></td>
+                                    <td>Current query clipboard mein copy karta hai</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>📑 Duplicate</strong></td>
+                                    <td>Query ko manual edit box mein paste karta hai (editing ke liye)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>🗑️ Clear</strong></td>
+                                    <td>Sab fields, filters, filetypes sab clear kar deta hai</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>💾 Save</strong></td>
+                                    <td>Current query ko naam dekar save karta hai (localStorage)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>➕ Add Filter</strong></td>
+                                    <td>Ek naya operator row add karta hai (intitle/inurl/site etc.)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Quick Op Chips</strong></td>
+                                    <td>Blue chips click karne se wo operator keyword mein add ho jata hai</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>File Type buttons</strong></td>
+                                    <td>Click = select (blue), dobara click = deselect</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Preset buttons</strong></td>
+                                    <td>Pre-made query template load kar dete hain</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>📦 I/O</strong></td>
+                                    <td>History + Presets ko JSON mein export/import karo</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>🌙/☀️ Theme</strong></td>
+                                    <td>Dark aur Light mode toggle karta hai</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- OPERATORS SAMJHO -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon blue">📝</div>
+                        <div>
+                            <div class="card-title">Operators Samjho (Easy Hindi)</div>
+                            <div class="card-desc">Har operator kya karta hai — simple language mein</div>
+                        </div>
+                    </div>
+                    <div class="scroll-y-lg">
+                        <table class="ref-table">
+                            <thead>
+                                <tr>
+                                    <th>Operator</th>
+                                    <th>Matlab (Hindi mein)</th>
+                                    <th>Example</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>intitle:</code></td>
+                                    <td>Page ke <strong>title</strong> mein dhundho</td>
+                                    <td><code>intitle:notes</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>inurl:</code></td>
+                                    <td>Page ke <strong>URL/link</strong> mein dhundho</td>
+                                    <td><code>inurl:admin</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>intext:</code></td>
+                                    <td>Page ke <strong>body text</strong> mein dhundho</td>
+                                    <td><code>intext:password</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>site:</code></td>
+                                    <td>Sirf <strong>is website</strong> ke results dikhao</td>
+                                    <td><code>site:github.com</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>filetype:</code></td>
+                                    <td>Sirf <strong>is type ki file</strong> dikhao</td>
+                                    <td><code>filetype:pdf</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>"quotes"</code></td>
+                                    <td><strong>Exact match</strong> — bilkul yehi words chahiye</td>
+                                    <td><code>"java notes"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>-minus</code></td>
+                                    <td>Ye word <strong>hatao</strong> results se</td>
+                                    <td><code>-pinterest</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>OR</code></td>
+                                    <td><strong>Ya toh ye ya woh</strong> — dono mein se koi bhi</td>
+                                    <td><code>pdf OR ppt</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>before:</code></td>
+                                    <td>Is date se <strong>pehle</strong> ke results</td>
+                                    <td><code>before:2024-01-01</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>after:</code></td>
+                                    <td>Is date ke <strong>baad</strong> ke results</td>
+                                    <td><code>after:2023-01-01</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>*</code></td>
+                                    <td><strong>Wildcard</strong> — koi bhi word aa sakta hai yahan</td>
+                                    <td><code>"best * for hacking"</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OSINT KYA HAI -->
+            <div class="card" style="margin-top:1.2rem;">
+                <div class="card-header">
+                    <div class="card-icon purple">🔐</div>
+                    <div>
+                        <div class="card-title">OSINT Kya Hai? Google Dorking Kya Hai?</div>
+                        <div class="card-desc">Beginners ke liye simple explanation</div>
+                    </div>
+                </div>
+                <div class="grid-2" style="gap:1rem;">
+                    <div class="ref-card">
+                        <div class="ref-card-title">🌐 OSINT (Open Source Intelligence)</div>
+                        <p><strong>OSINT</strong> = Publicly available (sabke liye open) information ko collect aur
+                            analyze karna.</p>
+                        <p style="margin-top:0.3rem;">Sources include:</p>
+                        <ul>
+                            <li>🔍 Search Engines (Google, Bing)</li>
+                            <li>📱 Social Media (LinkedIn, Twitter, GitHub)</li>
+                            <li>📋 Public Records & WHOIS data</li>
+                            <li>🗄️ Web Archives (Wayback Machine)</li>
+                            <li>📡 Device Search (Shodan)</li>
+                            <li>📄 Documents & Metadata</li>
+                        </ul>
+                        <p style="margin-top:0.4rem;color:var(--neon-green);">✅ Ye <strong>legal</strong> hai jab tak
+                            tum public data use kar rahe ho. Security researchers, journalists, aur ethical hackers iska
+                            use karte hain.</p>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">💀 Google Dorking (Google Hacking)</div>
+                        <p><strong>Google Dorking</strong> = Google ke advanced search operators use karke specific
+                            cheezon ko dhundhna jo normal search se nahi milti.</p>
+                        <p style="margin-top:0.3rem;"><strong>Example:</strong></p>
+                        <p>Normal search: <code>java notes pdf</code> — basic results</p>
+                        <p>Dorking: <code>"java notes" filetype:pdf site:drive.google.com</code> — precise results!</p>
+                        <p style="margin-top:0.4rem;"><strong>GHDB (Google Hacking Database)</strong> = Offensive
+                            Security ne banaya hai — ye thousands of tested "dork" queries ka collection hai.</p>
+                        <div
+                            style="margin-top:0.5rem;padding:0.5rem;background:rgba(255,51,102,0.06);border:1px solid rgba(255,51,102,0.15);border-radius:8px;font-size:0.76rem;color:var(--neon-red);">
+                            ⚠️ Hamesha ethical aur legal use karo. Unauthorized access attempt karna illegal hai!</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COMMON USE CASES -->
+            <div class="card" style="margin-top:1.2rem;">
+                <div class="card-header">
+                    <div class="card-icon green">💡</div>
+                    <div>
+                        <div class="card-title">Common Use Cases — Kab Kya Search Kare?</div>
+                        <div class="card-desc">Click "Try" to auto-fill that query in Dorking tab</div>
+                    </div>
+                </div>
+                <div class="grid-3" style="gap:0.6rem;">
+                    <div class="ref-card" style="cursor:pointer" onclick="tryExample('javadsa')">
+                        <div class="ref-card-title" style="font-size:0.8rem">📝 Handwritten Notes PDF</div>
+                        <p><code>"java dsa handwritten notes" filetype:pdf</code></p>
+                        <div style="margin-top:0.4rem;font-size:0.7rem;color:var(--neon-cyan)">🖱️ Click to try</div>
+                    </div>
+                    <div class="ref-card" style="cursor:pointer" onclick="tryExample('python')">
+                        <div class="ref-card-title" style="font-size:0.8rem">💻 Programming Tutorial</div>
+                        <p><code>python tutorial beginner filetype:pdf</code></p>
+                        <div style="margin-top:0.4rem;font-size:0.7rem;color:var(--neon-cyan)">🖱️ Click to try</div>
+                    </div>
+                    <div class="ref-card" style="cursor:pointer" onclick="tryExample('cyber')">
+                        <div class="ref-card-title" style="font-size:0.8rem">🔒 Cyber Security Notes</div>
+                        <p><code>cybersecurity site:edu filetype:pdf OR filetype:ppt</code></p>
+                        <div style="margin-top:0.4rem;font-size:0.7rem;color:var(--neon-cyan)">🖱️ Click to try</div>
+                    </div>
+                    <div class="ref-card" style="cursor:pointer" onclick="tryExample('resume')">
+                        <div class="ref-card-title" style="font-size:0.8rem">📄 Resume/CV Templates</div>
+                        <p><code>"resume" OR "cv" filetype:docx site:drive.google.com</code></p>
+                        <div style="margin-top:0.4rem;font-size:0.7rem;color:var(--neon-cyan)">🖱️ Click to try</div>
+                    </div>
+                    <div class="ref-card" style="cursor:pointer" onclick="tryExample('cheatsheet')">
+                        <div class="ref-card-title" style="font-size:0.8rem">📋 Cheat Sheets</div>
+                        <p><code>"cheat sheet" javascript filetype:pdf</code></p>
+                        <div style="margin-top:0.4rem;font-size:0.7rem;color:var(--neon-cyan)">🖱️ Click to try</div>
+                    </div>
+                    <div class="ref-card" style="cursor:pointer" onclick="tryExample('gdrive')">
+                        <div class="ref-card-title" style="font-size:0.8rem">📁 Google Drive Books</div>
+                        <p><code>site:drive.google.com "data structures" filetype:pdf</code></p>
+                        <div style="margin-top:0.4rem;font-size:0.7rem;color:var(--neon-cyan)">🖱️ Click to try</div>
+                    </div>
+                    <div class="ref-card" style="cursor:pointer" onclick="tryExample('gate')">
+                        <div class="ref-card-title" style="font-size:0.8rem">🎓 GATE/Exam Notes</div>
+                        <p><code>"gate" "computer science" notes filetype:pdf</code></p>
+                        <div style="margin-top:0.4rem;font-size:0.7rem;color:var(--neon-cyan)">🖱️ Click to try</div>
+                    </div>
+                    <div class="ref-card" style="cursor:pointer" onclick="tryExample('research')">
+                        <div class="ref-card-title" style="font-size:0.8rem">📄 Research Papers</div>
+                        <p><code>site:researchgate.net OR site:arxiv.org "machine learning" filetype:pdf</code></p>
+                        <div style="margin-top:0.4rem;font-size:0.7rem;color:var(--neon-cyan)">🖱️ Click to try</div>
+                    </div>
+                    <div class="ref-card" style="cursor:pointer" onclick="tryExample('ebook')">
+                        <div class="ref-card-title" style="font-size:0.8rem">📚 Free eBooks</div>
+                        <p><code>intitle:"index of" "parent directory" ebook filetype:pdf</code></p>
+                        <div style="margin-top:0.4rem;font-size:0.7rem;color:var(--neon-cyan)">🖱️ Click to try</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════
+     TAB: DORKING ENGINE
+     ═══════════════════════════════════════════ -->
+        <div class="tab-panel active" id="panel-dorking">
+            <div class="grid-2">
+                <!-- LEFT: SEARCH -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon blue">🔍</div>
+                        <div>
+                            <div class="card-title">Advanced Dorking Engine</div>
+                            <div class="card-desc">Build complex queries — buttons click karo, query banta jayega!</div>
+                        </div>
+                    </div>
+                    <div class="input-group"><label class="input-label">🔑 Main Keywords <span
+                                style="color:var(--text-muted);font-weight:400">(yahan search term
+                                likho)</span></label><input type="text" class="input-field" id="mainKeyword"
+                            placeholder='e.g., java dsa handwritten notes' autocomplete="off"></div>
+                    <div style="display:flex;gap:0.65rem;flex-wrap:wrap;margin-bottom:0.85rem;">
+                        <div style="flex:1;min-width:150px;"><label class="input-label">🔧 Search Engine</label><select
+                                class="input-field" id="searchEngine">
+                                <option value="google">Google</option>
+                                <option value="bing">Bing</option>
+                                <option value="duckduckgo">DuckDuckGo</option>
+                            </select></div>
+                        <div style="flex:1;min-width:150px;"><label class="input-label">💬 Phrase Mode <span
+                                    style="color:var(--text-muted);font-weight:400">(exact =
+                                    quotes)</span></label><select class="input-field" id="phraseMode">
+                                <option value="normal">Normal</option>
+                                <option value="exact">Exact Phrase "..."</option>
+                            </select></div>
+                    </div>
+                    <div class="section-title">⚡ Quick Operators <span
+                            style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.7rem">(click to
+                            add)</span></div>
+                    <div class="quick-ops-list mb-1">
+                        <span class="quick-op-chip" onclick="insertQuickOp('&quot;index of&quot;')">"index of"</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('inurl:admin')">inurl:admin</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('inurl:backup')">inurl:backup</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('intitle:roadmap')">intitle:roadmap</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('site:edu')">site:edu</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('site:gov')">site:gov</span>
+                        <span class="quick-op-chip"
+                            onclick="insertQuickOp('site:drive.google.com')">site:drive.google.com</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('inurl:login')">inurl:login</span>
+                        <span class="quick-op-chip"
+                            onclick="insertQuickOp('intitle:&quot;index of&quot;')">intitle:"index of"</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('inurl:config')">inurl:config</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('ext:sql')">ext:sql</span>
+                    </div>
+                    <div class="btn-group mt-2">
+                        <button class="btn btn-primary" onclick="executeSearch()">🔍 Search</button>
+                        <button class="btn btn-secondary" onclick="copyQuery()">📋 Copy</button>
+                        <button class="btn btn-secondary" onclick="duplicateQuery()">📑 Duplicate</button>
+                        <button class="btn btn-danger btn-sm" onclick="clearAll()">🗑️ Clear</button>
+                        <button class="btn btn-green btn-sm" onclick="openSaveModal()">💾 Save</button>
+                    </div>
+                </div>
+                <!-- RIGHT: FILTERS -->
+                <div class="card green-accent">
+                    <div class="card-header">
+                        <div class="card-icon green">🛠️</div>
+                        <div>
+                            <div class="card-title">Dynamic Filter Builder</div>
+                            <div class="card-desc">➕ pe click karo → operator choose karo → value likho</div>
+                        </div>
+                    </div>
+                    <div class="flex-between mb-1"><button class="btn btn-blue btn-sm" onclick="addFilter()">➕ Add
+                            Filter</button><button class="btn btn-secondary btn-xs" onclick="clearFilters()">Clear
+                            Filters</button></div>
+                    <div class="scroll-y" id="filtersContainer"></div>
+                    <div class="section-title section-gap">📄 File Types <span
+                            style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.7rem">(click to
+                            select/deselect)</span></div>
+                    <div class="filetype-grid" id="filetypeGrid"></div>
+                    <div class="section-title section-gap">📅 Date Range</div>
+                    <div style="display:flex;gap:0.65rem;flex-wrap:wrap;">
+                        <div style="flex:1;min-width:130px;"><label class="input-label">After (ke baad)</label><input
+                                type="date" class="input-field" id="dateAfter"></div>
+                        <div style="flex:1;min-width:130px;"><label class="input-label">Before (se pehle)</label><input
+                                type="date" class="input-field" id="dateBefore"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- QUERY PREVIEW -->
+            <div class="card purple-accent" style="margin-top:1.2rem;">
+                <div class="card-header">
+                    <div class="card-icon purple">📡</div>
+                    <div>
+                        <div class="card-title">Real-Time Query Preview</div>
+                        <div class="card-desc">Ye automatically update hota hai — niche manual edit bhi kar sakte ho
+                        </div>
+                    </div>
+                </div>
+                <div class="query-preview" id="queryPreview"><span class="empty-msg">Upar keywords likho aur filters add
+                        karo — yahan query dikhega...</span></div>
+                <div class="input-group mt-1"><label class="input-label">✏️ Manual Edit <span
+                            style="font-weight:400;color:var(--text-muted)">(khud se bhi likh sakte
+                            ho)</span></label><textarea class="input-field" id="manualQuery" rows="2"
+                        placeholder="Manually edit your query here..."></textarea></div>
+                <div class="flex-between mt-1"><span style="font-size:0.72rem;color:var(--text-muted)">Press
+                        <kbd>Enter</kbd> to search</span><button class="btn btn-primary btn-sm"
+                        onclick="executeSearch()">🚀 Execute Search</button></div>
+            </div>
+            <!-- PRESETS -->
+            <div class="card orange-accent" style="margin-top:1.2rem;">
+                <div class="card-header">
+                    <div class="card-icon yellow">📚</div>
+                    <div>
+                        <div class="card-title">Preset Categories</div>
+                        <div class="card-desc">Ek click mein ready-made query load karo</div>
+                    </div>
+                </div>
+                <div class="preset-grid">
+                    <button class="preset-btn" onclick="loadPreset('cyber')"><span class="p-icon">🔒</span>
+                        Cybersecurity</button>
+                    <button class="preset-btn" onclick="loadPreset('programming')"><span class="p-icon">💻</span>
+                        Programming</button>
+                    <button class="preset-btn" onclick="loadPreset('research')"><span class="p-icon">📄</span> Research
+                        Papers</button>
+                    <button class="preset-btn" onclick="loadPreset('public')"><span class="p-icon">📂</span> Public
+                        Docs</button>
+                    <button class="preset-btn" onclick="loadPreset('index')"><span class="p-icon">📁</span> Index
+                        Listings</button>
+                    <button class="preset-btn" onclick="loadPreset('gov')"><span class="p-icon">🏛️</span>
+                        Government</button>
+                    <button class="preset-btn" onclick="loadPreset('edu')"><span class="p-icon">🎓</span>
+                        Educational</button>
+                    <button class="preset-btn" onclick="loadPreset('tech')"><span class="p-icon">📘</span> Tech
+                        Docs</button>
+                </div>
+                <div class="section-title section-gap">⭐ Saved Custom Presets</div>
+                <div class="scroll-y" id="savedPresetsContainer">
+                    <div style="color:var(--text-muted);font-size:0.78rem;text-align:center;padding:0.7rem;">No saved
+                        presets yet — 💾 Save button se save karo</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════
+     TAB: OSINT
+     ═══════════════════════════════════════════ -->
+        <div class="tab-panel" id="panel-osint">
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon orange">🌐</div>
+                        <div>
+                            <div class="card-title">Social Media OSINT Search</div>
+                            <div class="card-desc">Naam/keyword likho → platform button dabao</div>
+                        </div>
+                    </div>
+                    <div class="input-group"><label class="input-label">🔑 Search Keyword / Name</label><input
+                            type="text" class="input-field" id="socialKeyword" placeholder="e.g., John Doe, @username">
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-blue" onclick="socialSearch('linkedin')">🔗 LinkedIn</button>
+                        <button class="btn btn-blue" onclick="socialSearch('twitter')">🐦 Twitter/X</button>
+                        <button class="btn btn-secondary" onclick="socialSearch('github')">🐙 GitHub</button>
+                        <button class="btn btn-orange" onclick="socialSearch('reddit')">🟠 Reddit</button>
+                        <button class="btn btn-pink" onclick="socialSearch('instagram')">📸 Instagram</button>
+                        <button class="btn btn-cyan" onclick="socialSearch('facebook')">📘 Facebook</button>
+                    </div>
+                    <div class="section-title section-gap">🎯 Advanced People Search</div>
+                    <div class="input-group"><label class="input-label">Full Name</label><input type="text"
+                            class="input-field" id="personName" placeholder="John Doe"></div>
+                    <div style="display:flex;gap:0.65rem;flex-wrap:wrap;margin-bottom:0.85rem;">
+                        <div style="flex:1;min-width:135px;"><label class="input-label">Location</label><input
+                                type="text" class="input-field" id="personLocation" placeholder="Mumbai"></div>
+                        <div style="flex:1;min-width:135px;"><label class="input-label">Organization</label><input
+                                type="text" class="input-field" id="personOrg" placeholder="TCS"></div>
+                    </div>
+                    <button class="btn btn-primary" onclick="advancedPeopleSearch()">🔍 Search Person</button>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon cyan">📦</div>
+                        <div>
+                            <div class="card-title">Article Unlocker / Archive Access</div>
+                            <div class="card-desc">URL paste karo → archived version kholo</div>
+                        </div>
+                    </div>
+                    <div class="input-group"><label class="input-label">🔗 Paste URL</label><input type="text"
+                            class="input-field" id="archiveUrl" placeholder="https://example.com/article..."></div>
+                    <div class="btn-group">
+                        <button class="btn btn-green btn-sm" onclick="openArchive('google')">📋 Google Cache</button>
+                        <button class="btn btn-blue btn-sm" onclick="openArchive('wayback')">🕰️ Wayback</button>
+                        <button class="btn btn-purple btn-sm" onclick="openArchive('archiveis')">🗄️ Archive.is</button>
+                        <button class="btn btn-orange btn-sm" onclick="openArchive('12ft')">🪜 12ft.io</button>
+                    </div>
+                    <div class="section-title section-gap">🌊 Shodan (IoT Device Search)</div>
+                    <div class="input-group"><label class="input-label">🔎 Shodan Query</label><input type="text"
+                            class="input-field" id="shodanQuery" placeholder="e.g., apache, webcam, port:22"></div>
+                    <div class="btn-group">
+                        <button class="btn btn-cyan" onclick="shodanSearch()">🌊 Search Shodan</button>
+                        <button class="btn btn-secondary btn-sm" onclick="shodanPreset('webcam')">📹 Webcams</button>
+                        <button class="btn btn-secondary btn-sm" onclick="shodanPreset('database')">🗄️ DBs</button>
+                    </div>
+                    <div class="section-title section-gap">🔍 WHOIS / DNS</div>
+                    <div class="input-group"><label class="input-label">🌐 Domain</label><input type="text"
+                            class="input-field" id="whoisDomain" placeholder="example.com"></div>
+                    <div class="btn-group">
+                        <button class="btn btn-blue btn-sm" onclick="whoisLookup('whois')">📋 WHOIS</button>
+                        <button class="btn btn-green btn-sm" onclick="whoisLookup('dns')">🔎 DNS</button>
+                        <button class="btn btn-purple btn-sm" onclick="whoisLookup('builtwith')">🛠️ BuiltWith</button>
+                        <button class="btn btn-orange btn-sm" onclick="whoisLookup('censys')">🔬 Censys</button>
+                    </div>
+                </div>
+            </div>
+            <!-- GHDB -->
+            <div class="card" style="margin-top:1.2rem;">
+                <div class="card-header">
+                    <div class="card-icon red">💀</div>
+                    <div>
+                        <div class="card-title">GHDB Categories (Google Hacking Database)</div>
+                        <div class="card-desc">Click = Query auto-fill → Dorking tab pe jao → Search karo</div>
+                    </div>
+                </div>
+                <div class="preset-grid">
+                    <button class="preset-btn" onclick="loadGHDB('footholds')"><span class="p-icon">🦶</span>
+                        Footholds</button>
+                    <button class="preset-btn" onclick="loadGHDB('filesfound')"><span class="p-icon">📁</span> Files
+                        with Info</button>
+                    <button class="preset-btn" onclick="loadGHDB('dirlist')"><span class="p-icon">📂</span> Directory
+                        Listings</button>
+                    <button class="preset-btn" onclick="loadGHDB('loginpages')"><span class="p-icon">🔐</span> Login
+                        Pages</button>
+                    <button class="preset-btn" onclick="loadGHDB('sensitiveinfo')"><span class="p-icon">⚠️</span>
+                        Sensitive Info</button>
+                    <button class="preset-btn" onclick="loadGHDB('vulnservers')"><span class="p-icon">🖥️</span> Vuln
+                        Servers</button>
+                    <button class="preset-btn" onclick="loadGHDB('errormsgs')"><span class="p-icon">❌</span> Error
+                        Messages</button>
+                    <button class="preset-btn" onclick="loadGHDB('passwords')"><span class="p-icon">🔑</span> Password
+                        Files</button>
+                    <button class="preset-btn" onclick="loadGHDB('devices')"><span class="p-icon">📡</span> Network
+                        Devices</button>
+                    <button class="preset-btn" onclick="loadGHDB('databases')"><span class="p-icon">🗃️</span> Database
+                        Files</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════
+     TAB: REFERENCE
+     ═══════════════════════════════════════════ -->
+        <div class="tab-panel" id="panel-reference">
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon blue">📘</div>
+                        <div>
+                            <div class="card-title">Google Search Directives</div>
+                            <div class="card-desc">OSINT Cheat Sheet — binca via cheatography.com</div>
+                        </div>
+                    </div>
+                    <div class="scroll-y-lg">
+                        <table class="ref-table">
+                            <thead>
+                                <tr>
+                                    <th>Operator</th>
+                                    <th>Description</th>
+                                    <th>Example</th>
+                                </tr>
+                            </thead>
+                            <tbody id="googleDirectivesTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon green">📗</div>
+                        <div>
+                            <div class="card-title">Modifiers & Engine Differences</div>
+                            <div class="card-desc">Google vs Bing vs DuckDuckGo</div>
+                        </div>
+                    </div>
+                    <div class="scroll-y-lg">
+                        <div class="ref-card">
+                            <div class="ref-card-title">🔤 Google Modifiers</div>
+                            <table class="ref-table">
+                                <tbody>
+                                    <tr>
+                                        <td><code>"double quotes"</code></td>
+                                        <td>Literal/exact match for string</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>-</code> (hyphen)</td>
+                                        <td>Omits pages — <code>-site:domain.com</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>*</code> (asterisk)</td>
+                                        <td>Keyword wildcard — <code>"best * tools"</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>OR</code> / <code>|</code></td>
+                                        <td>Match either term</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>()</code></td>
+                                        <td>Group terms — <code>(inurl:admin OR inurl:login)</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="ref-card">
+                            <div class="ref-card-title">🔵 Bing</div>
+                            <p>Supports: <code>site:</code>, <code>inurl:</code>, <code>intitle:</code>,
+                                <code>filetype:</code>
+                            </p>
+                            <p>Uses <code>NOT</code> instead of <code>-</code> for exclusions</p>
+                        </div>
+                        <div class="ref-card">
+                            <div class="ref-card-title">🦆 DuckDuckGo</div>
+                            <p>Supports: <code>site:</code>, <code>intitle:</code>, <code>filetype:</code>,
+                                <code>inurl:</code>
+                            </p>
+                            <p>Uses <code>-</code> for exclusions. Supports <code>!</code> bang commands</p>
+                        </div>
+                        <div class="ref-card">
+                            <div class="ref-card-title">⚠️ Google Automation Warning</div>
+                            <p>Google SOAP API: Stopped in 2006</p>
+                            <p style="color:var(--neon-red)"><strong>Google Shunning:</strong> Search ban → 2hr ban → IP
+                                ban</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card" style="margin-top:1.2rem;">
+                <div class="card-header">
+                    <div class="card-icon purple">📖</div>
+                    <div>
+                        <div class="card-title">Complete Operator Table</div>
+                    </div>
+                </div>
+                <div class="scroll-y-lg">
+                    <table class="ref-table">
+                        <thead>
+                            <tr>
+                                <th>Operator</th>
+                                <th>Description</th>
+                                <th>Example</th>
+                                <th>Engines</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fullOpTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════
+     TAB: TOOLS
+     ═══════════════════════════════════════════ -->
+        <div class="tab-panel" id="panel-tools">
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon cyan">🌊</div>
+                        <div>
+                            <div class="card-title">Shodan</div>
+                            <div class="card-desc">IoT & Device Search Engine</div>
+                        </div>
+                    </div>
+                    <div class="ref-card">
+                        <p>Devices found: Medical, Traffic, Automotive, HVAC, Power, CCTV/Webcams, ICS/SCADA, Serial
+                            Servers</p>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">Common Queries</div>
+                        <table class="ref-table">
+                            <tbody>
+                                <tr>
+                                    <td><code>port:22</code></td>
+                                    <td>SSH servers</td>
+                                </tr>
+                                <tr>
+                                    <td><code>webcam</code></td>
+                                    <td>Webcams</td>
+                                </tr>
+                                <tr>
+                                    <td><code>country:US</code></td>
+                                    <td>US devices</td>
+                                </tr>
+                                <tr>
+                                    <td><code>has_screenshot:true</code></td>
+                                    <td>With screenshots</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon orange">📑</div>
+                        <div>
+                            <div class="card-title">FOCA</div>
+                            <div class="card-desc">Document Metadata Extraction</div>
+                        </div>
+                    </div>
+                    <div class="ref-card">
+                        <p>Search → Download → Analyze documents from domain</p>
+                        <p>Metadata: users, folders, printers, software, emails, OS, passwords, servers</p>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">Supported Types</div>
+                        <div class="tool-features"><span class="tool-tag">DOC</span><span
+                                class="tool-tag">PPT</span><span class="tool-tag">XLS</span><span
+                                class="tool-tag">PDF</span><span class="tool-tag">ODT</span><span
+                                class="tool-tag">SVG</span><span class="tool-tag">RDP</span><span
+                                class="tool-tag">INDD</span></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon green">🌾</div>
+                        <div>
+                            <div class="card-title">theHarvester</div>
+                            <div class="card-desc">Domain Intelligence Gathering</div>
+                        </div>
+                    </div>
+                    <div class="ref-card">
+                        <p>Gathers: emails, IPs, domains, ports, banners, subdomains</p>
+                        <p>Sources: search engines, PGP servers, Shodan</p>
+                        <p><code>theHarvester -d target.com -b google -l 500</code></p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon purple">🕸️</div>
+                        <div>
+                            <div class="card-title">Maltego</div>
+                            <div class="card-desc">Relationship Mapping</div>
+                        </div>
+                    </div>
+                    <div class="ref-card">
+                        <p>Maps relationships: people, sites, companies using "transforms"</p>
+                        <p>Domain→PGP, Person→Email, Domain→Phone</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon pink">🔬</div>
+                        <div>
+                            <div class="card-title">Recon-ng</div>
+                            <div class="card-desc">Web Recon Framework</div>
+                        </div>
+                    </div>
+                    <div class="ref-card">
+                        <table class="ref-table">
+                            <tbody>
+                                <tr>
+                                    <td><strong>Recon</strong></td>
+                                    <td>50+ modules</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Discovery</strong></td>
+                                    <td>DNS cache snoop, interesting files</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Exploitation</strong></td>
+                                    <td>XPATH & Command Injection</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon yellow">🔧</div>
+                        <div>
+                            <div class="card-title">More OSINT Tools</div>
+                        </div>
+                    </div>
+                    <div class="ref-card">
+                        <table class="ref-table">
+                            <tbody>
+                                <tr>
+                                    <td><strong>SpiderFoot</strong></td>
+                                    <td>200+ OSINT modules</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Amass</strong></td>
+                                    <td>Subdomain enumeration</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Metagoofil</strong></td>
+                                    <td>Document metadata</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Exiftool</strong></td>
+                                    <td>File metadata R/W</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════
+     TAB: HISTORY
+     ═══════════════════════════════════════════ -->
+        <div class="tab-panel" id="panel-history">
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon blue">🕒</div>
+                        <div>
+                            <div class="card-title">Query History</div>
+                            <div class="card-desc">Click any query to load it</div>
+                        </div>
+                    </div>
+                    <div class="flex-between mb-1"><span style="font-size:0.76rem;color:var(--text-muted)"
+                            id="historyCount">0 entries</span><button class="btn btn-danger btn-xs"
+                            onclick="clearAllHistory()">🗑️ Clear</button></div>
+                    <div class="scroll-y-lg" id="historyContainer">
+                        <div style="color:var(--text-muted);font-size:0.78rem;text-align:center;padding:1rem;">No
+                            history yet — search karo toh yahan dikhega</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon green">💾</div>
+                        <div>
+                            <div class="card-title">Saved Presets</div>
+                        </div>
+                    </div>
+                    <div class="flex-between mb-1"><span style="font-size:0.76rem;color:var(--text-muted)"
+                            id="savedCount">0 presets</span>
+                        <div class="btn-group"><button class="btn btn-secondary btn-xs"
+                                onclick="openImportExportModal()">📦 I/O</button><button class="btn btn-danger btn-xs"
+                                onclick="clearAllSaved()">🗑️</button></div>
+                    </div>
+                    <div class="scroll-y-lg" id="savedPresetsContainerFull">
+                        <div style="color:var(--text-muted);font-size:0.78rem;text-align:center;padding:1rem;">No
+                            presets yet</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <div class="disclaimer">⚠️ For Educational &amp; Defensive Purposes Only</div>
+        <p>Shimba's Cyber Intelligence Dashboard v2.0 &bull; Single HTML File &bull; Zero Dependencies</p>
+        <p style="margin-top:0.2rem;font-size:0.7rem;">OSINT Reference: Based on OSINT and Tools Cheat Sheet by binca
+            via cheatography.com/44948/cs/13288/</p>
+    </footer>
+
+    <script>
+        /* ==============================================
+           SHIMBA'S CYBER INTELLIGENCE DASHBOARD v2.0
+           ============================================== */
+
+        const CONFIG = {
+            FILETYPES: ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'txt', 'csv', 'zip', 'log', 'conf'],
+            OPERATORS: [
+                { value: 'intitle', label: 'intitle:', desc: 'Search in page title', example: 'intitle:dashboard', engines: 'Google, Bing, DDG' },
+                { value: 'allintitle', label: 'allintitle:', desc: 'All words in title', example: 'allintitle:cyber security', engines: 'Google' },
+                { value: 'inurl', label: 'inurl:', desc: 'Search in URL', example: 'inurl:admin', engines: 'Google, Bing, DDG' },
+                { value: 'allinurl', label: 'allinurl:', desc: 'All words in URL', example: 'allinurl:admin login', engines: 'Google' },
+                { value: 'intext', label: 'intext:', desc: 'Search in body text', example: 'intext:password', engines: 'Google' },
+                { value: 'allintext', label: 'allintext:', desc: 'All words in body', example: 'allintext:password reset', engines: 'Google' },
+                { value: 'site', label: 'site:', desc: 'Limit to domain', example: 'site:github.com', engines: 'Google, Bing, DDG' },
+                { value: 'filetype', label: 'filetype:', desc: 'File type', example: 'filetype:pdf', engines: 'Google, Bing, DDG' },
+                { value: 'ext', label: 'ext:', desc: 'Extension', example: 'ext:sql', engines: 'Google' },
+                { value: 'link', label: 'link:', desc: 'Pages linking to URL', example: 'link:example.com', engines: 'Google' },
+                { value: 'related', label: 'related:', desc: 'Related sites', example: 'related:github.com', engines: 'Google' },
+                { value: 'cache', label: 'cache:', desc: 'Cached page', example: 'cache:example.com', engines: 'Google' },
+                { value: 'define', label: 'define:', desc: 'Definition', example: 'define:phishing', engines: 'Google' },
+                { value: 'exclude', label: '-keyword', desc: 'Exclude term', example: '-pinterest', engines: 'Google, DDG' },
+                { value: 'or', label: 'OR', desc: 'Either term', example: 'hacking OR pentesting', engines: 'All' },
+                { value: 'before', label: 'before:', desc: 'Before date', example: 'before:2024-01-01', engines: 'Google' },
+                { value: 'after', label: 'after:', desc: 'After date', example: 'after:2023-01-01', engines: 'Google' }
+            ],
+            GOOGLE_DIRECTIVES: [
+                { op: 'site:', desc: 'Limits results to a target site or domain', example: 'site:example.com' },
+                { op: 'inurl:', desc: 'Searches for keywords within the URL', example: 'inurl:admin' },
+                { op: 'intitle:', desc: 'Searches for keywords within the title', example: 'intitle:"login page"' },
+                { op: 'intext:', desc: 'Searches for keywords within body text', example: 'intext:confidential' },
+                { op: 'link:', desc: 'Sites that link to target — useful for social engineering', example: 'link:target.com' },
+                { op: 'filetype:', desc: 'Files with specific extension', example: 'filetype:pdf' },
+                { op: 'cache:', desc: 'Google cached version', example: 'cache:example.com' },
+                { op: 'related:', desc: 'Similar sites', example: 'related:github.com' },
+                { op: 'define:', desc: 'Definition of term', example: 'define:OSINT' },
+                { op: 'before:', desc: 'Results before date', example: 'before:2024-01-01' },
+                { op: 'after:', desc: 'Results after date', example: 'after:2023-06-01' }
+            ],
+            PRESETS: {
+                cyber: { keyword: 'cybersecurity', query: 'intitle:"cybersecurity tutorial" site:edu filetype:pdf OR filetype:ppt' },
+                programming: { keyword: 'programming', query: 'intitle:"programming guide" intext:beginner filetype:pdf OR filetype:doc' },
+                research: { keyword: 'research paper', query: 'site:scholar.google.com OR site:researchgate.net filetype:pdf "research paper"' },
+                public: { keyword: 'public documents', query: 'intitle:"index of" inurl:documents filetype:pdf OR filetype:doc' },
+                index: { keyword: '', query: 'intitle:"index of /" "parent directory"' },
+                gov: { keyword: 'government report', query: 'site:gov "government report" filetype:pdf OR filetype:doc' },
+                edu: { keyword: 'educational', query: 'site:edu intitle:"course materials" filetype:pdf OR filetype:ppt' },
+                tech: { keyword: 'technical documentation', query: 'intitle:"documentation" inurl:docs filetype:pdf "technical"' }
+            },
+            GHDB: {
+                footholds: 'intitle:"index of" "parent directory" "server at"',
+                filesfound: 'filetype:log inurl:password',
+                dirlist: 'intitle:"index of" "last modified" "parent directory"',
+                loginpages: 'inurl:"/admin/login" OR inurl:"/wp-login.php" OR intitle:"login"',
+                sensitiveinfo: 'filetype:sql "insert into" (pass|password|passwd)',
+                vulnservers: 'intitle:"Apache Status" "Apache Server Status for"',
+                errormsgs: 'intitle:"error" "warning" "mysql" filetype:php',
+                passwords: 'filetype:txt inurl:password OR filetype:log inurl:password',
+                devices: 'intitle:"webcamXP 5" OR intitle:"Network Camera"',
+                databases: 'filetype:sql "CREATE TABLE" (email|password|user)'
+            },
+            EXAMPLES: {
+                javadsa: '"java dsa handwritten notes" filetype:pdf site:drive.google.com',
+                python: 'python tutorial beginner intitle:"python tutorial" filetype:pdf',
+                cyber: 'cybersecurity site:edu (filetype:pdf OR filetype:ppt)',
+                resume: '"resume" OR "cv" filetype:docx site:drive.google.com',
+                cheatsheet: '"cheat sheet" javascript filetype:pdf',
+                gdrive: 'site:drive.google.com "data structures" filetype:pdf',
+                gate: '"gate" "computer science" notes filetype:pdf',
+                research: 'site:researchgate.net OR site:arxiv.org "machine learning" filetype:pdf',
+                ebook: 'intitle:"index of" "parent directory" ebook filetype:pdf'
+            },
+            URLS: { google: 'https://www.google.com/search?q=', bing: 'https://www.bing.com/search?q=', duckduckgo: 'https://duckduckgo.com/?q=' },
+            SOCIAL: {
+                linkedin: q => `https://www.google.com/search?q=site:linkedin.com/in+${encodeURIComponent(q)}`,
+                twitter: q => `https://www.google.com/search?q=site:twitter.com+OR+site:x.com+${encodeURIComponent(q)}`,
+                github: q => `https://github.com/search?q=${encodeURIComponent(q)}&type=repositories`,
+                reddit: q => `https://www.google.com/search?q=site:reddit.com+${encodeURIComponent(q)}`,
+                instagram: q => `https://www.google.com/search?q=site:instagram.com+${encodeURIComponent(q)}`,
+                facebook: q => `https://www.google.com/search?q=site:facebook.com+${encodeURIComponent(q)}`
+            },
+            ARCHIVE: {
+                google: u => `https://webcache.googleusercontent.com/search?q=cache:${encodeURIComponent(u)}`,
+                wayback: u => `https://web.archive.org/web/*/${u}`,
+                archiveis: u => `https://archive.is/newest/${u}`,
+                '12ft': u => `https://12ft.io/${u}`
+            }
+        };
+
+        const state = { filters: [], selectedFiletypes: new Set(), history: [], savedPresets: [], filterIdCounter: 0, manualMode: false, activeTab: 'dorking' };
+
+        // INIT
+        document.addEventListener('DOMContentLoaded', () => {
+            initFiletypeGrid(); initGoogleTable(); initFullOpTable(); loadFromStorage(); renderHistory(); renderSavedPresets(); updateAnalytics(); bindEvents(); updateQueryPreview();
+        });
+
+        function bindEvents() {
+            const el = id => document.getElementById(id);
+            el('mainKeyword').addEventListener('input', () => { state.manualMode = false; updateQueryPreview() });
+            el('dateAfter').addEventListener('change', () => { state.manualMode = false; updateQueryPreview() });
+            el('dateBefore').addEventListener('change', () => { state.manualMode = false; updateQueryPreview() });
+            el('searchEngine').addEventListener('change', updateAnalytics);
+            el('phraseMode').addEventListener('change', () => { state.manualMode = false; updateQueryPreview() });
+            el('manualQuery').addEventListener('input', () => { state.manualMode = true; updatePreviewFromManual(); updateAnalytics() });
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    const a = document.activeElement;
+                    if (['presetNameInput', 'importArea', 'exportArea'].includes(a.id)) return;
+                    if (a.id === 'manualQuery' || a.id === 'mainKeyword') { e.preventDefault(); executeSearch() }
+                    if (a.id === 'socialKeyword') { e.preventDefault(); socialSearch('linkedin') }
+                    if (a.id === 'shodanQuery') { e.preventDefault(); shodanSearch() }
+                }
+            });
+        }
+
+        // TABS
+        function switchTab(id, btn) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            const panel = document.getElementById(`panel-${id}`);
+            if (panel) panel.classList.add('active');
+            state.activeTab = id;
+        }
+
+        // FILETYPE GRID
+        function initFiletypeGrid() {
+            const g = document.getElementById('filetypeGrid'); g.innerHTML = '';
+            CONFIG.FILETYPES.forEach(ft => {
+                const l = document.createElement('label'); l.className = 'ft-check'; l.id = `ft-${ft}`;
+                l.innerHTML = `<input type="checkbox" value="${ft}"><span>${ft.toUpperCase()}</span>`;
+                l.addEventListener('click', e => { e.preventDefault(); toggleFiletype(ft) }); g.appendChild(l);
+            });
+        }
+        function toggleFiletype(ft) {
+            if (state.selectedFiletypes.has(ft)) { state.selectedFiletypes.delete(ft); document.getElementById(`ft-${ft}`).classList.remove('active') }
+            else { state.selectedFiletypes.add(ft); document.getElementById(`ft-${ft}`).classList.add('active') }
+            state.manualMode = false; updateQueryPreview();
+        }
+
+        // TABLES
+        function initGoogleTable() {
+            const tb = document.getElementById('googleDirectivesTable'); tb.innerHTML = '';
+            CONFIG.GOOGLE_DIRECTIVES.forEach(d => { const tr = document.createElement('tr'); tr.innerHTML = `<td><code>${d.op}</code></td><td>${d.desc}</td><td><code style="color:var(--neon-green)">${d.example}</code></td>`; tb.appendChild(tr) });
+        }
+        function initFullOpTable() {
+            const tb = document.getElementById('fullOpTable'); tb.innerHTML = '';
+            CONFIG.OPERATORS.forEach(o => { const tr = document.createElement('tr'); tr.innerHTML = `<td><code>${escapeHtml(o.label)}</code></td><td>${o.desc}</td><td><code style="color:var(--neon-green)">${escapeHtml(o.example)}</code></td><td style="font-size:0.7rem;color:var(--text-muted)">${o.engines || ''}</td>`; tb.appendChild(tr) });
+        }
+
+        // FILTERS
+        function addFilter() {
+            const id = ++state.filterIdCounter; state.filters.push({ id, operator: 'intitle', value: '' });
+            const c = document.getElementById('filtersContainer'), row = document.createElement('div'); row.className = 'filter-row'; row.id = `filter-${id}`;
+            const opts = CONFIG.OPERATORS.filter(o => !['before', 'after'].includes(o.value)).map(o => `<option value="${o.value}">${o.label}</option>`).join('');
+            row.innerHTML = `<select onchange="updateFilterOp(${id},this.value)" title="Operator choose karo">${opts}</select><input type="text" placeholder="Value likho..." oninput="updateFilterVal(${id},this.value)"><button class="remove-filter" onclick="removeFilter(${id})">&times;</button>`;
+            c.appendChild(row); state.manualMode = false; updateQueryPreview();
+        }
+        function updateFilterOp(id, op) { const f = state.filters.find(f => f.id === id); if (f) { f.operator = op; state.manualMode = false; updateQueryPreview() } }
+        function updateFilterVal(id, v) { const f = state.filters.find(f => f.id === id); if (f) { f.value = v; state.manualMode = false; updateQueryPreview() } }
+        function removeFilter(id) {
+            state.filters = state.filters.filter(f => f.id !== id);
+            const r = document.getElementById(`filter-${id}`); if (r) { r.style.opacity = '0'; r.style.transform = 'translateX(20px)'; r.style.transition = 'all 0.3s'; setTimeout(() => r.remove(), 300) }
+            state.manualMode = false; updateQueryPreview();
+        }
+        function clearFilters() { state.filters = []; document.getElementById('filtersContainer').innerHTML = ''; state.manualMode = false; updateQueryPreview() }
+
+        // QUERY BUILDER
+        function buildQuery() {
+            const parts = [], kw = document.getElementById('mainKeyword').value.trim(), pm = document.getElementById('phraseMode').value;
+            if (kw) parts.push(pm === 'exact' ? `"${kw}"` : kw);
+            state.filters.forEach(f => {
+                if (!f.value.trim()) return; const v = f.value.trim();
+                if (f.operator === 'exclude') parts.push(`-${v}`);
+                else if (f.operator === 'or') parts.push(`OR ${v}`);
+                else { const nq = v.includes(' ') && !['site', 'filetype', 'ext', 'related', 'cache', 'define'].includes(f.operator); parts.push(`${f.operator}:${nq ? '"' + v + '"' : v}`) }
+            });
+            const ft = Array.from(state.selectedFiletypes);
+            if (ft.length === 1) parts.push(`filetype:${ft[0]}`); else if (ft.length > 1) parts.push(`(${ft.map(f => `filetype:${f}`).join(' OR ')})`);
+            const da = document.getElementById('dateAfter').value, db = document.getElementById('dateBefore').value;
+            if (da) parts.push(`after:${da}`); if (db) parts.push(`before:${db}`);
+            return parts.join(' ');
+        }
+        function getCurrentQuery() { return state.manualMode ? document.getElementById('manualQuery').value.trim() : buildQuery() }
+        function updateQueryPreview() {
+            const q = buildQuery(), p = document.getElementById('queryPreview'), m = document.getElementById('manualQuery');
+            if (!q) { p.innerHTML = '<span class="empty-msg">Upar keywords likho aur filters add karo — yahan query dikhega...</span>'; if (!state.manualMode) m.value = '' }
+            else { p.innerHTML = colorize(q); if (!state.manualMode) m.value = q }
+            updateAnalytics();
+        }
+        function updatePreviewFromManual() {
+            const q = document.getElementById('manualQuery').value.trim(), p = document.getElementById('queryPreview');
+            p.innerHTML = q ? colorize(q) : '<span class="empty-msg">Upar keywords likho...</span>';
+        }
+        function colorize(q) {
+            let s = q.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            ['allintitle:', 'allinurl:', 'allintext:', 'intitle:', 'inurl:', 'intext:', 'site:', 'filetype:', 'ext:', 'before:', 'after:', 'related:', 'cache:', 'define:', 'info:', 'link:'].forEach(op => {
+                s = s.replace(new RegExp(op.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), `<span class="op">${op}</span>`)
+            });
+            s = s.replace(/\bOR\b/g, '<span class="op">OR</span>');
+            s = s.replace(/"([^"]*)"/g, '<span class="val">"$1"</span>');
+            s = s.replace(/(-\w+)/g, '<span style="color:var(--neon-red)">$1</span>');
+            return s;
+        }
+
+        // SEARCH
+        function executeSearch() {
+            const q = getCurrentQuery();
+            if (!q) { showToast('Pehle keywords likho ya query banao!', 'error'); document.getElementById('mainKeyword').focus(); return }
+            const eng = document.getElementById('searchEngine').value;
+            window.open(CONFIG.URLS[eng] + encodeURIComponent(q), '_blank', 'noopener,noreferrer');
+            addToHistory(q, eng); showToast(`Search opened (${eng})`, 'success');
+        }
+
+        // QUICK OPS
+        function insertQuickOp(op) { const i = document.getElementById('mainKeyword'), c = i.value.trim(); i.value = c ? `${c} ${op}` : op; state.manualMode = false; updateQueryPreview(); showToast(`Added: ${op}`, 'info') }
+
+        // TRY EXAMPLES (How-To Tab)
+        function tryExample(key) {
+            const q = CONFIG.EXAMPLES[key]; if (!q) return;
+            document.getElementById('manualQuery').value = q;
+            document.getElementById('mainKeyword').value = '';
+            state.manualMode = true; updatePreviewFromManual(); updateAnalytics();
+            switchTab('dorking', document.querySelectorAll('.nav-tab')[0]);
+            showToast('Example loaded! 🔍 Search button dabao ya Enter press karo', 'success');
+            // Highlight search button
+            const sb = document.querySelector('#panel-dorking .btn-primary');
+            if (sb) { sb.classList.add('highlight-pulse'); setTimeout(() => sb.classList.remove('highlight-pulse'), 6000) }
+        }
+
+        // PRESETS
+        function loadPreset(key) {
+            const p = CONFIG.PRESETS[key]; if (!p) return;
+            document.getElementById('mainKeyword').value = p.keyword || '';
+            document.getElementById('manualQuery').value = p.query;
+            state.manualMode = true; updatePreviewFromManual(); updateAnalytics();
+            showToast(`Preset loaded: ${key}`, 'success');
+        }
+        function loadGHDB(key) {
+            const q = CONFIG.GHDB[key]; if (!q) return;
+            document.getElementById('manualQuery').value = q; document.getElementById('mainKeyword').value = '';
+            state.manualMode = true; updatePreviewFromManual(); updateAnalytics();
+            switchTab('dorking', document.querySelectorAll('.nav-tab')[0]);
+            showToast(`GHDB loaded: ${key}`, 'success');
+        }
+
+        // SOCIAL
+        function socialSearch(p) {
+            const kw = document.getElementById('socialKeyword').value.trim();
+            if (!kw) { showToast('Keyword/name likho pehle!', 'error'); document.getElementById('socialKeyword').focus(); return }
+            window.open(CONFIG.SOCIAL[p](kw), '_blank', 'noopener,noreferrer'); showToast(`${p} search opened`, 'success');
+        }
+        function advancedPeopleSearch() {
+            const name = document.getElementById('personName').value.trim(); if (!name) { showToast('Name likho!', 'error'); return }
+            const loc = document.getElementById('personLocation').value.trim(), org = document.getElementById('personOrg').value.trim();
+            let q = `"${name}"`; if (loc) q += ` "${loc}"`; if (org) q += ` "${org}"`;
+            q += ' (site:linkedin.com OR site:twitter.com OR site:facebook.com OR site:github.com)';
+            window.open(CONFIG.URLS.google + encodeURIComponent(q), '_blank', 'noopener,noreferrer');
+            addToHistory(q, 'google'); showToast(`People search: ${name}`, 'success');
+        }
+
+        // ARCHIVE
+        function openArchive(svc) {
+            const u = document.getElementById('archiveUrl').value.trim();
+            if (!u) { showToast('URL paste karo pehle!', 'error'); return }
+            if (!u.startsWith('http')) { showToast('Valid URL daalo (http:// ya https://)', 'error'); return }
+            window.open(CONFIG.ARCHIVE[svc](u), '_blank', 'noopener,noreferrer'); showToast(`${svc} archive opened`, 'success');
+        }
+
+        // SHODAN
+        function shodanSearch() {
+            const q = document.getElementById('shodanQuery').value.trim(); if (!q) { showToast('Shodan query likho!', 'error'); return }
+            window.open(`https://www.shodan.io/search?query=${encodeURIComponent(q)}`, '_blank', 'noopener,noreferrer'); showToast(`Shodan: ${q}`, 'success');
+        }
+        function shodanPreset(t) {
+            const p = { webcam: 'webcam has_screenshot:true', database: 'product:MySQL OR product:MongoDB' };
+            document.getElementById('shodanQuery').value = p[t] || ''; shodanSearch();
+        }
+
+        // WHOIS
+        function whoisLookup(t) {
+            const d = document.getElementById('whoisDomain').value.trim(); if (!d) { showToast('Domain likho!', 'error'); return }
+            const urls = { whois: `https://www.whois.com/whois/${encodeURIComponent(d)}`, dns: `https://www.nslookup.io/domains/${encodeURIComponent(d)}/dns-records/`, builtwith: `https://builtwith.com/${encodeURIComponent(d)}`, censys: `https://search.censys.io/search?resource=hosts&q=${encodeURIComponent(d)}` };
+            window.open(urls[t], '_blank', 'noopener,noreferrer'); showToast(`${t}: ${d}`, 'success');
+        }
+
+        // ACTIONS
+        function copyQuery() { const q = getCurrentQuery(); if (!q) { showToast('Koi query nahi hai copy karne ko!', 'error'); return } copyToClipboard(q); showToast('Query copied! 📋', 'success') }
+        function duplicateQuery() { const q = getCurrentQuery(); if (!q) { showToast('Query nahi hai!', 'error'); return } const e = document.getElementById('manualQuery'); e.value = q + ' '; state.manualMode = true; e.focus(); showToast('Query duplicated — edit karo niche', 'info') }
+        function clearAll() {
+            document.getElementById('mainKeyword').value = ''; document.getElementById('manualQuery').value = '';
+            document.getElementById('dateAfter').value = ''; document.getElementById('dateBefore').value = '';
+            document.getElementById('phraseMode').value = 'normal'; clearFilters();
+            state.selectedFiletypes.clear(); CONFIG.FILETYPES.forEach(ft => document.getElementById(`ft-${ft}`).classList.remove('active'));
+            state.manualMode = false; updateQueryPreview(); showToast('Sab clear! ✨', 'info');
+        }
+
+        // HISTORY
+        function addToHistory(q, eng) {
+            const e = { query: q, engine: eng, timestamp: Date.now(), time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), date: new Date().toLocaleDateString() };
+            if (state.history.length > 0 && state.history[0].query === q) return;
+            state.history.unshift(e); if (state.history.length > 100) state.history.pop();
+            saveToStorage(); renderHistory(); updateAnalytics();
+        }
+        function renderHistory() {
+            const c = document.getElementById('historyContainer'), ce = document.getElementById('historyCount');
+            if (ce) ce.textContent = `${state.history.length} entries`;
+            if (!state.history.length) { c.innerHTML = '<div style="color:var(--text-muted);font-size:0.78rem;text-align:center;padding:1rem;">No history yet — search karo toh yahan dikhega</div>'; return }
+            c.innerHTML = state.history.map((h, i) => `<div class="history-item"><span class="history-query" onclick="loadHistoryQuery(${i})">${escapeHtml(truncate(h.query, 65))}</span><span class="history-time">${h.time}</span><div class="history-actions"><button class="btn btn-xs btn-secondary" onclick="rerunHistory(${i})">🔄</button><button class="btn btn-xs btn-secondary" onclick="copyHistoryQuery(${i})">📋</button><button class="btn btn-xs btn-secondary" onclick="deleteHistory(${i})">✕</button></div></div>`).join('');
+        }
+        function loadHistoryQuery(i) { const h = state.history[i]; if (!h) return; document.getElementById('manualQuery').value = h.query; state.manualMode = true; updatePreviewFromManual(); switchTab('dorking', document.querySelectorAll('.nav-tab')[0]); showToast('Query loaded!', 'info') }
+        function rerunHistory(i) { const h = state.history[i]; if (!h) return; window.open((CONFIG.URLS[h.engine] || CONFIG.URLS.google) + encodeURIComponent(h.query), '_blank', 'noopener,noreferrer'); showToast('Re-opened!', 'success') }
+        function copyHistoryQuery(i) { const h = state.history[i]; if (!h) return; copyToClipboard(h.query); showToast('Copied!', 'success') }
+        function deleteHistory(i) { state.history.splice(i, 1); saveToStorage(); renderHistory(); updateAnalytics() }
+        function clearAllHistory() { if (!state.history.length) { showToast('History khali hai!', 'info'); return } state.history = []; saveToStorage(); renderHistory(); updateAnalytics(); showToast('History cleared!', 'info') }
+
+        // SAVED PRESETS
+        function openSaveModal() { const q = getCurrentQuery(); if (!q) { showToast('Pehle query banao!', 'error'); return } document.getElementById('presetQueryInput').value = q; document.getElementById('presetNameInput').value = ''; document.getElementById('savePresetModal').classList.add('active'); setTimeout(() => document.getElementById('presetNameInput').focus(), 100) }
+        function closeSaveModal() { document.getElementById('savePresetModal').classList.remove('active') }
+        function confirmSavePreset() {
+            const n = document.getElementById('presetNameInput').value.trim(), q = document.getElementById('presetQueryInput').value.trim();
+            if (!n) { showToast('Naam do preset ko!', 'error'); return } if (!q) { showToast('Query nahi hai!', 'error'); return }
+            if (state.savedPresets.some(p => p.name.toLowerCase() === n.toLowerCase())) { showToast('Ye naam already hai!', 'error'); return }
+            state.savedPresets.push({ name: n, query: q, engine: document.getElementById('searchEngine').value, timestamp: Date.now() });
+            saveToStorage(); renderSavedPresets(); updateAnalytics(); closeSaveModal(); showToast(`"${n}" saved! 💾`, 'success');
+        }
+        function renderSavedPresets() {
+            [document.getElementById('savedPresetsContainer'), document.getElementById('savedPresetsContainerFull')].forEach(c => {
+                if (!c) return; const ce = document.getElementById('savedCount'); if (ce) ce.textContent = `${state.savedPresets.length} presets`;
+                if (!state.savedPresets.length) { c.innerHTML = '<div style="color:var(--text-muted);font-size:0.78rem;text-align:center;padding:0.7rem;">No saved presets yet</div>'; return }
+                c.innerHTML = state.savedPresets.map((p, i) => `<div class="history-item"><span class="history-query" onclick="loadSavedPreset(${i})"><strong style="color:var(--neon-blue)">${escapeHtml(p.name)}</strong>: ${escapeHtml(truncate(p.query, 40))}</span><div class="history-actions"><button class="btn btn-xs btn-green" onclick="loadSavedPreset(${i})">📂</button><button class="btn btn-xs btn-secondary" onclick="deleteSavedPreset(${i})">✕</button></div></div>`).join('');
+            });
+        }
+        function loadSavedPreset(i) { const p = state.savedPresets[i]; if (!p) return; document.getElementById('manualQuery').value = p.query; if (p.engine) document.getElementById('searchEngine').value = p.engine; state.manualMode = true; updatePreviewFromManual(); updateAnalytics(); switchTab('dorking', document.querySelectorAll('.nav-tab')[0]); showToast(`Loaded: ${p.name}`, 'success') }
+        function deleteSavedPreset(i) { const n = state.savedPresets[i]?.name || ''; state.savedPresets.splice(i, 1); saveToStorage(); renderSavedPresets(); updateAnalytics(); showToast(`Deleted: ${n}`, 'info') }
+        function clearAllSaved() { if (!state.savedPresets.length) { showToast('Koi preset nahi hai!', 'info'); return } state.savedPresets = []; saveToStorage(); renderSavedPresets(); updateAnalytics(); showToast('All presets cleared!', 'info') }
+
+        // I/O
+        function openImportExportModal() {
+            document.getElementById('exportArea').value = JSON.stringify({ history: state.history, savedPresets: state.savedPresets, exportedAt: new Date().toISOString(), version: '2.0' }, null, 2);
+            document.getElementById('importArea').value = ''; document.getElementById('importExportModal').classList.add('active');
+        }
+        function closeImportExportModal() { document.getElementById('importExportModal').classList.remove('active') }
+        function copyExportData() { copyToClipboard(document.getElementById('exportArea').value); showToast('Export data copied!', 'success') }
+        function importData() {
+            const raw = document.getElementById('importArea').value.trim(); if (!raw) { showToast('JSON paste karo!', 'error'); return }
+            try {
+                const d = JSON.parse(raw);
+                if (d.history && Array.isArray(d.history)) { const ex = new Set(state.history.map(h => h.query)); d.history.forEach(h => { if (!ex.has(h.query)) state.history.push(h) }) }
+                if (d.savedPresets && Array.isArray(d.savedPresets)) { const ex = new Set(state.savedPresets.map(p => p.name.toLowerCase())); d.savedPresets.forEach(p => { if (!ex.has(p.name.toLowerCase())) state.savedPresets.push(p) }) }
+                saveToStorage(); renderHistory(); renderSavedPresets(); updateAnalytics(); closeImportExportModal(); showToast('Imported! ✅', 'success');
+            } catch (e) { showToast('Invalid JSON!', 'error'); console.error(e) }
+        }
+
+        // THEME
+        function toggleTheme() {
+            const h = document.documentElement, n = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            h.setAttribute('data-theme', n); document.getElementById('themeIcon').textContent = n === 'dark' ? '🌙' : '☀️';
+            document.getElementById('themeLabel').textContent = n === 'dark' ? 'Dark' : 'Light'; localStorage.setItem('shimba_theme', n);
+        }
+
+        // ANALYTICS
+        function updateAnalytics() {
+            const q = getCurrentQuery();
+            document.getElementById('statFilters').textContent = state.filters.length;
+            document.getElementById('statFiletypes').textContent = state.selectedFiletypes.size;
+            document.getElementById('statLength').textContent = q.length;
+            document.getElementById('statHistory').textContent = state.history.length;
+            document.getElementById('statSaved').textContent = state.savedPresets.length;
+            const e = document.getElementById('searchEngine');
+            document.getElementById('statEngine').textContent = e.options[e.selectedIndex].text;
+        }
+
+        // STORAGE
+        function saveToStorage() { try { localStorage.setItem('shimba_h', JSON.stringify(state.history)); localStorage.setItem('shimba_p', JSON.stringify(state.savedPresets)) } catch (e) { } }
+        function loadFromStorage() {
+            try {
+                const h = localStorage.getItem('shimba_h'); if (h) state.history = JSON.parse(h);
+                const p = localStorage.getItem('shimba_p'); if (p) state.savedPresets = JSON.parse(p);
+                const t = localStorage.getItem('shimba_theme'); if (t) { document.documentElement.setAttribute('data-theme', t); document.getElementById('themeIcon').textContent = t === 'dark' ? '🌙' : '☀️'; document.getElementById('themeLabel').textContent = t === 'dark' ? 'Dark' : 'Light' }
+            } catch (e) { }
+        }
+
+        // UTILS
+        function copyToClipboard(t) { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).catch(() => fbCopy(t)); else fbCopy(t) }
+        function fbCopy(t) { const a = document.createElement('textarea'); a.value = t; a.style.position = 'fixed'; a.style.left = '-9999px'; document.body.appendChild(a); a.select(); try { document.execCommand('copy') } catch (e) { } document.body.removeChild(a) }
+        function showToast(msg, type = 'info') {
+            const c = document.getElementById('toastContainer'), t = document.createElement('div'); t.className = `toast ${type}`;
+            t.innerHTML = `<span>${{ success: '✅', error: '❌', info: 'ℹ️' }[type] || 'ℹ️'}</span><span>${escapeHtml(msg)}</span>`;
+            c.appendChild(t); setTimeout(() => { if (t.parentNode) t.remove() }, 3200);
+        }
+        function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML }
+        function truncate(s, m) { return !s ? '' : s.length > m ? s.substring(0, m) + '…' : s }
+    </script>
+</body>
+
+</html>
