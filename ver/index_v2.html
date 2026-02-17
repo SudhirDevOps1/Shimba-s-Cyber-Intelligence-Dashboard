@@ -1,0 +1,2780 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-accent="cyan">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shimba's Cyber Intelligence Dashboard v4.0</title>
+    <style>
+        /*=== RESET & ROOT VARIABLES ===*/
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --bg-0: #000000;
+            --bg-1: #0a0e14;
+            --bg-2: #0f1923;
+            --bg-3: #162036;
+            --bg-4: #1b2942;
+            --text-0: #e0f0ff;
+            --text-1: #8aa4c0;
+            --text-2: #506880;
+            --accent: #00e5ff;
+            --accent-h: #40efff;
+            --accent-g: rgba(0, 229, 255, .15);
+            --accent-s: 0 0 18px rgba(0, 229, 255, .35);
+            --neon-green: #00ff88;
+            --green-g: rgba(0, 255, 136, .12);
+            --green-s: 0 0 15px rgba(0, 255, 136, .3);
+            --neon-purple: #bf5af2;
+            --purple-g: rgba(191, 90, 242, .12);
+            --neon-pink: #ff2d78;
+            --pink-g: rgba(255, 45, 120, .12);
+            --danger: #ff3b5c;
+            --warning: #ffb020;
+            --success: #00e676;
+            --info: #448aff;
+            --border: #1a2e48;
+            --border-h: #2a4a6e;
+            --r: 10px;
+            --rs: 6px;
+            --rx: 4px;
+            --shadow: 0 4px 24px rgba(0, 0, 0, .5);
+            --tr: all .25s cubic-bezier(.4, 0, .2, 1);
+            --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --mono: 'Courier New', Consolas, monospace;
+        }
+
+        [data-theme="light"] {
+            --bg-0: #eef2f7;
+            --bg-1: #f4f7fb;
+            --bg-2: #ffffff;
+            --bg-3: #e4eaf2;
+            --bg-4: #d0d9e6;
+            --text-0: #0d1b2a;
+            --text-1: #3e5575;
+            --text-2: #8096b0;
+            --border: #c0cfe0;
+            --border-h: #90a8c4;
+            --shadow: 0 4px 24px rgba(0, 0, 0, .07);
+        }
+
+        [data-accent="cyan"] {
+            --accent: #00e5ff;
+            --accent-h: #40efff;
+            --accent-g: rgba(0, 229, 255, .15);
+            --accent-s: 0 0 18px rgba(0, 229, 255, .35)
+        }
+
+        [data-accent="green"] {
+            --accent: #00ff88;
+            --accent-h: #50ffa8;
+            --accent-g: rgba(0, 255, 136, .15);
+            --accent-s: 0 0 18px rgba(0, 255, 136, .35)
+        }
+
+        [data-accent="purple"] {
+            --accent: #bf5af2;
+            --accent-h: #d08af6;
+            --accent-g: rgba(191, 90, 242, .15);
+            --accent-s: 0 0 18px rgba(191, 90, 242, .35)
+        }
+
+        [data-accent="blue"] {
+            --accent: #448aff;
+            --accent-h: #6ea4ff;
+            --accent-g: rgba(68, 138, 255, .15);
+            --accent-s: 0 0 18px rgba(68, 138, 255, .35)
+        }
+
+        [data-accent="pink"] {
+            --accent: #ff2d78;
+            --accent-h: #ff5e9a;
+            --accent-g: rgba(255, 45, 120, .15);
+            --accent-s: 0 0 18px rgba(255, 45, 120, .35)
+        }
+
+        [data-accent="amber"] {
+            --accent: #ffb020;
+            --accent-h: #ffc855;
+            --accent-g: rgba(255, 176, 32, .15);
+            --accent-s: 0 0 18px rgba(255, 176, 32, .35)
+        }
+
+        [data-accent="red"] {
+            --accent: #ff3b5c;
+            --accent-h: #ff6b82;
+            --accent-g: rgba(255, 59, 92, .15);
+            --accent-s: 0 0 18px rgba(255, 59, 92, .35)
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg-0);
+            color: var(--text-0);
+            min-height: 100vh;
+            transition: var(--tr);
+            line-height: 1.6;
+            overflow-x: hidden
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-1)
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px
+        }
+
+        /*=== HEADER ===*/
+        .hdr {
+            background: linear-gradient(180deg, var(--bg-2), var(--bg-1));
+            border-bottom: 1px solid var(--border);
+            padding: 10px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(16px)
+        }
+
+        .hdr-in {
+            max-width: 1700px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none
+        }
+
+        .logo-box {
+            width: 38px;
+            height: 38px;
+            position: relative
+        }
+
+        .logo-box .r1,
+        .logo-box .r2 {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            animation: lp 3s infinite
+        }
+
+        .logo-box .r1 {
+            inset: 0
+        }
+
+        .logo-box .r2 {
+            inset: 5px;
+            border-color: var(--neon-green);
+            animation-delay: .5s
+        }
+
+        .logo-box .dt {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            box-shadow: var(--accent-s)
+        }
+
+        @keyframes lp {
+
+            0%,
+            100% {
+                opacity: .4;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.06)
+            }
+        }
+
+        .logo-t {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: -.3px
+        }
+
+        .logo-t .nm {
+            color: var(--accent);
+            text-shadow: var(--accent-s)
+        }
+
+        .logo-t .sub {
+            font-size: .58rem;
+            color: var(--text-2);
+            font-weight: 400;
+            display: block;
+            letter-spacing: 2px;
+            text-transform: uppercase
+        }
+
+        .hdr-r {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap
+        }
+
+        .st-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--neon-green);
+            box-shadow: var(--green-s);
+            animation: bl 2s infinite
+        }
+
+        @keyframes bl {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .3
+            }
+        }
+
+        .st-lbl {
+            font-size: .62rem;
+            color: var(--text-2);
+            margin-right: 6px
+        }
+
+        .clock {
+            font-size: .68rem;
+            color: var(--accent);
+            font-family: var(--mono);
+            font-weight: 700;
+            margin-right: 8px
+        }
+
+        /*=== BUTTONS ===*/
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 7px 14px;
+            border-radius: var(--rs);
+            font-size: .73rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: var(--tr);
+            font-family: var(--font);
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden
+        }
+
+        .btn:active {
+            transform: scale(.96)
+        }
+
+        .btn-a {
+            background: linear-gradient(135deg, var(--accent-g), rgba(0, 255, 136, .06));
+            color: var(--accent);
+            border: 1px solid rgba(0, 229, 255, .25)
+        }
+
+        .btn-a:hover {
+            box-shadow: var(--accent-s);
+            border-color: var(--accent)
+        }
+
+        .btn-s {
+            background: var(--accent);
+            color: #000;
+            font-weight: 700
+        }
+
+        .btn-s:hover {
+            box-shadow: var(--accent-s);
+            filter: brightness(1.1)
+        }
+
+        .btn-g {
+            background: transparent;
+            color: var(--text-1);
+            border: 1px solid var(--border)
+        }
+
+        .btn-g:hover {
+            border-color: var(--accent);
+            color: var(--accent)
+        }
+
+        .btn-d {
+            background: rgba(255, 59, 92, .12);
+            color: var(--danger);
+            border: 1px solid rgba(255, 59, 92, .25)
+        }
+
+        .btn-d:hover {
+            background: rgba(255, 59, 92, .22)
+        }
+
+        .btn-gr {
+            background: var(--green-g);
+            color: var(--neon-green);
+            border: 1px solid rgba(0, 255, 136, .25)
+        }
+
+        .btn-gr:hover {
+            box-shadow: var(--green-s)
+        }
+
+        .btn-p {
+            background: var(--purple-g);
+            color: var(--neon-purple);
+            border: 1px solid rgba(191, 90, 242, .25)
+        }
+
+        .btn-pk {
+            background: var(--pink-g);
+            color: var(--neon-pink);
+            border: 1px solid rgba(255, 45, 120, .25)
+        }
+
+        .btn-w {
+            background: rgba(255, 176, 32, .12);
+            color: var(--warning);
+            border: 1px solid rgba(255, 176, 32, .25)
+        }
+
+        .btn-sm {
+            padding: 4px 9px;
+            font-size: .67rem
+        }
+
+        .btn-lg {
+            padding: 11px 24px;
+            font-size: .9rem;
+            border-radius: var(--r)
+        }
+
+        .btn-bl {
+            width: 100%;
+            justify-content: center
+        }
+
+        .btn-ic {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        /*=== LAYOUT ===*/
+        .dash {
+            max-width: 1700px;
+            margin: 0 auto;
+            padding: 16px;
+            display: grid;
+            gap: 14px
+        }
+
+        .g2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px
+        }
+
+        .g3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px
+        }
+
+        .g4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px
+        }
+
+        @media(max-width:1100px) {
+
+            .g3,
+            .g4 {
+                grid-template-columns: 1fr 1fr
+            }
+        }
+
+        @media(max-width:768px) {
+
+            .g2,
+            .g3,
+            .g4 {
+                grid-template-columns: 1fr
+            }
+
+            .hdr-in {
+                flex-direction: column;
+                text-align: center
+            }
+        }
+
+        /*=== CARDS ===*/
+        .cd {
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 16px;
+            transition: var(--tr);
+            position: relative;
+            overflow: hidden
+        }
+
+        .cd::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--neon-green), var(--neon-purple));
+            opacity: .5;
+            transition: var(--tr)
+        }
+
+        .cd:hover {
+            border-color: var(--border-h)
+        }
+
+        .cd:hover::before {
+            opacity: 1
+        }
+
+        .cd-h {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .cd-ic {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--rs);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0
+        }
+
+        .cd-ic.bl {
+            background: var(--accent-g);
+            color: var(--accent)
+        }
+
+        .cd-ic.gn {
+            background: var(--green-g);
+            color: var(--neon-green)
+        }
+
+        .cd-ic.pu {
+            background: var(--purple-g);
+            color: var(--neon-purple)
+        }
+
+        .cd-ic.pk {
+            background: var(--pink-g);
+            color: var(--neon-pink)
+        }
+
+        .cd-t {
+            font-size: .8rem;
+            font-weight: 700
+        }
+
+        .cd-st {
+            font-size: .6rem;
+            color: var(--text-2)
+        }
+
+        .tag {
+            font-size: .5rem;
+            padding: 1px 5px;
+            border-radius: 6px;
+            font-weight: 700;
+            margin-left: 4px;
+            vertical-align: middle
+        }
+
+        .tag-g {
+            background: var(--green-g);
+            color: var(--neon-green)
+        }
+
+        .tag-b {
+            background: var(--accent-g);
+            color: var(--accent)
+        }
+
+        .tag-p {
+            background: var(--purple-g);
+            color: var(--neon-purple)
+        }
+
+        .tag-n {
+            background: var(--pink-g);
+            color: var(--neon-pink)
+        }
+
+        /*=== FORMS ===*/
+        input[type="text"],
+        input[type="url"],
+        input[type="date"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px 11px;
+            background: var(--bg-1);
+            border: 1px solid var(--border);
+            border-radius: var(--rs);
+            color: var(--text-0);
+            font-size: .78rem;
+            transition: var(--tr);
+            font-family: var(--font)
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-g)
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--text-2)
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23506880' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 55px;
+            font-family: var(--mono);
+            font-size: .75rem
+        }
+
+        .fg {
+            margin-bottom: 10px
+        }
+
+        .fl {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: .68rem;
+            font-weight: 600;
+            color: var(--text-1);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: .4px
+        }
+
+        .fl .tp {
+            width: 13px;
+            height: 13px;
+            background: var(--bg-3);
+            color: var(--text-2);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .52rem;
+            cursor: help;
+            border: 1px solid var(--border);
+            font-weight: 700;
+            position: relative
+        }
+
+        .fl .tp:hover::after {
+            content: attr(data-t);
+            position: absolute;
+            bottom: calc(100% + 5px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            color: var(--text-0);
+            padding: 5px 8px;
+            border-radius: var(--rx);
+            font-size: .65rem;
+            z-index: 60;
+            box-shadow: var(--shadow);
+            font-weight: 400;
+            max-width: 200px;
+            white-space: normal;
+            width: max-content;
+            text-transform: none;
+            letter-spacing: 0
+        }
+
+        /*=== SEARCH INPUT ===*/
+        .si-w {
+            position: relative
+        }
+
+        .si {
+            width: 100%;
+            padding: 13px 16px;
+            padding-right: 150px;
+            font-size: .95rem;
+            background: var(--bg-1);
+            border: 2px solid var(--border);
+            border-radius: var(--r);
+            color: var(--text-0);
+            transition: var(--tr)
+        }
+
+        .si:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-g), var(--accent-s)
+        }
+
+        .si-go {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%)
+        }
+
+        .voice-b {
+            position: absolute;
+            right: 110px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            color: var(--text-2);
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: var(--tr)
+        }
+
+        .voice-b:hover {
+            color: var(--accent);
+            background: var(--accent-g)
+        }
+
+        .voice-b.rec {
+            color: var(--danger);
+            animation: vp 1s infinite
+        }
+
+        @keyframes vp {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .3
+            }
+        }
+
+        /*=== SUGGESTION DROPDOWN ===*/
+        .sugg {
+            position: absolute;
+            top: calc(100% + 3px);
+            left: 0;
+            right: 0;
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: var(--rs);
+            box-shadow: var(--shadow);
+            z-index: 50;
+            max-height: 180px;
+            overflow-y: auto;
+            display: none
+        }
+
+        .sugg.show {
+            display: block
+        }
+
+        .sugg-i {
+            padding: 7px 12px;
+            cursor: pointer;
+            font-size: .75rem;
+            transition: var(--tr);
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .sugg-i:hover {
+            background: var(--accent-g);
+            color: var(--accent)
+        }
+
+        .sugg-i .sc {
+            font-size: .55rem;
+            padding: 1px 5px;
+            background: var(--bg-3);
+            border-radius: 6px;
+            color: var(--text-2)
+        }
+
+        /*=== ENGINE SELECTOR ===*/
+        .eng-sel {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap
+        }
+
+        .eng-b {
+            flex: 1;
+            padding: 7px;
+            text-align: center;
+            background: var(--bg-3);
+            border: 2px solid var(--border);
+            border-radius: var(--rs);
+            cursor: pointer;
+            transition: var(--tr);
+            font-weight: 600;
+            font-size: .65rem;
+            min-width: 55px;
+            color: var(--text-1)
+        }
+
+        .eng-b:hover {
+            border-color: var(--accent)
+        }
+
+        .eng-b.on {
+            border-color: var(--accent);
+            background: var(--accent-g);
+            color: var(--accent);
+            box-shadow: var(--accent-s)
+        }
+
+        .eng-b .ei {
+            font-size: 1rem;
+            display: block;
+            margin-bottom: 1px
+        }
+
+        /*=== MULTI ENGINE SWITCH ===*/
+        .sw-row {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 7px;
+            padding: 7px;
+            background: var(--bg-3);
+            border-radius: var(--rx);
+            font-size: .68rem;
+            color: var(--text-1)
+        }
+
+        .sw {
+            width: 36px;
+            height: 20px;
+            background: var(--bg-1);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: var(--tr);
+            flex-shrink: 0
+        }
+
+        .sw::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 12px;
+            height: 12px;
+            background: var(--text-2);
+            border-radius: 50%;
+            transition: var(--tr)
+        }
+
+        .sw.on {
+            background: var(--accent);
+            border-color: var(--accent)
+        }
+
+        .sw.on::after {
+            left: 18px;
+            background: #fff
+        }
+
+        /*=== FILTERS ===*/
+        .flt-l {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            max-height: 180px;
+            overflow-y: auto
+        }
+
+        .flt-i {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+            animation: si .2s ease
+        }
+
+        @keyframes si {
+            from {
+                opacity: 0;
+                transform: translateY(-4px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .flt-i select {
+            width: 95px;
+            flex-shrink: 0;
+            font-size: .68rem;
+            padding: 6px 7px
+        }
+
+        .flt-i input {
+            flex: 1;
+            font-size: .72rem;
+            padding: 6px 7px
+        }
+
+        .flt-rm {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: var(--danger);
+            color: #fff;
+            border-radius: 3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .75rem;
+            flex-shrink: 0
+        }
+
+        /*=== CHIPS ===*/
+        .chg {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px
+        }
+
+        .ch {
+            padding: 3px 9px;
+            background: var(--bg-3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: .64rem;
+            cursor: pointer;
+            transition: var(--tr);
+            font-weight: 500;
+            user-select: none;
+            color: var(--text-1)
+        }
+
+        .ch:hover {
+            border-color: var(--accent);
+            color: var(--accent)
+        }
+
+        .ch.on {
+            background: var(--accent-g);
+            color: var(--accent);
+            border-color: var(--accent)
+        }
+
+        /*=== QUERY PREVIEW ===*/
+        .qp {
+            background: var(--bg-1);
+            border: 1px solid var(--border);
+            border-radius: var(--rs);
+            padding: 11px 13px;
+            font-family: var(--mono);
+            font-size: .8rem;
+            min-height: 40px;
+            word-break: break-all;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            color: var(--text-0);
+            transition: var(--tr)
+        }
+
+        .qp:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-g)
+        }
+
+        .qp .op {
+            color: var(--accent);
+            font-weight: 700
+        }
+
+        .qp .st {
+            color: var(--warning)
+        }
+
+        .qp .ng {
+            color: var(--danger)
+        }
+
+        .qp .nm {
+            color: var(--neon-green)
+        }
+
+        .ql {
+            font-size: .66rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            color: var(--neon-green);
+            margin-bottom: 7px;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .ld {
+            width: 6px;
+            height: 6px;
+            background: var(--neon-green);
+            border-radius: 50%;
+            box-shadow: var(--green-s);
+            animation: bl 2s infinite
+        }
+
+        .qa {
+            display: flex;
+            gap: 4px;
+            margin-top: 9px;
+            flex-wrap: wrap
+        }
+
+        .sr {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 7px 0;
+            border-top: 1px solid var(--border);
+            margin-top: 8px
+        }
+
+        .si-t {
+            font-size: .63rem;
+            color: var(--text-2);
+            display: flex;
+            align-items: center;
+            gap: 3px
+        }
+
+        .sv {
+            color: var(--accent);
+            font-weight: 700;
+            font-family: var(--mono)
+        }
+
+        /*=== STRENGTH BAR ===*/
+        .str-w {
+            margin-top: 7px
+        }
+
+        .str-bg {
+            width: 100%;
+            height: 4px;
+            background: var(--bg-3);
+            border-radius: 2px;
+            overflow: hidden
+        }
+
+        .str-f {
+            height: 100%;
+            border-radius: 2px;
+            transition: all .5s;
+            width: 0
+        }
+
+        .str-i {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3px;
+            font-size: .6rem;
+            color: var(--text-2)
+        }
+
+        /*=== PRESET GRID ===*/
+        .pr-g {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 4px
+        }
+
+        .pr-c {
+            padding: 7px;
+            text-align: center;
+            background: var(--bg-3);
+            border: 1px solid var(--border);
+            border-radius: var(--rs);
+            cursor: pointer;
+            transition: var(--tr);
+            font-size: .62rem;
+            font-weight: 500;
+            color: var(--text-1)
+        }
+
+        .pr-c:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-g);
+            transform: translateY(-1px);
+            box-shadow: var(--accent-s)
+        }
+
+        .pr-c .pi {
+            font-size: 1rem;
+            display: block;
+            margin-bottom: 2px
+        }
+
+        /*=== QUICK OPS ===*/
+        .qo-g {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px
+        }
+
+        .qo {
+            padding: 3px 8px;
+            background: var(--bg-3);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: .62rem;
+            cursor: pointer;
+            transition: var(--tr);
+            font-family: var(--mono);
+            color: var(--accent)
+        }
+
+        .qo:hover {
+            background: var(--accent-g);
+            border-color: var(--accent)
+        }
+
+        /*=== ARCHIVE / SOCIAL ===*/
+        .arc-g {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px
+        }
+
+        .soc-g {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap
+        }
+
+        /*=== TABS ===*/
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 8px;
+            gap: 1px;
+            overflow-x: auto
+        }
+
+        .tb {
+            padding: 6px 12px;
+            font-size: .68rem;
+            font-weight: 600;
+            color: var(--text-2);
+            cursor: pointer;
+            border: none;
+            border-bottom: 2px solid transparent;
+            background: none;
+            font-family: var(--font);
+            transition: var(--tr);
+            white-space: nowrap
+        }
+
+        .tb:hover {
+            color: var(--text-0)
+        }
+
+        .tb.on {
+            color: var(--accent);
+            border-bottom-color: var(--accent)
+        }
+
+        .tp {
+            display: none
+        }
+
+        .tp.on {
+            display: block;
+            animation: fi .2s ease
+        }
+
+        @keyframes fi {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        /*=== LIST ITEMS ===*/
+        .ls {
+            max-height: 220px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 3px
+        }
+
+        .li {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 8px;
+            background: var(--bg-3);
+            border-radius: var(--rx);
+            cursor: pointer;
+            transition: var(--tr);
+            font-size: .68rem;
+            font-family: var(--mono);
+            border: 1px solid transparent
+        }
+
+        .li:hover {
+            border-color: var(--accent);
+            background: var(--accent-g)
+        }
+
+        .li .qt {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .li .tm {
+            font-size: .55rem;
+            color: var(--text-2);
+            font-family: var(--font);
+            white-space: nowrap
+        }
+
+        .li .la {
+            display: flex;
+            gap: 2px
+        }
+
+        .li .la button {
+            width: 18px;
+            height: 18px;
+            border: none;
+            background: transparent;
+            color: var(--text-2);
+            cursor: pointer;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .55rem
+        }
+
+        .li .la button:hover {
+            color: var(--accent);
+            background: var(--accent-g)
+        }
+
+        .em {
+            text-align: center;
+            padding: 16px;
+            color: var(--text-2);
+            font-size: .72rem
+        }
+
+        /*=== ANALYTICS ===*/
+        .ag {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 5px
+        }
+
+        .ac {
+            padding: 8px;
+            text-align: center;
+            background: var(--bg-3);
+            border-radius: var(--rs);
+            border: 1px solid var(--border)
+        }
+
+        .an {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent);
+            font-family: var(--mono)
+        }
+
+        .al {
+            font-size: .55rem;
+            color: var(--text-2);
+            margin-top: 1px;
+            text-transform: uppercase;
+            letter-spacing: .3px
+        }
+
+        /*=== MODALS ===*/
+        .mo {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .65);
+            backdrop-filter: blur(5px);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 14px
+        }
+
+        .mo.open {
+            display: flex
+        }
+
+        .mb {
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 20px;
+            max-width: 560px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow), 0 0 30px var(--accent-g);
+            animation: mp .3s ease;
+            position: relative
+        }
+
+        @keyframes mp {
+            from {
+                opacity: 0;
+                transform: scale(.93) translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .mb::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--neon-green))
+        }
+
+        .mt {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .mc {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 26px;
+            height: 26px;
+            border: none;
+            background: var(--bg-3);
+            color: var(--text-1);
+            border-radius: var(--rs);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .85rem
+        }
+
+        .mc:hover {
+            color: var(--danger)
+        }
+
+        /*=== TOASTS ===*/
+        .tbox {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 5px
+        }
+
+        .tst {
+            padding: 9px 14px;
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: var(--rs);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .73rem;
+            animation: ts .3s ease;
+            max-width: 320px
+        }
+
+        @keyframes ts {
+            from {
+                opacity: 0;
+                transform: translateX(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .tst.ok {
+            border-left: 3px solid var(--neon-green)
+        }
+
+        .tst.er {
+            border-left: 3px solid var(--danger)
+        }
+
+        .tst.in {
+            border-left: 3px solid var(--accent)
+        }
+
+        /*=== REGION GRID ===*/
+        .rg {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px
+        }
+
+        .rb {
+            padding: 4px;
+            text-align: center;
+            background: var(--bg-3);
+            border: 1px solid var(--border);
+            border-radius: var(--rx);
+            cursor: pointer;
+            font-size: .6rem;
+            transition: var(--tr);
+            color: var(--text-1)
+        }
+
+        .rb:hover {
+            border-color: var(--accent)
+        }
+
+        .rb.on {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent)
+        }
+
+        /*=== COLOR DOTS ===*/
+        .cdots {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap
+        }
+
+        .cdt {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: var(--tr)
+        }
+
+        .cdt:hover {
+            transform: scale(1.15)
+        }
+
+        .cdt.on {
+            border-color: #fff;
+            box-shadow: var(--accent-s)
+        }
+
+        .cdt[data-c="cyan"] {
+            background: #00e5ff
+        }
+
+        .cdt[data-c="green"] {
+            background: #00ff88
+        }
+
+        .cdt[data-c="purple"] {
+            background: #bf5af2
+        }
+
+        .cdt[data-c="blue"] {
+            background: #448aff
+        }
+
+        .cdt[data-c="pink"] {
+            background: #ff2d78
+        }
+
+        .cdt[data-c="amber"] {
+            background: #ffb020
+        }
+
+        .cdt[data-c="red"] {
+            background: #ff3b5c
+        }
+
+        /*=== BATCH MODE ===*/
+        .batch-ta {
+            min-height: 80px;
+            font-size: .75rem
+        }
+
+        /*=== VALIDATION MSG ===*/
+        .vm {
+            font-size: .65rem;
+            color: var(--danger);
+            margin-top: 3px;
+            display: none;
+            align-items: center;
+            gap: 3px
+        }
+
+        .vm.show {
+            display: flex
+        }
+
+        /*=== SCAN LINE ===*/
+        .sl {
+            position: absolute;
+            top: 0;
+            width: 25%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            animation: sla 3s linear infinite;
+            pointer-events: none
+        }
+
+        @keyframes sla {
+            0% {
+                left: -25%
+            }
+
+            100% {
+                left: 125%
+            }
+        }
+
+        /*=== FLOATING BUTTONS ===*/
+        .fabs {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
+            z-index: 90;
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .fab {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .95rem;
+            box-shadow: var(--shadow);
+            transition: var(--tr)
+        }
+
+        .fab:hover {
+            transform: scale(1.1)
+        }
+
+        .fab-a {
+            background: var(--accent);
+            color: #000
+        }
+
+        .fab-g {
+            background: var(--bg-2);
+            color: var(--text-0);
+            border: 1px solid var(--border)
+        }
+
+        /*=== OP REFERENCE GRID ===*/
+        .org {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3px
+        }
+
+        .ori {
+            padding: 5px 7px;
+            background: var(--bg-3);
+            border-radius: var(--rx);
+            font-size: .64rem;
+            border: 1px solid var(--border)
+        }
+
+        .ori code {
+            color: var(--accent);
+            font-weight: 700
+        }
+
+        .ori p {
+            color: var(--text-2);
+            margin-top: 1px;
+            font-size: .58rem
+        }
+
+        /*=== COLLAPSIBLE ===*/
+        .coll-h {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer
+        }
+
+        .coll-h .cv {
+            font-size: .55rem;
+            color: var(--text-2);
+            transition: var(--tr)
+        }
+
+        .coll-h.open .cv {
+            transform: rotate(180deg)
+        }
+
+        .coll-b {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .3s ease
+        }
+
+        .coll-b.open {
+            max-height: 3000px
+        }
+
+        /*=== SHORTCUTS GRID ===*/
+        .skg {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px
+        }
+
+        .ski {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px;
+            background: var(--bg-3);
+            border-radius: var(--rx);
+            font-size: .68rem
+        }
+
+        .kbd {
+            padding: 1px 5px;
+            background: var(--bg-3);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            font-size: .6rem;
+            font-family: var(--mono);
+            color: var(--text-2)
+        }
+
+        /*=== DISCLAIMER ===*/
+        .disc {
+            background: var(--accent-g);
+            border: 1px solid rgba(0, 229, 255, .15);
+            border-radius: var(--rs);
+            padding: 8px 12px;
+            font-size: .65rem;
+            color: var(--text-1);
+            display: flex;
+            align-items: flex-start;
+            gap: 6px
+        }
+
+        .disc strong {
+            color: var(--accent)
+        }
+
+        /*=== FOOTER ===*/
+        .ft {
+            text-align: center;
+            padding: 18px;
+            color: var(--text-2);
+            font-size: .66rem;
+            border-top: 1px solid var(--border);
+            margin-top: 24px
+        }
+
+        .ft .nn {
+            color: var(--accent);
+            font-weight: 700
+        }
+
+        /*=== RESPONSIVE ===*/
+        @media(max-width:768px) {
+            .dash {
+                padding: 10px;
+                gap: 10px
+            }
+
+            .si {
+                padding-right: 48px;
+                font-size: .82rem
+            }
+
+            .si-go span.gt {
+                display: none
+            }
+
+            .voice-b {
+                right: 44px
+            }
+
+            .qa {
+                flex-direction: column
+            }
+
+            .qa .btn {
+                width: 100%;
+                justify-content: center
+            }
+
+            .arc-g {
+                grid-template-columns: 1fr
+            }
+
+            .org {
+                grid-template-columns: 1fr
+            }
+
+            .skg {
+                grid-template-columns: 1fr
+            }
+
+            .ag {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .pr-g {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="hdr">
+        <div class="hdr-in">
+            <div class="logo">
+                <div class="logo-box">
+                    <div class="r1"></div>
+                    <div class="r2"></div>
+                    <div class="dt"></div>
+                </div>
+                <div class="logo-t"><span class="nm">Shimba's</span> Cyber Intelligence<span class="sub">Advanced OSINT
+                        Dashboard v4.0</span></div>
+            </div>
+            <div class="hdr-r">
+                <span class="st-dot"></span><span class="st-lbl">ONLINE</span>
+                <span class="clock" id="clock"></span>
+                <button class="btn btn-g btn-sm" onclick="showTut()">🎓 Tutorial</button>
+                <button class="btn btn-g btn-sm" onclick="sModal('helpM')">📖 Ref</button>
+                <button class="btn btn-g btn-sm" onclick="sModal('shortM')">⌨️ Keys</button>
+                <button class="btn btn-g btn-sm" onclick="sModal('anaM')">📊 Stats</button>
+                <button class="btn btn-g btn-sm" onclick="importJ()">📥</button>
+                <button class="btn btn-g btn-sm" onclick="exportJ()">📤</button>
+                <button class="btn btn-g btn-sm" onclick="sModal('settM')">⚙️</button>
+                <div style="display:flex;align-items:center;gap:5px">
+                    <span style="font-size:.65rem">☀️</span>
+                    <div class="sw on" id="thTgl" onclick="tglTheme()"></div>
+                    <span style="font-size:.65rem">🌙</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN DASHBOARD -->
+    <div class="dash">
+
+        <!-- DISCLAIMER -->
+        <div class="disc">⚖️ <div><strong>Legal & Educational Use Only:</strong> This tool generates search queries for
+                public search engines. Always respect laws, privacy, and terms of service. Never use for unauthorized
+                access.</div>
+        </div>
+
+        <!-- MODULE 1: DORKING ENGINE — MAIN SEARCH -->
+        <div class="cd">
+            <div class="sl"></div>
+            <div class="cd-h">
+                <div class="cd-ic bl">🔍</div>
+                <div>
+                    <div class="cd-t">Advanced Dorking Engine <span class="tag tag-b">CORE</span></div>
+                    <div class="cd-st">Build precision search queries with advanced operators</div>
+                </div>
+            </div>
+            <div class="fg">
+                <label class="fl">🎯 Keywords <span class="tp"
+                        data-t="Main search terms. Use quotes for exact match.">?</span> <span class="kbd"
+                        style="margin-left:auto">Ctrl+K</span></label>
+                <div class="si-w">
+                    <input type="text" class="si" id="mainKW" placeholder='"web security" exploit tutorial'
+                        oninput="buildQ();showSug()" onfocus="showSug()" autocomplete="off">
+                    <button class="voice-b" id="voiceB" onclick="tglVoice()" title="Voice Input">🎤</button>
+                    <button class="btn btn-s si-go" onclick="execSearch()">🔍 <span class="gt">Search</span></button>
+                    <div class="sugg" id="sugDD"></div>
+                </div>
+                <div class="vm" id="searchV">⚠️ Enter keywords or filters first</div>
+            </div>
+            <div class="g2" style="gap:10px">
+                <div class="fg"><label class="fl">🚫 Exclude <span class="tp"
+                            data-t="Comma-separated terms to exclude">?</span></label><input type="text" id="exKW"
+                        placeholder="ads, spam" oninput="buildQ()"></div>
+                <div class="fg"><label class="fl">🌐 Domain <span class="tp"
+                            data-t="Target domain or TLD">?</span></label>
+                    <input type="text" id="tgtDom" placeholder=".edu, github.com" oninput="buildQ()">
+                    <div class="chg" style="margin-top:4px">
+                        <span class="ch" onclick="setDom('.edu')">EDU</span><span class="ch"
+                            onclick="setDom('.gov')">GOV</span><span class="ch" onclick="setDom('.org')">ORG</span><span
+                            class="ch" onclick="setDom('.mil')">MIL</span>
+                        <span class="ch" onclick="setDom('github.com')">GitHub</span><span class="ch"
+                            onclick="setDom('stackoverflow.com')">SO</span><span class="ch"
+                            onclick="setDom('reddit.com')">Reddit</span>
+                    </div>
+                </div>
+            </div>
+            <div class="g3" style="gap:10px">
+                <div class="fg"><label class="fl">📅 After</label><input type="date" id="dA" onchange="buildQ()"></div>
+                <div class="fg"><label class="fl">📅 Before</label><input type="date" id="dB" onchange="buildQ()"></div>
+                <div class="fg"><label class="fl">🔗 Wildcard/AROUND</label>
+                    <div style="display:flex;gap:4px"><input type="text" id="wcI" placeholder='"security * testing"'
+                            oninput="buildQ()" style="flex:1"><input type="number" id="arN" placeholder="AROUND(n)"
+                            min="1" max="50" oninput="buildQ()" style="width:80px"></div>
+                </div>
+            </div>
+            <div class="fg" style="margin-bottom:0"><label class="fl">🔢 Number Range</label>
+                <div style="display:flex;gap:4px;align-items:center"><input type="number" id="rMin" placeholder="Min"
+                        oninput="buildQ()" style="width:90px"><span
+                        style="color:var(--text-2);font-size:.75rem">to</span><input type="number" id="rMax"
+                        placeholder="Max" oninput="buildQ()" style="width:90px"></div>
+            </div>
+        </div>
+
+        <!-- ENGINE + FILTERS + FILETYPES -->
+        <div class="g3">
+            <div class="cd">
+                <div class="cd-h">
+                    <div class="cd-ic gn">🌐</div>
+                    <div>
+                        <div class="cd-t">Search Engine</div>
+                        <div class="cd-st">Select & configure</div>
+                    </div>
+                </div>
+                <div class="eng-sel" id="engSel">
+                    <div class="eng-b on" data-e="google" onclick="pickEng(this)"><span class="ei">🔍</span>Google</div>
+                    <div class="eng-b" data-e="bing" onclick="pickEng(this)"><span class="ei">🅱️</span>Bing</div>
+                    <div class="eng-b" data-e="duckduckgo" onclick="pickEng(this)"><span class="ei">🦆</span>DDG</div>
+                    <div class="eng-b" data-e="yahoo" onclick="pickEng(this)"><span class="ei">🟣</span>Yahoo</div>
+                    <div class="eng-b" data-e="brave" onclick="pickEng(this)"><span class="ei">🦁</span>Brave</div>
+                </div>
+                <div class="sw-row">
+                    <div class="sw" id="multiSw" onclick="tglSw(this)"></div><span>Search all engines at once</span>
+                </div>
+                <div style="margin-top:8px"><label class="fl">⚡ Quick Operators</label>
+                    <div class="qo-g">
+                        <span class="qo" onclick="insQO('intitle:&quot;index of&quot;')">index of</span>
+                        <span class="qo" onclick="insQO('inurl:admin')">inurl:admin</span>
+                        <span class="qo" onclick="insQO('inurl:backup')">inurl:backup</span>
+                        <span class="qo" onclick="insQO('intitle:roadmap')">roadmap</span>
+                        <span class="qo" onclick="insQO('site:.edu')">site:edu</span>
+                        <span class="qo" onclick="insQO('site:.gov')">site:gov</span>
+                        <span class="qo" onclick="insQO('inurl:login')">login</span>
+                        <span class="qo" onclick="insQO('inurl:config')">config</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cd">
+                <div class="cd-h">
+                    <div class="cd-ic pu">🎛️</div>
+                    <div>
+                        <div class="cd-t">Query Filters <span class="tag tag-p" id="fCnt">0</span></div>
+                        <div class="cd-st">Dynamic operator chains</div>
+                    </div>
+                </div>
+                <div class="flt-l" id="fList"></div>
+                <div style="display:flex;gap:3px;margin-top:6px">
+                    <button class="btn btn-a btn-sm btn-bl" onclick="addF()">+ Filter</button>
+                    <button class="btn btn-g btn-sm" onclick="addF('or','')">OR</button>
+                </div>
+            </div>
+
+            <div class="cd">
+                <div class="cd-h">
+                    <div class="cd-ic bl">📄</div>
+                    <div>
+                        <div class="cd-t">File Types</div>
+                        <div class="cd-st">Filter by format</div>
+                    </div>
+                </div>
+                <div class="chg" id="ftChips">
+                    <span class="ch" data-f="pdf" onclick="tglFT(this)">PDF</span><span class="ch" data-f="doc"
+                        onclick="tglFT(this)">DOC</span>
+                    <span class="ch" data-f="docx" onclick="tglFT(this)">DOCX</span><span class="ch" data-f="xls"
+                        onclick="tglFT(this)">XLS</span>
+                    <span class="ch" data-f="xlsx" onclick="tglFT(this)">XLSX</span><span class="ch" data-f="ppt"
+                        onclick="tglFT(this)">PPT</span>
+                    <span class="ch" data-f="txt" onclick="tglFT(this)">TXT</span><span class="ch" data-f="csv"
+                        onclick="tglFT(this)">CSV</span>
+                    <span class="ch" data-f="zip" onclick="tglFT(this)">ZIP</span><span class="ch" data-f="log"
+                        onclick="tglFT(this)">LOG</span>
+                    <span class="ch" data-f="conf" onclick="tglFT(this)">CONF</span><span class="ch" data-f="xml"
+                        onclick="tglFT(this)">XML</span>
+                    <span class="ch" data-f="json" onclick="tglFT(this)">JSON</span><span class="ch" data-f="sql"
+                        onclick="tglFT(this)">SQL</span>
+                    <span class="ch" data-f="env" onclick="tglFT(this)">ENV</span><span class="ch" data-f="html"
+                        onclick="tglFT(this)">HTML</span>
+                    <span class="ch" data-f="php" onclick="tglFT(this)">PHP</span><span class="ch" data-f="py"
+                        onclick="tglFT(this)">PY</span>
+                    <span class="ch" data-f="js" onclick="tglFT(this)">JS</span><span class="ch" data-f="bak"
+                        onclick="tglFT(this)">BAK</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIVE QUERY PREVIEW -->
+        <div class="cd">
+            <div class="cd-h">
+                <div class="cd-ic gn">⚡</div>
+                <div>
+                    <div class="cd-t">Live Query Preview</div>
+                    <div class="cd-st">Real-time output with syntax highlighting</div>
+                </div>
+            </div>
+            <div class="ql"><span class="ld"></span> LIVE — Engine: <span id="engLbl"
+                    style="color:var(--accent);margin-left:3px">GOOGLE</span>
+                <div style="margin-left:auto;display:flex;gap:3px">
+                    <button class="btn btn-g btn-sm" onclick="undo()">↩ Undo</button>
+                    <button class="btn btn-g btn-sm" onclick="redo()">↪ Redo</button>
+                </div>
+            </div>
+            <div class="qp" id="qPrev" contenteditable="true" spellcheck="false" oninput="onManE()"><span
+                    style="color:var(--text-2);font-style:italic">Generated query appears here...</span></div>
+            <div class="str-w">
+                <div class="str-bg">
+                    <div class="str-f" id="strB"></div>
+                </div>
+                <div class="str-i"><span id="strT">No query</span><span id="strS">0/100</span></div>
+            </div>
+            <div class="qa">
+                <button class="btn btn-s btn-sm" onclick="execSearch()">🔍 Search</button>
+                <button class="btn btn-a btn-sm" onclick="copyQ()">📋 Copy</button>
+                <button class="btn btn-a btn-sm" onclick="saveQ()">💾 Save</button>
+                <button class="btn btn-a btn-sm" onclick="dupQ()">📑 Duplicate</button>
+                <button class="btn btn-a btn-sm" onclick="shareQ()">🔗 Share</button>
+                <button class="btn btn-a btn-sm" onclick="analyzeQ()">🔬 Analyze</button>
+                <button class="btn btn-a btn-sm" onclick="printQ()">🖨️ Print</button>
+                <button class="btn btn-w btn-sm" onclick="randomDork()">🎲 Random</button>
+                <button class="btn btn-gr btn-sm" onclick="optimizeQ()">⚡ Optimize</button>
+                <button class="btn btn-d btn-sm" onclick="clearAll()">🗑️ Clear</button>
+            </div>
+            <div class="sr">
+                <div class="si-t">Filters: <span class="sv" id="sF">0</span></div>
+                <div class="si-t">Ops: <span class="sv" id="sO">0</span></div>
+                <div class="si-t">Chars: <span class="sv" id="sC">0</span></div>
+                <div class="si-t">Engine: <span class="sv" id="sE">Google</span></div>
+                <div class="si-t">Strength: <span class="sv" id="sS">0%</span></div>
+            </div>
+        </div>
+
+        <!-- PRESETS -->
+        <div class="cd">
+            <div class="cd-h">
+                <div class="cd-ic pu">⭐</div>
+                <div>
+                    <div class="cd-t">Preset Categories</div>
+                    <div class="cd-st">Auto-generate query templates</div>
+                </div>
+            </div>
+            <div class="pr-g">
+                <div class="pr-c" onclick="ldPre('cybersecurity')"><span class="pi">🔐</span>Cybersecurity</div>
+                <div class="pr-c" onclick="ldPre('programming')"><span class="pi">💻</span>Programming</div>
+                <div class="pr-c" onclick="ldPre('research')"><span class="pi">📄</span>Research Papers</div>
+                <div class="pr-c" onclick="ldPre('publicdocs')"><span class="pi">📁</span>Public Documents</div>
+                <div class="pr-c" onclick="ldPre('indexof')"><span class="pi">📂</span>Index Listings</div>
+                <div class="pr-c" onclick="ldPre('government')"><span class="pi">🏛️</span>Government</div>
+                <div class="pr-c" onclick="ldPre('education')"><span class="pi">🎓</span>Education</div>
+                <div class="pr-c" onclick="ldPre('techdocs')"><span class="pi">⚙️</span>Tech Docs</div>
+                <div class="pr-c" onclick="ldPre('database')"><span class="pi">🗄️</span>Databases</div>
+                <div class="pr-c" onclick="ldPre('api')"><span class="pi">🔌</span>API Docs</div>
+                <div class="pr-c" onclick="ldPre('opensource')"><span class="pi">🌐</span>Open Source</div>
+                <div class="pr-c" onclick="ldPre('books')"><span class="pi">📚</span>eBooks</div>
+            </div>
+        </div>
+
+        <!-- BATCH SEARCH -->
+        <div class="cd">
+            <div class="coll-h" onclick="tglColl(this)">
+                <div class="cd-t" style="margin-bottom:0">🚀 Batch Search Mode <span class="tag tag-n">NEW</span></div>
+                <span class="cv">▼</span>
+            </div>
+            <div class="coll-b">
+                <div style="padding-top:10px">
+                    <p style="font-size:.68rem;color:var(--text-2);margin-bottom:6px">One query per line. Each opens in
+                        new tab.</p>
+                    <textarea class="batch-ta" id="batchQ"
+                        placeholder='intitle:"index of" filetype:pdf&#10;site:.edu "research paper"'></textarea>
+                    <div style="display:flex;gap:4px;margin-top:6px">
+                        <button class="btn btn-s btn-sm btn-bl" onclick="execBatch()">🚀 Search All</button>
+                        <button class="btn btn-g btn-sm" onclick="$('batchQ').value=''">Clear</button>
+                        <button class="btn btn-g btn-sm" onclick="addCurBatch()">+ Current</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE 2 & 3: ARCHIVE + SOCIAL -->
+        <div class="g2">
+            <div class="cd">
+                <div class="cd-h">
+                    <div class="cd-ic gn">🗄️</div>
+                    <div>
+                        <div class="cd-t">Archive Access <span class="tag tag-g">M2</span></div>
+                        <div class="cd-st">Cached/archived page versions</div>
+                    </div>
+                </div>
+                <div class="fg"><label class="fl">🔗 URL</label><input type="url" id="arcURL"
+                        placeholder="https://example.com/article"></div>
+                <div class="arc-g">
+                    <button class="btn btn-a btn-sm" onclick="openArc('gcache')">🔍 Google Cache</button>
+                    <button class="btn btn-a btn-sm" onclick="openArc('wayback')">🏛️ Wayback Machine</button>
+                    <button class="btn btn-a btn-sm" onclick="openArc('archiveis')">📦 Archive.is</button>
+                    <button class="btn btn-a btn-sm" onclick="openArc('12ft')">🪜 12ft.io</button>
+                </div>
+                <div class="vm" id="arcV">⚠️ Enter a valid URL</div>
+            </div>
+
+            <div class="cd">
+                <div class="cd-h">
+                    <div class="cd-ic pk">👁️</div>
+                    <div>
+                        <div class="cd-t">Social OSINT <span class="tag tag-n">M3</span></div>
+                        <div class="cd-st">Search profiles & content</div>
+                    </div>
+                </div>
+                <div class="fg"><label class="fl">🔎 Keyword / Username</label><input type="text" id="socKW"
+                        placeholder="john_doe or cybersecurity"></div>
+                <div class="soc-g">
+                    <button class="btn btn-a btn-sm" onclick="socSearch('linkedin')">💼 LinkedIn</button>
+                    <button class="btn btn-a btn-sm" onclick="socSearch('twitter')">🐦 Twitter</button>
+                    <button class="btn btn-a btn-sm" onclick="socSearch('github')">🐙 GitHub</button>
+                    <button class="btn btn-a btn-sm" onclick="socSearch('reddit')">🟠 Reddit</button>
+                    <button class="btn btn-a btn-sm" onclick="socSearch('youtube')">🎬 YouTube</button>
+                    <button class="btn btn-p btn-sm" onclick="socSearch('facebook')">📘 Facebook</button>
+                    <button class="btn btn-p btn-sm" onclick="socSearch('instagram')">📷 Instagram</button>
+                    <button class="btn btn-p btn-sm" onclick="socSearch('telegram')">✈️ Telegram</button>
+                </div>
+                <div class="vm" id="socV">⚠️ Enter a search term</div>
+            </div>
+        </div>
+
+        <!-- MODULE 4: RECON TOOLS -->
+        <div class="cd">
+            <div class="cd-h">
+                <div class="cd-ic pk">🛡️</div>
+                <div>
+                    <div class="cd-t">Cyber Recon Tools <span class="tag tag-n">M4 NEW</span></div>
+                    <div class="cd-st">OSINT & Reconnaissance lookups</div>
+                </div>
+            </div>
+            <div class="fg"><label class="fl">🌐 Target (Domain/IP/Hash)</label><input type="text" id="reconT"
+                    placeholder="example.com or 8.8.8.8"></div>
+            <div class="g4" style="gap:4px">
+                <button class="btn btn-a btn-sm btn-bl" onclick="reconGo('whois')">📋 WHOIS</button>
+                <button class="btn btn-a btn-sm btn-bl" onclick="reconGo('dns')">🌐 DNS Lookup</button>
+                <button class="btn btn-a btn-sm btn-bl" onclick="reconGo('ip')">📍 IP Geo</button>
+                <button class="btn btn-a btn-sm btn-bl" onclick="reconGo('shodan')">🔎 Shodan</button>
+                <button class="btn btn-a btn-sm btn-bl" onclick="reconGo('vt')">🛡️ VirusTotal</button>
+                <button class="btn btn-a btn-sm btn-bl" onclick="reconGo('crtsh')">📜 Cert Search</button>
+                <button class="btn btn-a btn-sm btn-bl" onclick="reconGo('headers')">📡 Headers</button>
+                <button class="btn btn-a btn-sm btn-bl" onclick="reconGo('subdom')">🔗 Subdomains</button>
+            </div>
+            <div class="vm" id="reconV">⚠️ Enter a target</div>
+        </div>
+
+        <!-- MODULE 5: ENCODE/DECODE -->
+        <div class="cd">
+            <div class="coll-h" onclick="tglColl(this)">
+                <div class="cd-t" style="margin-bottom:0">🔄 Encode / Decode Tools <span class="tag tag-n">M5 NEW</span>
+                </div><span class="cv">▼</span>
+            </div>
+            <div class="coll-b">
+                <div style="padding-top:10px">
+                    <div class="fg"><label class="fl">Input</label><textarea id="encIn"
+                            placeholder="Enter text to encode/decode"></textarea></div>
+                    <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:8px">
+                        <button class="btn btn-a btn-sm" onclick="doEnc('url')">URL Encode</button>
+                        <button class="btn btn-g btn-sm" onclick="doDec('url')">URL Decode</button>
+                        <button class="btn btn-a btn-sm" onclick="doEnc('b64')">Base64 Enc</button>
+                        <button class="btn btn-g btn-sm" onclick="doDec('b64')">Base64 Dec</button>
+                        <button class="btn btn-a btn-sm" onclick="doEnc('hex')">Hex Encode</button>
+                        <button class="btn btn-g btn-sm" onclick="doDec('hex')">Hex Decode</button>
+                    </div>
+                    <div class="fg"><label class="fl">Output</label><textarea id="encOut" readonly></textarea></div>
+                    <button class="btn btn-a btn-sm" onclick="copyTxt($('encOut').value)">📋 Copy Output</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE 6: THREAT INTEL -->
+        <div class="cd">
+            <div class="coll-h" onclick="tglColl(this)">
+                <div class="cd-t" style="margin-bottom:0">🔥 Threat Intelligence Search <span class="tag tag-n">M6
+                        NEW</span></div><span class="cv">▼</span>
+            </div>
+            <div class="coll-b">
+                <div style="padding-top:10px">
+                    <div class="fg"><label class="fl">🔎 CVE / Exploit / Hash</label><input type="text" id="threatT"
+                            placeholder="CVE-2024-1234 or hash"></div>
+                    <div class="g3" style="gap:4px">
+                        <button class="btn btn-a btn-sm btn-bl" onclick="threatGo('cve')">🐛 CVE Details</button>
+                        <button class="btn btn-a btn-sm btn-bl" onclick="threatGo('edb')">💣 Exploit-DB</button>
+                        <button class="btn btn-a btn-sm btn-bl" onclick="threatGo('nvd')">🏛️ NVD NIST</button>
+                        <button class="btn btn-a btn-sm btn-bl" onclick="threatGo('vt')">🛡️ VirusTotal</button>
+                        <button class="btn btn-a btn-sm btn-bl" onclick="threatGo('otx')">🌍 AlienVault OTX</button>
+                        <button class="btn btn-a btn-sm btn-bl" onclick="threatGo('paste')">📋 Pastebin</button>
+                    </div>
+                    <div class="vm" id="threatV">⚠️ Enter a CVE/hash/keyword</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HISTORY / SAVED / TEMPLATES / NOTES / REFERENCE -->
+        <div class="cd">
+            <div class="cd-h">
+                <div class="cd-ic bl">🗂️</div>
+                <div>
+                    <div class="cd-t">Query Library</div>
+                    <div class="cd-st">History, saved, templates, notes & reference</div>
+                </div>
+            </div>
+            <div class="tabs">
+                <button class="tb on" onclick="swTab(this,'histP')">🕐 History</button>
+                <button class="tb" onclick="swTab(this,'saveP')">💾 Saved</button>
+                <button class="tb" onclick="swTab(this,'tmplP')">📋 Templates</button>
+                <button class="tb" onclick="swTab(this,'noteP')">📝 Notes</button>
+                <button class="tb" onclick="swTab(this,'refP')">📖 Reference</button>
+            </div>
+
+            <div class="tp on" id="histP">
+                <div style="display:flex;gap:3px;margin-bottom:6px">
+                    <input type="text" id="histFlt" placeholder="Filter..." oninput="renderHist()"
+                        style="flex:1;font-size:.68rem;padding:5px 7px">
+                    <button class="btn btn-d btn-sm" onclick="clrHist()">Clear</button>
+                </div>
+                <div class="ls" id="histList">
+                    <div class="em">No searches yet</div>
+                </div>
+            </div>
+
+            <div class="tp" id="saveP">
+                <div style="display:flex;gap:3px;margin-bottom:6px">
+                    <input type="text" id="saveFlt" placeholder="Filter..." oninput="renderSav()"
+                        style="flex:1;font-size:.68rem;padding:5px 7px">
+                    <button class="btn btn-d btn-sm" onclick="clrSav()">Clear</button>
+                </div>
+                <div class="ls" id="savList">
+                    <div class="em">No saved queries</div>
+                </div>
+            </div>
+
+            <div class="tp" id="tmplP">
+                <div class="ls">
+                    <div class="li" onclick="ldTmpl('intitle:&quot;index of&quot; {keyword} filetype:{type}')"><span
+                            class="qt">📄 intitle:"index of" {keyword} filetype:{type}</span></div>
+                    <div class="li" onclick="ldTmpl('site:{domain} inurl:admin')"><span class="qt">🔑 site:{domain}
+                            inurl:admin</span></div>
+                    <div class="li" onclick="ldTmpl('&quot;{keyword}&quot; filetype:pdf site:.edu')"><span class="qt">🎓
+                            "{keyword}" filetype:pdf site:.edu</span></div>
+                    <div class="li" onclick="ldTmpl('intitle:&quot;{keyword}&quot; inurl:blog')"><span class="qt">📝
+                            intitle:"{keyword}" inurl:blog</span></div>
+                    <div class="li" onclick="ldTmpl('site:github.com &quot;{keyword}&quot;')"><span class="qt">💻
+                            site:github.com "{keyword}"</span></div>
+                    <div class="li" onclick="ldTmpl('inurl:wp-content/uploads filetype:pdf')"><span class="qt">📂
+                            inurl:wp-content filetype:pdf</span></div>
+                    <div class="li" onclick="ldTmpl('site:docs.google.com &quot;{keyword}&quot;')"><span class="qt">📊
+                            site:docs.google.com</span></div>
+                    <div class="li" onclick="ldTmpl('&quot;powered by&quot; inurl:forum')"><span class="qt">💬 "powered
+                            by" inurl:forum</span></div>
+                </div>
+            </div>
+
+            <div class="tp" id="noteP">
+                <textarea id="notesA" placeholder="Research notes... saved locally."
+                    style="min-height:100px;font-family:var(--font);font-size:.75rem" oninput="savN()"></textarea>
+                <div style="display:flex;gap:4px;margin-top:6px">
+                    <button class="btn btn-a btn-sm" onclick="expNotes()">📤 Export</button>
+                    <button class="btn btn-d btn-sm" onclick="clrNotes()">Clear</button>
+                </div>
+            </div>
+
+            <div class="tp" id="refP">
+                <div class="org">
+                    <div class="ori"><code>intitle:</code>
+                        <p>Page title</p>
+                    </div>
+                    <div class="ori"><code>inurl:</code>
+                        <p>In URL</p>
+                    </div>
+                    <div class="ori"><code>intext:</code>
+                        <p>Body text</p>
+                    </div>
+                    <div class="ori"><code>site:</code>
+                        <p>Domain</p>
+                    </div>
+                    <div class="ori"><code>filetype:</code>
+                        <p>File type</p>
+                    </div>
+                    <div class="ori"><code>"phrase"</code>
+                        <p>Exact match</p>
+                    </div>
+                    <div class="ori"><code>-keyword</code>
+                        <p>Exclude</p>
+                    </div>
+                    <div class="ori"><code>OR</code>
+                        <p>Boolean OR</p>
+                    </div>
+                    <div class="ori"><code>before:</code>
+                        <p>Before date</p>
+                    </div>
+                    <div class="ori"><code>after:</code>
+                        <p>After date</p>
+                    </div>
+                    <div class="ori"><code>cache:</code>
+                        <p>Cached page</p>
+                    </div>
+                    <div class="ori"><code>related:</code>
+                        <p>Related sites</p>
+                    </div>
+                    <div class="ori"><code>AROUND(n)</code>
+                        <p>Proximity</p>
+                    </div>
+                    <div class="ori"><code>n..m</code>
+                        <p>Number range</p>
+                    </div>
+                    <div class="ori"><code>*</code>
+                        <p>Wildcard</p>
+                    </div>
+                    <div class="ori"><code>ext:</code>
+                        <p>Extension</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- end dash -->
+
+    <!-- FABS -->
+    <div class="fabs">
+        <button class="fab fab-a" onclick="scrollTo({top:0,behavior:'smooth'})" title="Top">⬆️</button>
+        <button class="fab fab-g"
+            onclick="document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()"
+            title="Fullscreen">⛶</button>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="ft">
+        <div>🔒 <span class="nn">Shimba's Cyber Intelligence Dashboard v4.0</span> — For Educational & Defensive
+            Purposes Only</div>
+        <div style="margin-top:3px">Use responsibly. Respect privacy, terms of service & all applicable laws.</div>
+    </footer>
+
+    <!-- ====== MODALS ====== -->
+
+    <!-- HELP -->
+    <div class="mo" id="helpM">
+        <div class="mb"><button class="mc" onclick="hModal('helpM')">✕</button>
+            <div class="mt">📖 Operator Reference</div>
+            <div style="display:flex;flex-direction:column;gap:6px;max-height:60vh;overflow-y:auto">
+                <div
+                    style="padding:8px;background:var(--bg-3);border-radius:var(--rx);font-size:.73rem;border:1px solid var(--border)">
+                    <code style="color:var(--accent);font-weight:700">intitle:keyword</code>
+                    <p style="color:var(--text-2);margin-top:2px">Pages with keyword in title tag.</p>
+                </div>
+                <div
+                    style="padding:8px;background:var(--bg-3);border-radius:var(--rx);font-size:.73rem;border:1px solid var(--border)">
+                    <code style="color:var(--accent);font-weight:700">inurl:keyword</code>
+                    <p style="color:var(--text-2);margin-top:2px">Keyword within URLs.</p>
+                </div>
+                <div
+                    style="padding:8px;background:var(--bg-3);border-radius:var(--rx);font-size:.73rem;border:1px solid var(--border)">
+                    <code style="color:var(--accent);font-weight:700">intext:keyword</code>
+                    <p style="color:var(--text-2);margin-top:2px">Keyword in page body.</p>
+                </div>
+                <div
+                    style="padding:8px;background:var(--bg-3);border-radius:var(--rx);font-size:.73rem;border:1px solid var(--border)">
+                    <code style="color:var(--accent);font-weight:700">site:domain</code>
+                    <p style="color:var(--text-2);margin-top:2px">Restrict to domain.</p>
+                </div>
+                <div
+                    style="padding:8px;background:var(--bg-3);border-radius:var(--rx);font-size:.73rem;border:1px solid var(--border)">
+                    <code style="color:var(--accent);font-weight:700">filetype:pdf</code>
+                    <p style="color:var(--text-2);margin-top:2px">Specific file types.</p>
+                </div>
+                <div
+                    style="padding:8px;background:var(--bg-3);border-radius:var(--rx);font-size:.73rem;border:1px solid var(--border)">
+                    <code style="color:var(--accent);font-weight:700">"exact phrase"</code>
+                    <p style="color:var(--text-2);margin-top:2px">Exact phrase match.</p>
+                </div>
+                <div
+                    style="padding:8px;background:var(--bg-3);border-radius:var(--rx);font-size:.73rem;border:1px solid var(--border)">
+                    <code style="color:var(--accent);font-weight:700">-exclude</code>
+                    <p style="color:var(--text-2);margin-top:2px">Exclude term.</p>
+                </div>
+                <div
+                    style="padding:8px;background:var(--bg-3);border-radius:var(--rx);font-size:.73rem;border:1px solid var(--border)">
+                    <code style="color:var(--accent);font-weight:700">OR</code>
+                    <p style="color:var(--text-2);margin-top:2px">Boolean OR between terms.</p>
+                </div>
+                <div
+                    style="padding:8px;background:var(--bg-3);border-radius:var(--rx);font-size:.73rem;border:1px solid var(--border)">
+                    <code style="color:var(--accent);font-weight:700">before: / after:</code>
+                    <p style="color:var(--text-2);margin-top:2px">Date range filters.</p>
+                </div>
+                <div
+                    style="padding:8px;background:var(--bg-3);border-radius:var(--rx);font-size:.73rem;border:1px solid var(--border)">
+                    <code style="color:var(--accent);font-weight:700">AROUND(n)</code>
+                    <p style="color:var(--text-2);margin-top:2px">Proximity search.</p>
+                </div>
+            </div>
+            <button class="btn btn-s btn-bl" onclick="hModal('helpM')" style="margin-top:10px">Got It</button>
+        </div>
+    </div>
+
+    <!-- SAVE -->
+    <div class="mo" id="savM">
+        <div class="mb"><button class="mc" onclick="hModal('savM')">✕</button>
+            <div class="mt">💾 Save Query</div>
+            <div class="fg"><label class="fl">Name</label><input type="text" id="savNm" placeholder="Security PDFs">
+            </div>
+            <div class="fg"><label class="fl">Category</label><select id="savCat">
+                    <option>General</option>
+                    <option>Cybersecurity</option>
+                    <option>Research</option>
+                    <option>Programming</option>
+                    <option>Education</option>
+                    <option>Other</option>
+                </select></div>
+            <div class="fg"><label class="fl">Tags (comma)</label><input type="text" id="savTags"
+                    placeholder="pdf, security"></div>
+            <div class="fg"><label class="fl">Preview</label><textarea id="savPrv" readonly></textarea></div>
+            <div style="display:flex;gap:5px"><button class="btn btn-s btn-bl" onclick="confirmSave()">💾
+                    Save</button><button class="btn btn-g" onclick="hModal('savM')">Cancel</button></div>
+        </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="mo" id="anaM">
+        <div class="mb" style="max-width:620px"><button class="mc" onclick="hModal('anaM')">✕</button>
+            <div class="mt">📊 Analytics Dashboard</div>
+            <div class="ag" style="margin-bottom:12px">
+                <div class="ac">
+                    <div class="an" id="aTS">0</div>
+                    <div class="al">Searches</div>
+                </div>
+                <div class="ac">
+                    <div class="an" id="aSQ">0</div>
+                    <div class="al">Saved</div>
+                </div>
+                <div class="ac">
+                    <div class="an" id="aEU">0</div>
+                    <div class="al">Engines</div>
+                </div>
+                <div class="ac">
+                    <div class="an" id="aAL">0</div>
+                    <div class="al">Avg Len</div>
+                </div>
+                <div class="ac">
+                    <div class="an" id="aPU">0</div>
+                    <div class="al">Presets</div>
+                </div>
+                <div class="ac">
+                    <div class="an" id="aSS">0</div>
+                    <div class="al">Session</div>
+                </div>
+            </div>
+            <div
+                style="font-size:.68rem;font-weight:700;color:var(--text-2);text-transform:uppercase;margin-bottom:5px">
+                Top Operators</div>
+            <div id="opChart" style="display:flex;flex-direction:column;gap:3px;margin-bottom:10px"></div>
+            <button class="btn btn-s btn-bl" onclick="hModal('anaM')">Close</button>
+        </div>
+    </div>
+
+    <!-- SHORTCUTS -->
+    <div class="mo" id="shortM">
+        <div class="mb"><button class="mc" onclick="hModal('shortM')">✕</button>
+            <div class="mt">⌨️ Keyboard Shortcuts</div>
+            <div class="skg">
+                <div class="ski"><span>Focus search</span><span class="kbd">Ctrl+K</span></div>
+                <div class="ski"><span>Execute search</span><span class="kbd">Ctrl+Enter</span></div>
+                <div class="ski"><span>Copy query</span><span class="kbd">Ctrl+Shift+C</span></div>
+                <div class="ski"><span>Save query</span><span class="kbd">Ctrl+S</span></div>
+                <div class="ski"><span>Clear all</span><span class="kbd">Ctrl+Shift+X</span></div>
+                <div class="ski"><span>Add filter</span><span class="kbd">Ctrl+Shift+F</span></div>
+                <div class="ski"><span>Toggle theme</span><span class="kbd">Ctrl+D</span></div>
+                <div class="ski"><span>Random dork</span><span class="kbd">Ctrl+Shift+R</span></div>
+                <div class="ski"><span>Close modal</span><span class="kbd">Escape</span></div>
+            </div>
+            <button class="btn btn-s btn-bl" onclick="hModal('shortM')" style="margin-top:10px">Close</button>
+        </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="mo" id="settM">
+        <div class="mb" style="max-width:400px"><button class="mc" onclick="hModal('settM')">✕</button>
+            <div class="mt">⚙️ Settings</div>
+            <div class="fg"><label class="fl">🎨 Accent Color</label>
+                <div class="cdots">
+                    <div class="cdt on" data-c="cyan" onclick="setAcc(this)"></div>
+                    <div class="cdt" data-c="green" onclick="setAcc(this)"></div>
+                    <div class="cdt" data-c="purple" onclick="setAcc(this)"></div>
+                    <div class="cdt" data-c="blue" onclick="setAcc(this)"></div>
+                    <div class="cdt" data-c="pink" onclick="setAcc(this)"></div>
+                    <div class="cdt" data-c="amber" onclick="setAcc(this)"></div>
+                    <div class="cdt" data-c="red" onclick="setAcc(this)"></div>
+                </div>
+            </div>
+            <div class="fg"><label class="fl">🌍 Region</label>
+                <div class="rg">
+                    <div class="rb on" onclick="setReg(this,'')" data-r="">🌍 Global</div>
+                    <div class="rb" onclick="setReg(this,'us')" data-r="us">🇺🇸 US</div>
+                    <div class="rb" onclick="setReg(this,'uk')" data-r="uk">🇬🇧 UK</div>
+                    <div class="rb" onclick="setReg(this,'de')" data-r="de">🇩🇪 DE</div>
+                    <div class="rb" onclick="setReg(this,'in')" data-r="in">🇮🇳 IN</div>
+                    <div class="rb" onclick="setReg(this,'jp')" data-r="jp">🇯🇵 JP</div>
+                </div>
+            </div>
+            <div class="sw-row" style="margin-top:0">
+                <div class="sw on" id="safeSw" onclick="tglSw(this)"></div><span>Safe Search</span>
+            </div>
+            <button class="btn btn-s btn-bl" onclick="hModal('settM')" style="margin-top:10px">Done</button>
+        </div>
+    </div>
+
+    <!-- SHARE -->
+    <div class="mo" id="shareM">
+        <div class="mb" style="max-width:450px"><button class="mc" onclick="hModal('shareM')">✕</button>
+            <div class="mt">🔗 Share Query</div>
+            <div class="fg"><label class="fl">Search URL</label><textarea id="shareURL" readonly
+                    style="font-size:.68rem"></textarea></div>
+            <div class="fg"><label class="fl">Plain Query</label><textarea id="sharePlain" readonly
+                    style="font-size:.68rem"></textarea></div>
+            <div style="display:flex;gap:4px"><button class="btn btn-s btn-sm btn-bl"
+                    onclick="copyTxt($('shareURL').value);toast('URL copied!','ok')">📋 Copy URL</button><button
+                    class="btn btn-a btn-sm btn-bl" onclick="copyTxt($('sharePlain').value);toast('Copied!','ok')">📋
+                    Copy Query</button></div>
+        </div>
+    </div>
+
+    <!-- ANALYZE -->
+    <div class="mo" id="anaQM">
+        <div class="mb"><button class="mc" onclick="hModal('anaQM')">✕</button>
+            <div class="mt">🔬 Query Analysis</div>
+            <div id="anaContent" style="font-size:.78rem;line-height:1.7"></div>
+            <button class="btn btn-s btn-bl" onclick="hModal('anaQM')" style="margin-top:10px">Close</button>
+        </div>
+    </div>
+
+    <!-- TUTORIAL -->
+    <div class="mo" id="tutM">
+        <div class="mb" style="max-width:480px;text-align:center"><button class="mc" onclick="hModal('tutM')">✕</button>
+            <h3 id="tutT" style="color:var(--accent);margin-bottom:6px;font-size:1.1rem"></h3>
+            <p id="tutC" style="color:var(--text-1);margin-bottom:14px;font-size:.85rem;line-height:1.6"></p>
+            <div id="tutD" style="display:flex;justify-content:center;gap:5px;margin-bottom:12px"></div>
+            <div style="display:flex;gap:6px;justify-content:center">
+                <button class="btn btn-g btn-sm" id="tutPr" onclick="tutNav(-1)">← Prev</button>
+                <button class="btn btn-g btn-sm"
+                    onclick="hModal('tutM');localStorage.setItem('shimba_tut','1')">Skip</button>
+                <button class="btn btn-s btn-sm" id="tutNx" onclick="tutNav(1)">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HIDDEN -->
+    <input type="file" id="impInp" accept=".json" style="display:none" onchange="handleImp(event)">
+    <div class="tbox" id="tBox"></div>
+
+    <!-- ====== JAVASCRIPT ====== -->
+    <script>
+        /* ===== STATE ===== */
+        const $ = id => document.getElementById(id);
+        const S = {
+            engine: 'google', filters: [], fileTypes: [], manualEdit: false, curQ: '', sessCnt: 0, multiEng: false, region: '', safe: true,
+            undoS: [], redoS: [],
+            hist: ld('shimba_hist') || [], saved: ld('shimba_saved') || [],
+            ana: ld('shimba_ana') || { totalSearches: 0, enginesUsed: {}, opsUsed: {}, presetsUsed: 0 }
+        };
+
+        const ENGS = { google: 'https://www.google.com/search?q=', bing: 'https://www.bing.com/search?q=', duckduckgo: 'https://duckduckgo.com/?q=', yahoo: 'https://search.yahoo.com/search?p=', brave: 'https://search.brave.com/search?q=' };
+        const REG_P = { google: { us: '&gl=us', uk: '&gl=uk', de: '&gl=de', in: '&gl=in', jp: '&gl=jp' }, bing: { us: '&cc=us', uk: '&cc=gb', de: '&cc=de', in: '&cc=in', jp: '&cc=jp' }, duckduckgo: { us: '&kl=us-en', uk: '&kl=uk-en', de: '&kl=de-de', in: '&kl=in-en', jp: '&kl=jp-jp' }, yahoo: {}, brave: {} };
+        const SAFE_P = { google: '&safe=active', bing: '&adlt=strict', duckduckgo: '&kp=1', yahoo: '', brave: '&safesearch=strict' };
+        const OPS = [{ v: 'intitle', l: 'intitle:' }, { v: 'allintitle', l: 'allintitle:' }, { v: 'inurl', l: 'inurl:' }, { v: 'allinurl', l: 'allinurl:' }, { v: 'intext', l: 'intext:' }, { v: 'allintext', l: 'allintext:' }, { v: 'site', l: 'site:' }, { v: 'filetype', l: 'filetype:' }, { v: 'ext', l: 'ext:' }, { v: 'cache', l: 'cache:' }, { v: 'related', l: 'related:' }, { v: 'info', l: 'info:' }, { v: 'define', l: 'define:' }, { v: 'exact', l: '"exact"' }, { v: 'or', l: 'OR' }];
+        const PRESETS = { cybersecurity: { kw: '"cybersecurity" OR "penetration testing" OR "ethical hacking"', f: [{ op: 'intitle', val: 'security guide' }], ft: ['pdf'], dom: '.edu' }, programming: { kw: '"programming tutorial" OR "coding guide"', f: [{ op: 'intitle', val: 'documentation' }], ft: ['pdf'], dom: '' }, research: { kw: '"research paper" OR "academic study"', f: [{ op: 'inurl', val: 'paper' }], ft: ['pdf'], dom: '.edu' }, publicdocs: { kw: '"public document" OR "public record"', f: [{ op: 'intitle', val: 'index of' }], ft: [], dom: '.gov' }, indexof: { kw: '', f: [{ op: 'intitle', val: 'index of /' }], ft: [], dom: '' }, government: { kw: '"government report" OR "annual report"', f: [], ft: ['pdf'], dom: '.gov' }, education: { kw: '"course material" OR "lecture notes" OR "syllabus"', f: [{ op: 'site', val: '.edu' }], ft: ['pdf', 'ppt'], dom: '' }, techdocs: { kw: '"technical documentation" OR "API reference"', f: [{ op: 'inurl', val: 'docs' }], ft: ['pdf'], dom: '' }, database: { kw: '"database" OR "dataset"', f: [{ op: 'inurl', val: 'data' }], ft: ['csv', 'json', 'sql'], dom: '' }, api: { kw: '"API documentation" OR "REST API"', f: [{ op: 'inurl', val: 'api' }], ft: ['json'], dom: '' }, opensource: { kw: '"open source" OR "repository"', f: [{ op: 'site', val: 'github.com' }], ft: [], dom: '' }, books: { kw: '"ebook" OR "textbook" OR "manual"', f: [{ op: 'intitle', val: 'book' }], ft: ['pdf'], dom: '' } };
+        const R_DORKS = ['intitle:"index of" "parent directory" filetype:pdf', 'site:.edu "lecture notes" filetype:ppt', 'intitle:"index of" backup filetype:sql', 'site:.gov filetype:xls "budget"', '"security advisory" filetype:pdf site:.gov', 'inurl:readme.md site:github.com', '"annual report" filetype:pdf after:2023-01-01', 'inurl:/robots.txt "Disallow:"', '"Apache Server at" intitle:index.of', '"powered by" "phpBB" inurl:viewforum', 'site:pastebin.com "api_key"', 'intitle:dashboard inurl:grafana', '"configuration file" filetype:conf', 'intitle:"curriculum vitae" filetype:pdf', 'site:arxiv.org "deep learning" filetype:pdf'];
+        const SUGS = [{ t: 'intitle:"index of" filetype:pdf', c: 'Index' }, { t: 'site:.edu "research paper" filetype:pdf', c: 'Academic' }, { t: '"cybersecurity" site:.gov filetype:pdf', c: 'Security' }, { t: 'inurl:admin intitle:login', c: 'Admin' }, { t: 'site:github.com "awesome" list', c: 'GitHub' }, { t: 'filetype:sql "insert into"', c: 'DB' }, { t: 'site:stackoverflow.com "how to"', c: 'Q&A' }, { t: '"API key" filetype:env', c: 'Config' }, { t: 'site:docs.google.com "spreadsheet"', c: 'GDocs' }, { t: '"machine learning" filetype:pdf site:.edu', c: 'ML/AI' }];
+        const TUT_STEPS = [{ t: 'Welcome to Shimba\'s Dashboard! 🎉', c: 'A professional OSINT & Google Dorking tool for educational cyber research. Let\'s take a quick tour!' }, { t: '🔍 Dorking Engine', c: 'Enter keywords, add operator filters, select file types, set domain targets — the query builds automatically in real-time!' }, { t: '🌐 Multi-Engine Search', c: 'Switch between Google, Bing, DuckDuckGo, Yahoo & Brave. Enable multi-engine to search ALL at once!' }, { t: '🗄️ Archive & Social OSINT', c: 'Access cached pages via Google Cache, Wayback Machine, Archive.is. Search social profiles on LinkedIn, Twitter, GitHub & more.' }, { t: '🛡️ Recon & Threat Intel', c: 'NEW: WHOIS, DNS, IP Geo, Shodan, VirusTotal lookups. CVE search, Exploit-DB, and more security tools.' }, { t: '🔄 Encode/Decode Tools', c: 'URL encode/decode, Base64, Hex conversion — all built-in for quick data transformation.' }, { t: '💾 Save & Export', c: 'Save queries with tags, export/import JSON, search history, notes, templates — everything persists locally.' }, { t: '🎨 Customize', c: '7 accent colors, dark/light theme, region selector, keyboard shortcuts — make it yours!' }, { t: 'Ready to Go! 🚀', c: 'Start searching! Remember: use responsibly and legally. All results open safely in new tabs.' }];
+        let tutStep = 0;
+
+        /* ===== INIT ===== */
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTheme(ld('shimba_th') || 'dark');
+            setAccInit(ld('shimba_acc') || 'cyan');
+            addF(); renderHist(); renderSav(); loadNotes(); startClock();
+            document.addEventListener('keydown', e => {
+                const c = e.ctrlKey || e.metaKey;
+                if (c && e.key === 'k') { e.preventDefault(); $('mainKW').focus() }
+                if (c && e.key === 'Enter') { e.preventDefault(); execSearch() }
+                if (c && e.shiftKey && e.key.toLowerCase() === 'c') { e.preventDefault(); copyQ() }
+                if (c && e.key === 's') { e.preventDefault(); saveQ() }
+                if (c && e.shiftKey && e.key.toLowerCase() === 'x') { e.preventDefault(); clearAll() }
+                if (c && e.shiftKey && e.key.toLowerCase() === 'f') { e.preventDefault(); addF() }
+                if (c && e.key === 'd') { e.preventDefault(); tglTheme() }
+                if (c && e.shiftKey && e.key.toLowerCase() === 'r') { e.preventDefault(); randomDork() }
+                if (e.key === 'Escape') closeModals();
+                if (e.key === 'Enter' && document.activeElement === $('mainKW')) { e.preventDefault(); execSearch() }
+            });
+            document.addEventListener('click', e => { if (!e.target.closest('.si-w')) hideSug() });
+            if (!localStorage.getItem('shimba_tut')) setTimeout(showTut, 800);
+        });
+
+        /* ===== CLOCK ===== */
+        function startClock() { const u = () => { const d = new Date(); $('clock').textContent = d.toLocaleTimeString('en-US', { hour12: false }) }; u(); setInterval(u, 1000) }
+
+        /* ===== THEME ===== */
+        function tglTheme() { const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; applyTheme(t); sv('shimba_th', t) }
+        function applyTheme(t) { document.documentElement.setAttribute('data-theme', t); t === 'dark' ? $('thTgl').classList.add('on') : $('thTgl').classList.remove('on') }
+        function setAcc(el) { document.querySelectorAll('.cdt').forEach(d => d.classList.remove('on')); el.classList.add('on'); const c = el.dataset.c; document.documentElement.setAttribute('data-accent', c); sv('shimba_acc', c) }
+        function setAccInit(c) { document.documentElement.setAttribute('data-accent', c); document.querySelectorAll('.cdt').forEach(d => d.classList.toggle('on', d.dataset.c === c)) }
+        function setReg(el, r) { document.querySelectorAll('.rb').forEach(b => b.classList.remove('on')); el.classList.add('on'); S.region = r }
+
+        /* ===== ENGINE ===== */
+        function pickEng(el) { document.querySelectorAll('.eng-b').forEach(b => b.classList.remove('on')); el.classList.add('on'); S.engine = el.dataset.e; $('engLbl').textContent = S.engine.toUpperCase(); $('sE').textContent = cap(S.engine) }
+        function tglSw(el) { el.classList.toggle('on'); if (el.id === 'multiSw') S.multiEng = el.classList.contains('on'); if (el.id === 'safeSw') S.safe = el.classList.contains('on') }
+
+        /* ===== FILTERS ===== */
+        function addF(op = '', val = '') { S.filters.push({ id: uid(), op, val }); renderF(); buildQ() }
+        function remF(id) { S.filters = S.filters.filter(f => f.id !== id); renderF(); buildQ() }
+        function updF(id, k, v) { const f = S.filters.find(x => x.id === id); if (f) { f[k] = v; S.manualEdit = false; buildQ() } }
+        function renderF() { const b = $('fList'); b.innerHTML = ''; S.filters.forEach(f => { const d = document.createElement('div'); d.className = 'flt-i'; d.innerHTML = `<select onchange="updF(${f.id},'op',this.value)"><option value="">Select…</option>${OPS.map(o => `<option value="${o.v}"${f.op === o.v ? ' selected' : ''}>${o.l}</option>`).join('')}</select><input type="text" placeholder="Value…" value="${esc(f.val)}" oninput="updF(${f.id},'val',this.value)"><button class="flt-rm" onclick="remF(${f.id})">✕</button>`; b.appendChild(d) }); $('fCnt').textContent = S.filters.filter(f => f.op && f.val.trim()).length }
+
+        /* ===== FILE TYPES ===== */
+        function tglFT(el) { el.classList.toggle('on'); const t = el.dataset.f; el.classList.contains('on') ? (!S.fileTypes.includes(t) && S.fileTypes.push(t)) : S.fileTypes = S.fileTypes.filter(x => x !== t); buildQ() }
+        function setFTs(a) { S.fileTypes = [...a]; document.querySelectorAll('#ftChips .ch').forEach(c => c.classList.toggle('on', a.includes(c.dataset.f))) }
+        function setDom(d) { $('tgtDom').value = d; buildQ() }
+        function insQO(t) { const i = $('mainKW'); i.value = (i.value ? i.value + ' ' : '') + t; S.manualEdit = false; buildQ(); i.focus(); toast('Inserted', 'ok') }
+
+        /* ===== QUERY BUILDER ===== */
+        function buildQ() {
+            if (S.manualEdit) return;
+            const p = []; let oc = 0;
+            const kw = $('mainKW').value.trim(); if (kw) p.push(kw);
+            S.filters.forEach(f => { if (f.op && f.val.trim()) { oc++; f.op === 'exact' ? p.push(`"${f.val.trim()}"`) : f.op === 'or' ? p.push(`OR ${f.val.trim()}`) : p.push(`${f.op}:${f.val.trim()}`) } });
+            if (S.fileTypes.length) { oc += S.fileTypes.length; S.fileTypes.length === 1 ? p.push(`filetype:${S.fileTypes[0]}`) : p.push(`(${S.fileTypes.map(f => `filetype:${f}`).join(' OR ')})`) }
+            const dm = $('tgtDom').value.trim(); if (dm) { oc++; p.push(`site:${dm}`) }
+            const da = $('dA').value, db = $('dB').value; if (da) { oc++; p.push(`after:${da}`) } if (db) { oc++; p.push(`before:${db}`) }
+            const ex = $('exKW').value.trim(); if (ex) ex.split(',').forEach(e => { const t = e.trim(); if (t) { oc++; p.push(`-${t}`) } });
+            const wc = $('wcI').value.trim(); if (wc) p.push(wc);
+            const ar = $('arN').value; if (ar && +ar > 0) { oc++; p.push(`AROUND(${ar})`) }
+            const rn = $('rMin').value, rx = $('rMax').value; if (rn && rx) { oc++; p.push(`${rn}..${rx}`) }
+            const q = p.join(' '); S.curQ = q; pushUndo(q); renderPrev(q); updStats(oc, q); calcStr(q, oc)
+        }
+        function renderPrev(q) {
+            const el = $('qPrev'); if (!q) { el.innerHTML = '<span style="color:var(--text-2);font-style:italic">Generated query appears here...</span>'; return }
+            let h = esc(q); h = h.replace(/(intitle|allintitle|inurl|allinurl|intext|allintext|site|filetype|ext|cache|related|info|define|before|after):/g, '<span class="op">$1:</span>'); h = h.replace(/\b(OR|AND)\b/g, '<span class="op">$1</span>'); h = h.replace(/(AROUND\(\d+\))/g, '<span class="op">$1</span>'); h = h.replace(/"([^"]+)"/g, '<span class="st">"$1"</span>'); h = h.replace(/(?:^|\s)(-\S+)/g, ' <span class="ng">$1</span>'); h = h.replace(/(\d+\.\.\d+)/g, '<span class="nm">$1</span>'); el.innerHTML = h
+        }
+        function updStats(o, q) { $('sF').textContent = S.filters.filter(f => f.op && f.val.trim()).length; $('sO').textContent = o; $('sC').textContent = q.length }
+        function calcStr(q, o) {
+            let s = 0; if (q.length > 0) s += 10; if (q.length > 20) s += 10; if (q.length > 50) s += 10; if (o >= 1) s += 15; if (o >= 2) s += 10; if (o >= 3) s += 10; if (o >= 5) s += 5; if (S.fileTypes.length) s += 10; if ($('tgtDom').value.trim()) s += 10; if (q.includes('"')) s += 5; if (q.includes('-')) s += 5; s = Math.min(100, s);
+            const b = $('strB'), t = $('strT'), sc = $('strS'); b.style.width = s + '%'; sc.textContent = s + '/100'; $('sS').textContent = s + '%';
+            if (!s) { b.style.background = 'var(--text-2)'; t.textContent = 'No query'; t.style.color = 'var(--text-2)' }
+            else if (s < 30) { b.style.background = 'var(--danger)'; t.textContent = 'Basic'; t.style.color = 'var(--danger)' }
+            else if (s < 60) { b.style.background = 'var(--warning)'; t.textContent = 'Moderate'; t.style.color = 'var(--warning)' }
+            else if (s < 80) { b.style.background = 'var(--accent)'; t.textContent = 'Advanced'; t.style.color = 'var(--accent)' }
+            else { b.style.background = 'var(--neon-green)'; t.textContent = 'Expert'; t.style.color = 'var(--neon-green)' }
+        }
+        function onManE() { S.manualEdit = true; const el = $('qPrev'); S.curQ = el.textContent || el.innerText }
+
+        /* ===== UNDO/REDO ===== */
+        function pushUndo(q) { if (S.undoS[S.undoS.length - 1] !== q) { S.undoS.push(q); if (S.undoS.length > 50) S.undoS.shift(); S.redoS = [] } }
+        function undo() { if (S.undoS.length > 1) { S.redoS.push(S.undoS.pop()); const p = S.undoS[S.undoS.length - 1]; S.curQ = p; S.manualEdit = true; renderPrev(p); toast('Undo', 'in') } }
+        function redo() { if (S.redoS.length) { const n = S.redoS.pop(); S.undoS.push(n); S.curQ = n; S.manualEdit = true; renderPrev(n); toast('Redo', 'in') } }
+
+        /* ===== SEARCH ===== */
+        function execSearch() {
+            const q = S.curQ; if (!q || !q.trim()) { $('searchV').classList.add('show'); setTimeout(() => $('searchV').classList.remove('show'), 3e3); toast('Enter keywords first', 'er'); return }
+            if (S.multiEng) { Object.keys(ENGS).forEach(e => { window.open(mkURL(e, q), '_blank', 'noopener,noreferrer') }); toast(`Opened in all ${Object.keys(ENGS).length} engines!`, 'ok') }
+            else { window.open(mkURL(S.engine, q), '_blank', 'noopener,noreferrer'); toast(`Search opened (${cap(S.engine)})`, 'ok') }
+            addHist(q.trim()); S.sessCnt++; S.ana.totalSearches++; S.ana.enginesUsed[S.engine] = (S.ana.enginesUsed[S.engine] || 0) + 1;
+            S.filters.forEach(f => { if (f.op && f.val.trim()) S.ana.opsUsed[f.op] = (S.ana.opsUsed[f.op] || 0) + 1 }); svAna()
+        }
+        function mkURL(eng, q) { let u = ENGS[eng] + encodeURIComponent(q.trim()); if (S.region && REG_P[eng] && REG_P[eng][S.region]) u += REG_P[eng][S.region]; if (S.safe && SAFE_P[eng]) u += SAFE_P[eng]; return u }
+
+        /* ===== BATCH ===== */
+        function execBatch() {
+            const ls = $('batchQ').value.split('\n').map(l => l.trim()).filter(l => l); if (!ls.length) { toast('No queries', 'er'); return } if (ls.length > 10) { toast('Max 10 at once', 'er'); return }
+            ls.forEach((q, i) => setTimeout(() => window.open(mkURL(S.engine, q), '_blank', 'noopener,noreferrer'), i * 400)); ls.forEach(q => addHist(q)); toast(`Opening ${ls.length} searches...`, 'ok')
+        }
+        function addCurBatch() { if (!S.curQ) { toast('No query', 'er'); return } const t = $('batchQ'); t.value = (t.value ? t.value + '\n' : '') + S.curQ; toast('Added to batch', 'in') }
+
+        /* ===== ARCHIVE (M2) ===== */
+        function openArc(type) {
+            const u = $('arcURL').value.trim(); if (!u) { $('arcV').classList.add('show'); setTimeout(() => $('arcV').classList.remove('show'), 3e3); toast('Enter a URL', 'er'); return }
+            let t = ''; const e = encodeURIComponent(u);
+            switch (type) { case 'gcache': t = 'https://webcache.googleusercontent.com/search?q=cache:' + e; break; case 'wayback': t = 'https://web.archive.org/web/' + e; break; case 'archiveis': t = 'https://archive.is/newest/' + e; break; case '12ft': t = 'https://12ft.io/' + e; break }
+            window.open(t, '_blank', 'noopener,noreferrer'); toast('Archive opened', 'ok')
+        }
+
+        /* ===== SOCIAL OSINT (M3) ===== */
+        function socSearch(p) {
+            const kw = $('socKW').value.trim(); if (!kw) { $('socV').classList.add('show'); setTimeout(() => $('socV').classList.remove('show'), 3e3); toast('Enter search term', 'er'); return }
+            const e = encodeURIComponent(kw); let u = '';
+            switch (p) { case 'linkedin': u = `https://www.google.com/search?q=site:linkedin.com/in+${e}`; break; case 'twitter': u = `https://www.google.com/search?q=site:twitter.com+${e}`; break; case 'github': u = `https://github.com/search?q=${e}&type=repositories`; break; case 'reddit': u = `https://www.google.com/search?q=site:reddit.com+${e}`; break; case 'youtube': u = `https://www.youtube.com/results?search_query=${e}`; break; case 'facebook': u = `https://www.google.com/search?q=site:facebook.com+${e}`; break; case 'instagram': u = `https://www.google.com/search?q=site:instagram.com+${e}`; break; case 'telegram': u = `https://www.google.com/search?q=site:t.me+${e}`; break }
+            window.open(u, '_blank', 'noopener,noreferrer'); toast(`${cap(p)} search opened`, 'ok')
+        }
+
+        /* ===== RECON TOOLS (M4) ===== */
+        function reconGo(type) {
+            const t = $('reconT').value.trim(); if (!t) { $('reconV').classList.add('show'); setTimeout(() => $('reconV').classList.remove('show'), 3e3); toast('Enter target', 'er'); return }
+            const e = encodeURIComponent(t); let u = '';
+            switch (type) { case 'whois': u = `https://www.whois.com/whois/${e}`; break; case 'dns': u = `https://www.nslookup.io/dns-records/${e}`; break; case 'ip': u = `https://www.iplocation.net/?query=${e}`; break; case 'shodan': u = `https://www.shodan.io/search?query=${e}`; break; case 'vt': u = `https://www.virustotal.com/gui/search/${e}`; break; case 'crtsh': u = `https://crt.sh/?q=%25.${e}`; break; case 'headers': u = `https://securityheaders.com/?q=${e}`; break; case 'subdom': u = `https://www.google.com/search?q=site:*.${e}+-www.${e}`; break }
+            window.open(u, '_blank', 'noopener,noreferrer'); toast('Recon opened', 'ok')
+        }
+
+        /* ===== THREAT INTEL (M6) ===== */
+        function threatGo(type) {
+            const t = $('threatT').value.trim(); if (!t) { $('threatV').classList.add('show'); setTimeout(() => $('threatV').classList.remove('show'), 3e3); toast('Enter CVE/hash', 'er'); return }
+            const e = encodeURIComponent(t); let u = '';
+            switch (type) { case 'cve': u = `https://www.cvedetails.com/cve/${e}`; break; case 'edb': u = `https://www.exploit-db.com/search?q=${e}`; break; case 'nvd': u = `https://nvd.nist.gov/vuln/search/results?query=${e}`; break; case 'vt': u = `https://www.virustotal.com/gui/search/${e}`; break; case 'otx': u = `https://otx.alienvault.com/browse/global/pulses?q=${e}`; break; case 'paste': u = `https://www.google.com/search?q=site:pastebin.com+${e}`; break }
+            window.open(u, '_blank', 'noopener,noreferrer'); toast('Threat intel opened', 'ok')
+        }
+
+        /* ===== ENCODE/DECODE (M5) ===== */
+        function doEnc(t) { const i = $('encIn').value; if (!i) { toast('Enter text', 'er'); return } let o = ''; try { if (t === 'url') o = encodeURIComponent(i); else if (t === 'b64') o = btoa(unescape(encodeURIComponent(i))); else if (t === 'hex') o = [...i].map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join(' ') } catch (e) { o = 'Error: ' + e.message } $('encOut').value = o }
+        function doDec(t) { const i = $('encIn').value; if (!i) { toast('Enter text', 'er'); return } let o = ''; try { if (t === 'url') o = decodeURIComponent(i); else if (t === 'b64') o = decodeURIComponent(escape(atob(i))); else if (t === 'hex') o = i.split(' ').map(h => String.fromCharCode(parseInt(h, 16))).join('') } catch (e) { o = 'Error: ' + e.message } $('encOut').value = o }
+
+        /* ===== PRESETS ===== */
+        function ldPre(k) {
+            const p = PRESETS[k]; if (!p) return; $('mainKW').value = p.kw; $('tgtDom').value = p.dom || ''; $('exKW').value = ''; $('dA').value = ''; $('dB').value = ''; $('wcI').value = ''; $('arN').value = ''; $('rMin').value = ''; $('rMax').value = '';
+            S.filters = p.f.map(f => ({ id: uid(), op: f.op, val: f.val })); if (!S.filters.length) S.filters.push({ id: uid(), op: '', val: '' }); renderF(); setFTs(p.ft || []); S.manualEdit = false; buildQ(); S.ana.presetsUsed++; svAna(); toast(`Preset "${k}" loaded`, 'ok');
+            if (innerWidth < 900) $('qPrev').scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+        function ldTmpl(t) { $('mainKW').value = t.replace(/&quot;/g, '"'); resetUI(); S.manualEdit = false; buildQ(); toast('Template loaded — edit placeholders!', 'in') }
+
+        /* ===== SUGGESTIONS ===== */
+        function showSug() {
+            const v = $('mainKW').value.toLowerCase().trim(); const dd = $('sugDD'); if (!v || v.length < 2) { dd.classList.remove('show'); return }
+            const m = SUGS.filter(s => s.t.toLowerCase().includes(v)).slice(0, 6); if (!m.length) { dd.classList.remove('show'); return }
+            dd.innerHTML = m.map(s => `<div class="sugg-i" onclick="applySug('${esc(s.t)}')">${esc(s.t)}<span class="sc">${s.c}</span></div>`).join(''); dd.classList.add('show')
+        }
+        function hideSug() { $('sugDD').classList.remove('show') }
+        function applySug(t) { $('mainKW').value = t; hideSug(); S.manualEdit = false; buildQ() }
+
+        /* ===== VOICE ===== */
+        function tglVoice() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { toast('Voice not supported', 'er'); return }
+            const b = $('voiceB'); if (b.classList.contains('rec')) { b.classList.remove('rec'); return }
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition; const r = new SR(); r.lang = 'en-US'; r.interimResults = false; b.classList.add('rec'); r.start();
+            r.onresult = e => { $('mainKW').value = e.results[0][0].transcript; b.classList.remove('rec'); S.manualEdit = false; buildQ(); toast('Voice captured!', 'ok') }; r.onerror = () => { b.classList.remove('rec'); toast('Voice error', 'er') }; r.onend = () => b.classList.remove('rec')
+        }
+
+        /* ===== RANDOM ===== */
+        function randomDork() { $('mainKW').value = R_DORKS[Math.floor(Math.random() * R_DORKS.length)]; resetUI(); S.manualEdit = false; buildQ(); toast('Random dork!', 'ok') }
+
+        /* ===== COPY / DUP / CLEAR / SHARE / ANALYZE / OPTIMIZE / PRINT ===== */
+        function copyQ() { if (!S.curQ) { toast('No query', 'er'); return } copyTxt(S.curQ); toast('Copied!', 'ok') }
+        function dupQ() { if (!S.curQ) { toast('No query', 'er'); return } $('mainKW').value = S.curQ; resetUI(); S.manualEdit = false; buildQ(); toast('Duplicated', 'in') }
+        function clearAll() { $('mainKW').value = ''; $('exKW').value = ''; $('tgtDom').value = ''; $('dA').value = ''; $('dB').value = ''; $('wcI').value = ''; $('arN').value = ''; $('rMin').value = ''; $('rMax').value = ''; S.filters = [{ id: uid(), op: '', val: '' }]; S.fileTypes = []; S.manualEdit = false; S.curQ = ''; setFTs([]); renderF(); buildQ(); toast('Cleared', 'in') }
+        function resetUI() { S.filters = [{ id: uid(), op: '', val: '' }]; S.fileTypes = []; setFTs([]); $('tgtDom').value = ''; $('exKW').value = ''; $('dA').value = ''; $('dB').value = ''; $('wcI').value = ''; $('arN').value = ''; $('rMin').value = ''; $('rMax').value = ''; renderF() }
+        function shareQ() { if (!S.curQ) { toast('No query', 'er'); return } $('shareURL').value = mkURL(S.engine, S.curQ); $('sharePlain').value = S.curQ; sModal('shareM') }
+        function analyzeQ() {
+            if (!S.curQ) { toast('No query', 'er'); return } const q = S.curQ, a = [];
+            a.push(`<p><strong>📝 Query:</strong></p><pre style="background:var(--bg-3);padding:8px;border-radius:4px;font-size:.72rem;word-break:break-all;white-space:pre-wrap">${esc(q)}</pre>`);
+            a.push(`<p><strong>📏 Length:</strong> ${q.length} chars | <strong>Words:</strong> ${q.split(/\s+/).filter(w => w).length}</p>`);
+            const ops = ['intitle', 'inurl', 'intext', 'site', 'filetype', 'ext', 'before', 'after', 'cache', 'related']; const found = ops.filter(o => q.includes(o + ':'));
+            a.push(`<p><strong>🔧 Operators:</strong> ${found.length ? found.map(o => `<code style="color:var(--accent)">${o}</code>`).join(', ') : 'None'}</p>`);
+            if (q.includes('"')) a.push(`<p><strong>✅ Exact phrases:</strong> ${(q.match(/"[^"]+"/g) || []).length}</p>`);
+            if (q.includes('-')) a.push(`<p><strong>🚫 Exclusions:</strong> ${(q.match(/-\S+/g) || []).length}</p>`);
+            if (q.length > 256) a.push(`<p style="color:var(--warning)">⚠️ Long query — may be truncated.</p>`);
+            else a.push(`<p style="color:var(--neon-green)">✅ Good length.</p>`);
+            $('anaContent').innerHTML = a.join(''); sModal('anaQM')
+        }
+        function optimizeQ() { if (!S.curQ) { toast('No query', 'er'); return } let q = S.curQ.replace(/\s{2,}/g, ' ').trim(); const p = [...new Set(q.split(' '))]; q = p.join(' '); S.curQ = q; S.manualEdit = true; renderPrev(q); toast('Optimized!', 'ok') }
+        function printQ() { if (!S.curQ) { toast('No query', 'er'); return } const w = window.open('', '_blank'); w.document.write(`<html><head><title>Shimba Query</title><style>body{font-family:monospace;padding:32px;max-width:700px;margin:auto}h1{font-size:16px}pre{background:#f5f5f5;padding:16px;border-radius:6px;white-space:pre-wrap;word-break:break-all;font-size:13px;border:1px solid #ddd}.m{color:#666;font-size:11px;margin-top:12px}</style></head><body><h1>🔍 Shimba's Cyber Intelligence — Query</h1><pre>${esc(S.curQ)}</pre><div class="m"><p>Engine: ${cap(S.engine)}</p><p>Generated: ${new Date().toLocaleString()}</p><p>URL: ${mkURL(S.engine, S.curQ)}</p></div><p style="margin-top:20px;font-size:10px;color:#999">For Educational & Defensive Purposes Only</p></body></html>`); w.document.close(); w.print() }
+
+        /* ===== SAVE ===== */
+        function saveQ() { if (!S.curQ) { toast('No query', 'er'); return } $('savPrv').value = S.curQ; $('savNm').value = ''; $('savTags').value = ''; sModal('savM'); setTimeout(() => $('savNm').focus(), 150) }
+        function confirmSave() {
+            const nm = $('savNm').value.trim() || 'Untitled', q = $('savPrv').value, cat = $('savCat').value, tags = $('savTags').value.split(',').map(t => t.trim()).filter(t => t);
+            S.saved.unshift({ id: uid(), name: nm, query: q, engine: S.engine, category: cat, tags, date: new Date().toISOString() }); if (S.saved.length > 100) S.saved = S.saved.slice(0, 100); sv('shimba_saved', S.saved); renderSav(); hModal('savM'); toast(`"${nm}" saved!`, 'ok')
+        }
+        function ldSav(id) { const s = S.saved.find(x => x.id === id); if (s) { $('mainKW').value = s.query; if (s.engine) { S.engine = s.engine; document.querySelectorAll('.eng-b').forEach(b => b.classList.toggle('on', b.dataset.e === s.engine)); $('engLbl').textContent = s.engine.toUpperCase(); $('sE').textContent = cap(s.engine) } resetUI(); S.manualEdit = false; buildQ(); toast('Loaded', 'in') } }
+        function delSav(id) { S.saved = S.saved.filter(x => x.id !== id); sv('shimba_saved', S.saved); renderSav(); toast('Deleted', 'in') }
+        function clrSav() { S.saved = []; sv('shimba_saved', []); renderSav(); toast('Cleared', 'in') }
+        function renderSav() {
+            const b = $('savList'), flt = ($('saveFlt')?.value || '').toLowerCase(); const ls = S.saved.filter(s => !flt || s.name.toLowerCase().includes(flt) || s.query.toLowerCase().includes(flt));
+            if (!ls.length) { b.innerHTML = '<div class="em">No saved queries</div>'; return }
+            b.innerHTML = ls.map(s => `<div class="li" onclick="ldSav(${s.id})"><span class="qt" title="${esc(s.query)}"><b>${esc(s.name)}</b> — ${esc(s.query)}</span><div class="la"><button onclick="event.stopPropagation();ldSav(${s.id})">▶</button><button onclick="event.stopPropagation();delSav(${s.id})">🗑</button></div></div>`).join('')
+        }
+
+        /* ===== HISTORY ===== */
+        function addHist(q) { S.hist = S.hist.filter(h => h.query !== q); S.hist.unshift({ id: uid(), query: q, engine: S.engine, date: new Date().toISOString() }); if (S.hist.length > 50) S.hist = S.hist.slice(0, 50); sv('shimba_hist', S.hist); renderHist() }
+        function renderHist() {
+            const b = $('histList'), flt = ($('histFlt')?.value || '').toLowerCase(); const ls = S.hist.filter(h => !flt || h.query.toLowerCase().includes(flt));
+            if (!ls.length) { b.innerHTML = '<div class="em">No history</div>'; return }
+            b.innerHTML = ls.map(h => `<div class="li" onclick="ldHist(${h.id})"><span class="qt" title="${esc(h.query)}">${esc(h.query)}</span><span class="tm">${relT(h.date)}</span><div class="la"><button onclick="event.stopPropagation();ldHist(${h.id})">▶</button><button onclick="event.stopPropagation();delHist(${h.id})">✕</button></div></div>`).join('')
+        }
+        function ldHist(id) { const h = S.hist.find(x => x.id === id); if (h) { $('mainKW').value = h.query; resetUI(); S.manualEdit = false; buildQ(); toast('Loaded', 'in') } }
+        function delHist(id) { S.hist = S.hist.filter(x => x.id !== id); sv('shimba_hist', S.hist); renderHist() }
+        function clrHist() { S.hist = []; sv('shimba_hist', []); renderHist(); toast('History cleared', 'in') }
+
+        /* ===== NOTES ===== */
+        function loadNotes() { $('notesA').value = localStorage.getItem('shimba_notes') || '' }
+        function savN() { localStorage.setItem('shimba_notes', $('notesA').value) }
+        function clrNotes() { $('notesA').value = ''; localStorage.removeItem('shimba_notes'); toast('Notes cleared', 'in') }
+        function expNotes() { const n = $('notesA').value; if (!n) { toast('No notes', 'er'); return } const b = new Blob([n], { type: 'text/plain' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `shimba-notes-${new Date().toISOString().slice(0, 10)}.txt`; a.click(); toast('Notes exported', 'ok') }
+
+        /* ===== IMPORT/EXPORT ===== */
+        function exportJ() { const d = { version: '4.0', app: 'Shimba Cyber Intelligence Dashboard', exported: new Date().toISOString(), saved: S.saved, history: S.hist, analytics: S.ana, notes: $('notesA').value }; const b = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `shimba-export-${new Date().toISOString().slice(0, 10)}.json`; a.click(); toast('Exported!', 'ok') }
+        function importJ() { $('impInp').click() }
+        function handleImp(ev) {
+            const f = ev.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = e => {
+                try {
+                    const d = JSON.parse(e.target.result); let iS = 0, iH = 0;
+                    if (d.saved) { const ids = new Set(S.saved.map(s => s.id)); const nw = d.saved.filter(s => !ids.has(s.id)); S.saved = [...nw, ...S.saved]; sv('shimba_saved', S.saved); renderSav(); iS = nw.length }
+                    if (d.history) { const ids = new Set(S.hist.map(h => h.id)); const nw = d.history.filter(h => !ids.has(h.id)); S.hist = [...nw, ...S.hist]; sv('shimba_hist', S.hist); renderHist(); iH = nw.length }
+                    if (d.notes) { $('notesA').value = d.notes; savN() }
+                    toast(`Imported ${iS} saved, ${iH} history`, 'ok')
+                } catch (e) { toast('Invalid JSON', 'er') }
+            }; r.readAsText(f); ev.target.value = ''
+        }
+
+        /* ===== ANALYTICS ===== */
+        function svAna() { sv('shimba_ana', S.ana) }
+        function showAna() {
+            $('aTS').textContent = S.ana.totalSearches; $('aSQ').textContent = S.saved.length; $('aEU').textContent = Object.keys(S.ana.enginesUsed).length;
+            const avg = S.hist.length ? Math.round(S.hist.reduce((a, h) => a + h.query.length, 0) / S.hist.length) : 0; $('aAL').textContent = avg; $('aPU').textContent = S.ana.presetsUsed; $('aSS').textContent = S.sessCnt;
+            const ops = Object.entries(S.ana.opsUsed).sort((a, b) => b[1] - a[1]).slice(0, 8), mx = ops.length ? ops[0][1] : 1;
+            $('opChart').innerHTML = ops.length ? ops.map(([o, c]) => `<div style="display:flex;align-items:center;gap:5px;font-size:.66rem"><span style="width:60px;text-align:right;color:var(--text-2);font-family:var(--mono)">${o}:</span><div style="flex:1;height:12px;background:var(--bg-3);border-radius:2px;overflow:hidden"><div style="height:100%;width:${(c / mx) * 100}%;background:linear-gradient(90deg,var(--accent),var(--neon-green));border-radius:2px"></div></div><span style="width:22px;color:var(--accent);font-weight:700;font-family:var(--mono)">${c}</span></div>`).join('') : '<div style="font-size:.68rem;color:var(--text-2)">No data yet</div>'
+        }
+
+        /* ===== TUTORIAL ===== */
+        function showTut() { tutStep = 0; renderTut(); sModal('tutM') }
+        function tutNav(d) { tutStep += d; if (tutStep < 0) tutStep = 0; if (tutStep >= TUT_STEPS.length) { hModal('tutM'); localStorage.setItem('shimba_tut', '1'); return } renderTut() }
+        function renderTut() { const s = TUT_STEPS[tutStep]; $('tutT').textContent = s.t; $('tutC').textContent = s.c; $('tutD').innerHTML = TUT_STEPS.map((_, i) => `<div style="width:7px;height:7px;border-radius:50%;background:${i === tutStep ? 'var(--accent)' : 'var(--bg-3)'}"></div>`).join(''); $('tutPr').style.visibility = tutStep === 0 ? 'hidden' : 'visible'; $('tutNx').textContent = tutStep === TUT_STEPS.length - 1 ? '🎉 Start!' : 'Next →' }
+
+        /* ===== UI HELPERS ===== */
+        function swTab(btn, pid) { const p = btn.closest('.cd'); p.querySelectorAll('.tb').forEach(b => b.classList.remove('on')); btn.classList.add('on'); p.querySelectorAll('.tp').forEach(t => t.classList.remove('on')); $(pid).classList.add('on') }
+        function tglColl(h) { h.classList.toggle('open'); h.nextElementSibling.classList.toggle('open') }
+        function sModal(id) { $(id).classList.add('open'); if (id === 'anaM') showAna() }
+        function hModal(id) { $(id).classList.remove('open') }
+        function closeModals() { document.querySelectorAll('.mo.open').forEach(m => m.classList.remove('open')) }
+        document.addEventListener('click', e => { if (e.target.classList.contains('mo')) e.target.classList.remove('open') });
+
+        function toast(m, t = 'in') { const b = $('tBox'), el = document.createElement('div'); el.className = `tst ${t}`; const ic = { ok: '✅', er: '❌', in: 'ℹ️' }; el.innerHTML = `<span>${ic[t] || 'ℹ️'}</span><span>${m}</span>`; b.appendChild(el); setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateX(20px)'; el.style.transition = 'all .3s'; setTimeout(() => el.remove(), 300) }, 3200) }
+        function copyTxt(t) { if (navigator.clipboard) navigator.clipboard.writeText(t).catch(() => fbCopy(t)); else fbCopy(t) }
+        function fbCopy(t) { const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta) }
+        function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML }
+        function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1) }
+        function uid() { return Date.now() + Math.random() }
+        function sv(k, v) { try { localStorage.setItem(k, JSON.stringify(v)) } catch (e) { } }
+        function ld(k) { try { return JSON.parse(localStorage.getItem(k)) } catch (e) { return null } }
+        function relT(d) { const diff = Date.now() - new Date(d).getTime(), m = Math.floor(diff / 6e4); if (m < 1) return 'now'; if (m < 60) return m + 'm'; const h = Math.floor(m / 60); if (h < 24) return h + 'h'; const dy = Math.floor(h / 24); return dy < 7 ? dy + 'd' : new Date(d).toLocaleDateString() }
+    </script>
+</body>
+
+</html>
