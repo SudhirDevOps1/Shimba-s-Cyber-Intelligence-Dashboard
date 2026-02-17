@@ -1,0 +1,3392 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shimba's Cyber Intelligence Dashboard — Advanced OSINT Suite</title>
+    <style>
+        /* ============================================
+   CSS VARIABLES & THEME SYSTEM
+   ============================================ */
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-card: #1a2332;
+            --bg-card-hover: #1f2b3d;
+            --bg-input: #0d1520;
+            --border-color: #1e3a5f;
+            --border-glow: #00d4ff;
+            --text-primary: #e0e8f0;
+            --text-secondary: #8899aa;
+            --text-muted: #556677;
+            --neon-blue: #00d4ff;
+            --neon-green: #00ff88;
+            --neon-purple: #a855f7;
+            --neon-orange: #ff6b35;
+            --neon-red: #ff3366;
+            --neon-yellow: #ffd600;
+            --neon-cyan: #06b6d4;
+            --neon-pink: #ec4899;
+            --accent-gradient: linear-gradient(135deg, #00d4ff, #00ff88);
+            --danger-gradient: linear-gradient(135deg, #ff3366, #ff6b35);
+            --purple-gradient: linear-gradient(135deg, #a855f7, #ec4899);
+            --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --glow-blue: 0 0 20px rgba(0, 212, 255, 0.3);
+            --glow-green: 0 0 20px rgba(0, 255, 136, 0.3);
+            --glow-purple: 0 0 20px rgba(168, 85, 247, 0.3);
+            --scrollbar-thumb: #1e3a5f;
+            --scrollbar-track: #0a0e17;
+            --tooltip-bg: #1a2332;
+            --overlay-bg: rgba(0, 0, 0, 0.75);
+            --transition-speed: 0.3s;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f0f4f8;
+            --bg-secondary: #e2e8f0;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f7fafc;
+            --bg-input: #edf2f7;
+            --border-color: #cbd5e0;
+            --border-glow: #0077cc;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --text-muted: #a0aec0;
+            --neon-blue: #0077cc;
+            --neon-green: #00a854;
+            --neon-purple: #7c3aed;
+            --neon-orange: #e05500;
+            --neon-red: #dc2626;
+            --neon-yellow: #ca8a04;
+            --neon-cyan: #0891b2;
+            --neon-pink: #db2777;
+            --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            --glow-blue: 0 0 15px rgba(0, 119, 204, 0.15);
+            --glow-green: 0 0 15px rgba(0, 168, 84, 0.15);
+            --glow-purple: 0 0 15px rgba(124, 58, 237, 0.15);
+            --scrollbar-thumb: #cbd5e0;
+            --scrollbar-track: #f0f4f8;
+            --tooltip-bg: #2d3748;
+            --overlay-bg: rgba(0, 0, 0, 0.4);
+        }
+
+        /* ============================================
+   RESET & BASE
+   ============================================ */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: background var(--transition-speed), color var(--transition-speed);
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-blue);
+        }
+
+        /* ============================================
+   ANIMATED BACKGROUND GRID
+   ============================================ */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        [data-theme="light"] body::before {
+            opacity: 0;
+        }
+
+        /* ============================================
+   HEADER
+   ============================================ */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.85rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--accent-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #0a0e17;
+            box-shadow: var(--glow-blue);
+            animation: logoPulse 3s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes logoPulse {
+
+            0%,
+            100% {
+                box-shadow: var(--glow-blue);
+                transform: scale(1);
+            }
+
+            50% {
+                box-shadow: 0 0 35px rgba(0, 212, 255, 0.6);
+                transform: scale(1.05);
+            }
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-subtitle {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 0.25rem;
+            background: var(--bg-input);
+            border-radius: 10px;
+            padding: 0.2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-tab {
+            padding: 0.4rem 0.85rem;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            color: var(--text-primary);
+            background: var(--bg-card);
+        }
+
+        .nav-tab.active {
+            background: var(--accent-gradient);
+            color: #0a0e17;
+            box-shadow: var(--glow-blue);
+        }
+
+        /* Theme & Header Buttons */
+        .theme-toggle,
+        .header-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.45rem 0.85rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all var(--transition-speed);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-family: inherit;
+        }
+
+        .theme-toggle:hover,
+        .header-btn:hover {
+            border-color: var(--neon-blue);
+            box-shadow: var(--glow-blue);
+        }
+
+        .header-btn {
+            color: var(--text-secondary);
+        }
+
+        .header-btn:hover {
+            color: var(--neon-green);
+            border-color: var(--neon-green);
+        }
+
+        /* ============================================
+   MAIN LAYOUT
+   ============================================ */
+        .main-container {
+            max-width: 1480px;
+            margin: 0 auto;
+            padding: 1.25rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Tab Panels */
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* ============================================
+   CARD COMPONENT
+   ============================================ */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.35rem;
+            box-shadow: var(--card-shadow);
+            transition: all var(--transition-speed);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity var(--transition-speed);
+        }
+
+        .card:hover {
+            border-color: rgba(0, 212, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow), var(--glow-blue);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card.purple-accent::before {
+            background: var(--purple-gradient);
+        }
+
+        .card.green-accent::before {
+            background: linear-gradient(135deg, #00ff88, #06b6d4);
+        }
+
+        .card.orange-accent::before {
+            background: linear-gradient(135deg, #ff6b35, #ffd600);
+        }
+
+        .card.red-accent::before {
+            background: var(--danger-gradient);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            margin-bottom: 1.1rem;
+            padding-bottom: 0.7rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.05rem;
+            flex-shrink: 0;
+        }
+
+        .card-icon.blue {
+            background: rgba(0, 212, 255, 0.12);
+            color: var(--neon-blue);
+        }
+
+        .card-icon.green {
+            background: rgba(0, 255, 136, 0.12);
+            color: var(--neon-green);
+        }
+
+        .card-icon.purple {
+            background: rgba(168, 85, 247, 0.12);
+            color: var(--neon-purple);
+        }
+
+        .card-icon.orange {
+            background: rgba(255, 107, 53, 0.12);
+            color: var(--neon-orange);
+        }
+
+        .card-icon.red {
+            background: rgba(255, 51, 102, 0.12);
+            color: var(--neon-red);
+        }
+
+        .card-icon.yellow {
+            background: rgba(255, 214, 0, 0.12);
+            color: var(--neon-yellow);
+        }
+
+        .card-icon.cyan {
+            background: rgba(6, 182, 212, 0.12);
+            color: var(--neon-cyan);
+        }
+
+        .card-icon.pink {
+            background: rgba(236, 72, 153, 0.12);
+            color: var(--neon-pink);
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .card-desc {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        /* ============================================
+   FORM ELEMENTS
+   ============================================ */
+        .input-group {
+            margin-bottom: 0.9rem;
+        }
+
+        .input-label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.35rem;
+            letter-spacing: 0.5px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.88rem;
+            font-family: inherit;
+            transition: all var(--transition-speed);
+            outline: none;
+        }
+
+        .input-field:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.12);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-muted);
+        }
+
+        textarea.input-field {
+            resize: vertical;
+            min-height: 70px;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        select.input-field {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238899aa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 2rem;
+        }
+
+        /* ============================================
+   BUTTONS
+   ============================================ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            padding: 0.55rem 1.1rem;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: #0a0e17;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.25);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 25px rgba(0, 212, 255, 0.45);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--neon-blue);
+            color: var(--neon-blue);
+        }
+
+        .btn-danger {
+            background: var(--danger-gradient);
+            color: #fff;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.35);
+        }
+
+        .btn-green {
+            background: rgba(0, 255, 136, 0.12);
+            border: 1px solid rgba(0, 255, 136, 0.25);
+            color: var(--neon-green);
+        }
+
+        .btn-green:hover {
+            background: rgba(0, 255, 136, 0.22);
+            box-shadow: var(--glow-green);
+        }
+
+        .btn-blue {
+            background: rgba(0, 212, 255, 0.12);
+            border: 1px solid rgba(0, 212, 255, 0.25);
+            color: var(--neon-blue);
+        }
+
+        .btn-blue:hover {
+            background: rgba(0, 212, 255, 0.22);
+            box-shadow: var(--glow-blue);
+        }
+
+        .btn-purple {
+            background: rgba(168, 85, 247, 0.12);
+            border: 1px solid rgba(168, 85, 247, 0.25);
+            color: var(--neon-purple);
+        }
+
+        .btn-purple:hover {
+            background: rgba(168, 85, 247, 0.22);
+            box-shadow: var(--glow-purple);
+        }
+
+        .btn-orange {
+            background: rgba(255, 107, 53, 0.12);
+            border: 1px solid rgba(255, 107, 53, 0.25);
+            color: var(--neon-orange);
+        }
+
+        .btn-orange:hover {
+            background: rgba(255, 107, 53, 0.22);
+        }
+
+        .btn-yellow {
+            background: rgba(255, 214, 0, 0.12);
+            border: 1px solid rgba(255, 214, 0, 0.25);
+            color: var(--neon-yellow);
+        }
+
+        .btn-yellow:hover {
+            background: rgba(255, 214, 0, 0.22);
+        }
+
+        .btn-cyan {
+            background: rgba(6, 182, 212, 0.12);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            color: var(--neon-cyan);
+        }
+
+        .btn-cyan:hover {
+            background: rgba(6, 182, 212, 0.22);
+        }
+
+        .btn-pink {
+            background: rgba(236, 72, 153, 0.12);
+            border: 1px solid rgba(236, 72, 153, 0.25);
+            color: var(--neon-pink);
+        }
+
+        .btn-pink:hover {
+            background: rgba(236, 72, 153, 0.22);
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.75rem;
+            font-size: 0.76rem;
+            border-radius: 8px;
+        }
+
+        .btn-xs {
+            padding: 0.28rem 0.55rem;
+            font-size: 0.7rem;
+            border-radius: 6px;
+        }
+
+        .btn-lg {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.92rem;
+            border-radius: 12px;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+
+        /* ============================================
+   QUERY PREVIEW BOX
+   ============================================ */
+        .query-preview {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem 1.15rem;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.86rem;
+            color: var(--neon-green);
+            word-break: break-all;
+            min-height: 48px;
+            transition: all var(--transition-speed);
+            line-height: 1.8;
+        }
+
+        .query-preview:hover {
+            border-color: var(--neon-green);
+        }
+
+        .query-preview .op {
+            color: var(--neon-blue);
+            font-weight: 700;
+        }
+
+        .query-preview .val {
+            color: var(--neon-green);
+        }
+
+        .query-preview .kw {
+            color: var(--neon-orange);
+        }
+
+        .query-preview .empty-msg {
+            color: var(--text-muted);
+            font-style: italic;
+            font-family: inherit;
+        }
+
+        /* ============================================
+   FILTER ROWS
+   ============================================ */
+        .filter-row {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.45rem 0.65rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 0.45rem;
+            flex-wrap: wrap;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .filter-row select,
+        .filter-row input {
+            padding: 0.38rem 0.55rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color var(--transition-speed);
+        }
+
+        .filter-row select:focus,
+        .filter-row input:focus {
+            border-color: var(--neon-blue);
+        }
+
+        .filter-row input {
+            flex: 1;
+            min-width: 110px;
+        }
+
+        .filter-row .remove-filter {
+            background: rgba(255, 51, 102, 0.12);
+            border: none;
+            color: var(--neon-red);
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-speed);
+            flex-shrink: 0;
+        }
+
+        .filter-row .remove-filter:hover {
+            background: rgba(255, 51, 102, 0.3);
+        }
+
+        /* ============================================
+   FILETYPE GRID & CHECKBOX
+   ============================================ */
+        .filetype-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+            gap: 0.35rem;
+        }
+
+        .ft-check {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.55rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            user-select: none;
+        }
+
+        .ft-check:hover {
+            border-color: var(--neon-blue);
+        }
+
+        .ft-check input {
+            display: none;
+        }
+
+        .ft-check.active {
+            border-color: var(--neon-blue);
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--neon-blue);
+        }
+
+        /* ============================================
+   PRESET GRID
+   ============================================ */
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .preset-btn {
+            padding: 0.6rem 0.85rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            background: rgba(0, 255, 136, 0.04);
+            transform: translateY(-1px);
+        }
+
+        .preset-btn .p-icon {
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+
+        /* ============================================
+   HISTORY ITEMS
+   ============================================ */
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.55rem 0.75rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 0.35rem;
+            font-size: 0.8rem;
+            transition: all var(--transition-speed);
+            gap: 0.5rem;
+        }
+
+        .history-item:hover {
+            border-color: var(--neon-blue);
+        }
+
+        .history-query {
+            font-family: 'Consolas', monospace;
+            color: var(--neon-green);
+            word-break: break-all;
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .history-query:hover {
+            text-decoration: underline;
+        }
+
+        .history-time {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            flex-shrink: 0;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 0.25rem;
+            flex-shrink: 0;
+        }
+
+        /* ============================================
+   QUICK OPS
+   ============================================ */
+        .quick-ops-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+
+        .quick-op-chip {
+            padding: 0.28rem 0.6rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--neon-blue);
+            font-size: 0.74rem;
+            font-family: 'Consolas', monospace;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+        }
+
+        .quick-op-chip:hover {
+            border-color: var(--neon-blue);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        /* ============================================
+   ANALYTICS BAR
+   ============================================ */
+        .analytics-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            padding: 0.5rem 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-chip {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-chip .stat-val {
+            font-weight: 700;
+            color: var(--neon-blue);
+        }
+
+        /* ============================================
+   TOAST NOTIFICATIONS
+   ============================================ */
+        .toast-container {
+            position: fixed;
+            top: 75px;
+            right: 16px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .toast {
+            padding: 0.7rem 1.15rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.82rem;
+            box-shadow: var(--card-shadow);
+            animation: toastIn 0.35s ease, toastOut 0.35s ease 2.6s forwards;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            max-width: 340px;
+        }
+
+        .toast.success {
+            border-left: 3px solid var(--neon-green);
+        }
+
+        .toast.error {
+            border-left: 3px solid var(--neon-red);
+        }
+
+        .toast.info {
+            border-left: 3px solid var(--neon-blue);
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes toastOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+        }
+
+        /* ============================================
+   MODAL / OVERLAY
+   ============================================ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--overlay-bg);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            backdrop-filter: blur(6px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.75rem;
+            max-width: 720px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: var(--card-shadow);
+            animation: modalIn 0.3s ease;
+        }
+
+        .modal-content.wide {
+            max-width: 900px;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.15rem;
+            padding-bottom: 0.7rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: color var(--transition-speed);
+            padding: 0.25rem;
+        }
+
+        .modal-close:hover {
+            color: var(--neon-red);
+        }
+
+        /* ============================================
+   OSINT REFERENCE CARDS
+   ============================================ */
+        .ref-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            transition: all var(--transition-speed);
+        }
+
+        .ref-card:hover {
+            border-color: rgba(0, 212, 255, 0.25);
+        }
+
+        .ref-card-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--neon-blue);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .ref-card p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.35rem;
+            line-height: 1.55;
+        }
+
+        .ref-card code {
+            background: rgba(0, 212, 255, 0.08);
+            color: var(--neon-green);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            font-family: 'Consolas', monospace;
+        }
+
+        .ref-card ul {
+            margin: 0.35rem 0 0.35rem 1.2rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .ref-card ul li {
+            margin-bottom: 0.2rem;
+        }
+
+        /* Table inside reference */
+        .ref-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .ref-table th,
+        .ref-table td {
+            text-align: left;
+            padding: 0.5rem 0.65rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .ref-table th {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ref-table td {
+            color: var(--text-secondary);
+        }
+
+        .ref-table code {
+            background: rgba(0, 212, 255, 0.08);
+            color: var(--neon-blue);
+            padding: 0.12rem 0.35rem;
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.78rem;
+        }
+
+        /* ============================================
+   HOW-TO GUIDE STYLES
+   ============================================ */
+        .guide-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .guide-section:last-child {
+            border-bottom: none;
+        }
+
+        .guide-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--neon-blue);
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .guide-step {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.65rem;
+            align-items: flex-start;
+        }
+
+        .guide-num {
+            background: var(--accent-gradient);
+            color: #0a0e17;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 800;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .guide-text {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .guide-text strong {
+            color: var(--text-primary);
+        }
+
+        .guide-text code {
+            background: rgba(0, 212, 255, 0.08);
+            color: var(--neon-green);
+            padding: 0.1rem 0.35rem;
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.78rem;
+        }
+
+        .guide-tip {
+            background: rgba(0, 255, 136, 0.06);
+            border: 1px solid rgba(0, 255, 136, 0.15);
+            border-radius: 10px;
+            padding: 0.65rem 0.9rem;
+            font-size: 0.8rem;
+            color: var(--neon-green);
+            margin-top: 0.5rem;
+            display: flex;
+            gap: 0.4rem;
+            align-items: flex-start;
+        }
+
+        .guide-warn {
+            background: rgba(255, 51, 102, 0.06);
+            border: 1px solid rgba(255, 51, 102, 0.15);
+            border-radius: 10px;
+            padding: 0.65rem 0.9rem;
+            font-size: 0.8rem;
+            color: var(--neon-red);
+            margin-top: 0.5rem;
+        }
+
+        /* OSINT Tool Card */
+        .tool-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            transition: all var(--transition-speed);
+        }
+
+        .tool-card:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .tool-name {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            margin-bottom: 0.35rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .tool-desc {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .tool-features {
+            margin-top: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+        }
+
+        .tool-tag {
+            padding: 0.15rem 0.45rem;
+            background: rgba(0, 212, 255, 0.06);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            border-radius: 4px;
+            font-size: 0.68rem;
+            color: var(--neon-blue);
+        }
+
+        /* ============================================
+   SECTION DIVIDERS
+   ============================================ */
+        .section-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .section-gap {
+            margin-top: 1.25rem;
+        }
+
+        /* ============================================
+   FOOTER
+   ============================================ */
+        .footer {
+            text-align: center;
+            padding: 1.75rem 1rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            margin-top: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer .disclaimer {
+            display: inline-block;
+            padding: 0.45rem 1.35rem;
+            border: 1px solid rgba(255, 51, 102, 0.25);
+            border-radius: 8px;
+            background: rgba(255, 51, 102, 0.04);
+            color: var(--neon-red);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.45rem;
+        }
+
+        /* ============================================
+   SCROLLABLE CONTAINERS
+   ============================================ */
+        .scroll-y {
+            max-height: 260px;
+            overflow-y: auto;
+            padding-right: 0.2rem;
+        }
+
+        .scroll-y-lg {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.2rem;
+        }
+
+        /* ============================================
+   UTILITY
+   ============================================ */
+        .hidden {
+            display: none !important;
+        }
+
+        .mt-1 {
+            margin-top: 0.5rem;
+        }
+
+        .mt-2 {
+            margin-top: 1rem;
+        }
+
+        .mb-1 {
+            margin-bottom: 0.5rem;
+        }
+
+        .flex-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mono {
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        .gap-1 {
+            gap: 1rem;
+        }
+
+        .gap-sm {
+            gap: 0.5rem;
+        }
+
+        /* ============================================
+   RESPONSIVE
+   ============================================ */
+        @media (max-width: 1100px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-3 {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .grid-4 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.65rem 0.85rem;
+            }
+
+            .header-title {
+                font-size: 1rem;
+            }
+
+            .main-container {
+                padding: 0.75rem;
+            }
+
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-4 {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .preset-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .nav-tabs {
+                overflow-x: auto;
+            }
+
+            .modal-content {
+                padding: 1.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .preset-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .analytics-bar {
+                flex-direction: column;
+            }
+
+            .nav-tabs {
+                gap: 0.15rem;
+            }
+
+            .nav-tab {
+                padding: 0.35rem 0.6rem;
+                font-size: 0.72rem;
+            }
+        }
+
+        /* ============================================
+   KBD ELEMENT
+   ============================================ */
+        kbd {
+            background: var(--bg-input);
+            padding: 0.12rem 0.4rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            font-size: 0.75rem;
+            font-family: 'Consolas', monospace;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ============================================
+     MODAL: SAVE PRESET
+     ============================================ -->
+    <div class="modal-overlay" id="savePresetModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">💾 Save Custom Preset</span>
+                <button class="modal-close" onclick="closeSaveModal()">&times;</button>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Preset Name</label>
+                <input type="text" class="input-field" id="presetNameInput" placeholder="e.g., My Security Research">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Query</label>
+                <textarea class="input-field" id="presetQueryInput" rows="3" readonly></textarea>
+            </div>
+            <div class="btn-group mt-1">
+                <button class="btn btn-primary" onclick="confirmSavePreset()">💾 Save Preset</button>
+                <button class="btn btn-secondary" onclick="closeSaveModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+     MODAL: IMPORT/EXPORT
+     ============================================ -->
+    <div class="modal-overlay" id="importExportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">📦 Import / Export Queries</span>
+                <button class="modal-close" onclick="closeImportExportModal()">&times;</button>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Export (JSON)</label>
+                <textarea class="input-field" id="exportArea" rows="5" readonly></textarea>
+                <button class="btn btn-blue btn-sm mt-1" onclick="copyExportData()">📋 Copy to Clipboard</button>
+            </div>
+            <div class="input-group mt-2">
+                <label class="input-label">Import (Paste JSON)</label>
+                <textarea class="input-field" id="importArea" rows="5"
+                    placeholder='Paste exported JSON here...'></textarea>
+                <button class="btn btn-green btn-sm mt-1" onclick="importData()">📥 Import</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+     MODAL: HOW TO USE GUIDE
+     ============================================ -->
+    <div class="modal-overlay" id="helpModal">
+        <div class="modal-content wide">
+            <div class="modal-header">
+                <span class="modal-title">📖 Complete User Guide — How to Use This Dashboard</span>
+                <button class="modal-close" onclick="closeHelpModal()">&times;</button>
+            </div>
+            <div class="scroll-y-lg" id="helpContent">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+     HEADER
+     ============================================ -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-icon">S</div>
+            <div>
+                <div class="header-title">Shimba's Cyber Intelligence Dashboard</div>
+                <div class="header-subtitle">Advanced OSINT &amp; Dorking Suite v2.0</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <nav class="nav-tabs">
+                <button class="nav-tab active" onclick="switchTab('dorking', this)">🔍 Dorking</button>
+                <button class="nav-tab" onclick="switchTab('osint', this)">🌐 OSINT</button>
+                <button class="nav-tab" onclick="switchTab('reference', this)">📖 Reference</button>
+                <button class="nav-tab" onclick="switchTab('tools', this)">🛠️ Tools</button>
+                <button class="nav-tab" onclick="switchTab('history', this)">🕒 History</button>
+            </nav>
+            <button class="header-btn" onclick="openHelpModal()" title="How to Use">❓ Guide</button>
+            <button class="header-btn" onclick="openImportExportModal()" title="Import/Export">📦 I/O</button>
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                <span id="themeIcon">🌙</span> <span id="themeLabel">Dark</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ============================================
+     MAIN CONTENT
+     ============================================ -->
+    <main class="main-container">
+
+        <!-- ANALYTICS BAR -->
+        <div class="analytics-bar" id="analyticsBar">
+            <div class="stat-chip">🔍 Filters: <span class="stat-val" id="statFilters">0</span></div>
+            <div class="stat-chip">📄 Filetypes: <span class="stat-val" id="statFiletypes">0</span></div>
+            <div class="stat-chip">📝 Query Len: <span class="stat-val" id="statLength">0</span></div>
+            <div class="stat-chip">🕒 History: <span class="stat-val" id="statHistory">0</span></div>
+            <div class="stat-chip">💾 Saved: <span class="stat-val" id="statSaved">0</span></div>
+            <div class="stat-chip">🔧 Engine: <span class="stat-val" id="statEngine">Google</span></div>
+        </div>
+
+        <!-- ==================================================================
+       TAB 1: DORKING ENGINE (Main Panel)
+       ================================================================== -->
+        <div class="tab-panel active" id="panel-dorking">
+
+            <div class="grid-2">
+                <!-- LEFT: MAIN SEARCH -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon blue">🔍</div>
+                        <div>
+                            <div class="card-title">Advanced Dorking Engine</div>
+                            <div class="card-desc">Build complex search queries dynamically</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">🔑 Main Keywords</label>
+                        <input type="text" class="input-field" id="mainKeyword"
+                            placeholder='Enter keywords (e.g., cybersecurity tutorial)' autocomplete="off">
+                    </div>
+
+                    <div style="display:flex;gap:0.7rem;flex-wrap:wrap;margin-bottom:0.9rem;">
+                        <div style="flex:1;min-width:155px;">
+                            <label class="input-label">🔧 Search Engine</label>
+                            <select class="input-field" id="searchEngine">
+                                <option value="google">Google</option>
+                                <option value="bing">Bing</option>
+                                <option value="duckduckgo">DuckDuckGo</option>
+                            </select>
+                        </div>
+                        <div style="flex:1;min-width:155px;">
+                            <label class="input-label">💬 Phrase Mode</label>
+                            <select class="input-field" id="phraseMode">
+                                <option value="normal">Normal</option>
+                                <option value="exact">Exact Phrase (quotes)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="section-title">⚡ Quick Operators</div>
+                    <div class="quick-ops-list mb-1" id="quickOps">
+                        <span class="quick-op-chip" onclick="insertQuickOp('&quot;index of&quot;')">"index of"</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('inurl:admin')">inurl:admin</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('inurl:backup')">inurl:backup</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('intitle:roadmap')">intitle:roadmap</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('site:edu')">site:edu</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('site:gov')">site:gov</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('inurl:login')">inurl:login</span>
+                        <span class="quick-op-chip"
+                            onclick="insertQuickOp('intitle:&quot;index of&quot;')">intitle:"index of"</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('inurl:config')">inurl:config</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('inurl:wp-admin')">inurl:wp-admin</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('ext:sql')">ext:sql</span>
+                        <span class="quick-op-chip" onclick="insertQuickOp('inurl:phpinfo')">inurl:phpinfo</span>
+                    </div>
+
+                    <div class="btn-group mt-2">
+                        <button class="btn btn-primary" onclick="executeSearch()" id="searchBtn">🔍 Search</button>
+                        <button class="btn btn-secondary" onclick="copyQuery()">📋 Copy</button>
+                        <button class="btn btn-secondary" onclick="duplicateQuery()">📑 Duplicate</button>
+                        <button class="btn btn-danger btn-sm" onclick="clearAll()">🗑️ Clear</button>
+                        <button class="btn btn-green btn-sm" onclick="openSaveModal()">💾 Save</button>
+                    </div>
+                </div>
+
+                <!-- RIGHT: FILTER BUILDER -->
+                <div class="card green-accent">
+                    <div class="card-header">
+                        <div class="card-icon green">🛠️</div>
+                        <div>
+                            <div class="card-title">Dynamic Filter Builder</div>
+                            <div class="card-desc">Add operators and refine your query</div>
+                        </div>
+                    </div>
+
+                    <div class="flex-between mb-1">
+                        <button class="btn btn-blue btn-sm" onclick="addFilter()">➕ Add Filter</button>
+                        <button class="btn btn-secondary btn-xs" onclick="clearFilters()">Clear Filters</button>
+                    </div>
+                    <div class="scroll-y" id="filtersContainer"></div>
+
+                    <div class="section-title section-gap">📄 File Types</div>
+                    <div class="filetype-grid" id="filetypeGrid"></div>
+
+                    <div class="section-title section-gap">📅 Date Range</div>
+                    <div style="display:flex;gap:0.7rem;flex-wrap:wrap;">
+                        <div style="flex:1;min-width:135px;">
+                            <label class="input-label">After</label>
+                            <input type="date" class="input-field" id="dateAfter">
+                        </div>
+                        <div style="flex:1;min-width:135px;">
+                            <label class="input-label">Before</label>
+                            <input type="date" class="input-field" id="dateBefore">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUERY PREVIEW -->
+            <div class="card purple-accent" style="margin-top:1.25rem;">
+                <div class="card-header">
+                    <div class="card-icon purple">📡</div>
+                    <div>
+                        <div class="card-title">Real-Time Query Preview</div>
+                        <div class="card-desc">Live preview updates as you build — editable below</div>
+                    </div>
+                </div>
+                <div class="query-preview" id="queryPreview">
+                    <span class="empty-msg">Start building your query above...</span>
+                </div>
+                <div class="input-group mt-1">
+                    <label class="input-label">✏️ Manual Edit</label>
+                    <textarea class="input-field" id="manualQuery" rows="2"
+                        placeholder="Edit your query manually here..."></textarea>
+                </div>
+                <div class="flex-between mt-1">
+                    <span style="font-size:0.73rem;color:var(--text-muted);">Press <kbd>Enter</kbd> to search</span>
+                    <button class="btn btn-primary btn-sm" onclick="executeSearch()">🚀 Execute Search</button>
+                </div>
+            </div>
+
+            <!-- PRESETS -->
+            <div class="card orange-accent" style="margin-top:1.25rem;">
+                <div class="card-header">
+                    <div class="card-icon yellow">📚</div>
+                    <div>
+                        <div class="card-title">Preset Categories</div>
+                        <div class="card-desc">Quick-load pre-built query templates</div>
+                    </div>
+                </div>
+                <div class="preset-grid" id="presetGrid">
+                    <button class="preset-btn" onclick="loadPreset('cyber')"><span class="p-icon">🔒</span>
+                        Cybersecurity Resources</button>
+                    <button class="preset-btn" onclick="loadPreset('programming')"><span class="p-icon">💻</span>
+                        Programming Guides</button>
+                    <button class="preset-btn" onclick="loadPreset('research')"><span class="p-icon">📄</span> Research
+                        Papers</button>
+                    <button class="preset-btn" onclick="loadPreset('public')"><span class="p-icon">📂</span> Public
+                        Documents</button>
+                    <button class="preset-btn" onclick="loadPreset('index')"><span class="p-icon">📁</span> Index
+                        Listings</button>
+                    <button class="preset-btn" onclick="loadPreset('gov')"><span class="p-icon">🏛️</span> Government
+                        Reports</button>
+                    <button class="preset-btn" onclick="loadPreset('edu')"><span class="p-icon">🎓</span> Educational
+                        Materials</button>
+                    <button class="preset-btn" onclick="loadPreset('tech')"><span class="p-icon">📘</span> Technical
+                        Documentation</button>
+                </div>
+                <div class="section-title section-gap">⭐ Saved Custom Presets</div>
+                <div class="scroll-y" id="savedPresetsContainer">
+                    <div style="color:var(--text-muted);font-size:0.8rem;text-align:center;padding:0.75rem;">No saved
+                        presets yet</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================================================================
+       TAB 2: OSINT TOOLS (Social + Archive + Shodan)
+       ================================================================== -->
+        <div class="tab-panel" id="panel-osint">
+            <div class="grid-2">
+                <!-- SOCIAL MEDIA OSINT -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon orange">🌐</div>
+                        <div>
+                            <div class="card-title">Social Media OSINT Search</div>
+                            <div class="card-desc">Search across social platforms via Google dorking</div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">🔑 Search Keyword / Name / Handle</label>
+                        <input type="text" class="input-field" id="socialKeyword"
+                            placeholder="Enter name, handle, or keyword...">
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-blue" onclick="socialSearch('linkedin')">🔗 LinkedIn</button>
+                        <button class="btn btn-blue" onclick="socialSearch('twitter')">🐦 Twitter / X</button>
+                        <button class="btn btn-secondary" onclick="socialSearch('github')">🐙 GitHub</button>
+                        <button class="btn btn-orange" onclick="socialSearch('reddit')">🟠 Reddit</button>
+                        <button class="btn btn-pink" onclick="socialSearch('instagram')">📸 Instagram</button>
+                        <button class="btn btn-cyan" onclick="socialSearch('facebook')">📘 Facebook</button>
+                    </div>
+
+                    <div class="section-title section-gap">🎯 Advanced People Search</div>
+                    <div class="input-group">
+                        <label class="input-label">Full Name</label>
+                        <input type="text" class="input-field" id="personName" placeholder="John Doe">
+                    </div>
+                    <div style="display:flex;gap:0.7rem;flex-wrap:wrap;margin-bottom:0.9rem;">
+                        <div style="flex:1;min-width:140px;">
+                            <label class="input-label">Location (optional)</label>
+                            <input type="text" class="input-field" id="personLocation" placeholder="New York">
+                        </div>
+                        <div style="flex:1;min-width:140px;">
+                            <label class="input-label">Organization (optional)</label>
+                            <input type="text" class="input-field" id="personOrg" placeholder="Google">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="advancedPeopleSearch()">🔍 Search Person</button>
+                </div>
+
+                <!-- ARCHIVE ACCESS + SHODAN -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon cyan">📦</div>
+                        <div>
+                            <div class="card-title">Article Unlocker / Archive Access</div>
+                            <div class="card-desc">Access cached or archived versions of any webpage</div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">🔗 Paste URL</label>
+                        <input type="text" class="input-field" id="archiveUrl"
+                            placeholder="https://example.com/article...">
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-green btn-sm" onclick="openArchive('google')">📋 Google Cache</button>
+                        <button class="btn btn-blue btn-sm" onclick="openArchive('wayback')">🕰️ Wayback
+                            Machine</button>
+                        <button class="btn btn-purple btn-sm" onclick="openArchive('archiveis')">🗄️ Archive.is</button>
+                        <button class="btn btn-orange btn-sm" onclick="openArchive('12ft')">🪜 12ft.io</button>
+                    </div>
+
+                    <div class="section-title section-gap">🌊 Shodan Search (IoT/Device Search)</div>
+                    <div class="input-group">
+                        <label class="input-label">🔎 Shodan Query</label>
+                        <input type="text" class="input-field" id="shodanQuery"
+                            placeholder="e.g., apache, webcam, port:22, country:US">
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-cyan" onclick="shodanSearch()">🌊 Search Shodan</button>
+                        <button class="btn btn-secondary btn-sm" onclick="shodanPreset('webcam')">📹 Webcams</button>
+                        <button class="btn btn-secondary btn-sm" onclick="shodanPreset('database')">🗄️
+                            Databases</button>
+                        <button class="btn btn-secondary btn-sm" onclick="shodanPreset('industrial')">🏭
+                            ICS/SCADA</button>
+                    </div>
+
+                    <div class="section-title section-gap">🔍 WHOIS / DNS Lookup</div>
+                    <div class="input-group">
+                        <label class="input-label">🌐 Domain Name</label>
+                        <input type="text" class="input-field" id="whoisDomain" placeholder="example.com">
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-blue btn-sm" onclick="whoisLookup('whois')">📋 WHOIS</button>
+                        <button class="btn btn-green btn-sm" onclick="whoisLookup('dns')">🔎 DNS Lookup</button>
+                        <button class="btn btn-purple btn-sm" onclick="whoisLookup('builtwith')">🛠️ BuiltWith</button>
+                        <button class="btn btn-orange btn-sm" onclick="whoisLookup('censys')">🔬 Censys</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GHDB CATEGORIES -->
+            <div class="card" style="margin-top:1.25rem;">
+                <div class="card-header">
+                    <div class="card-icon red">💀</div>
+                    <div>
+                        <div class="card-title">Google Hacking Database (GHDB) Categories</div>
+                        <div class="card-desc">Pre-built dork categories from GHDB — Click to auto-generate query</div>
+                    </div>
+                </div>
+                <div class="preset-grid" id="ghdbGrid">
+                    <button class="preset-btn" onclick="loadGHDB('footholds')"><span class="p-icon">🦶</span>
+                        Footholds</button>
+                    <button class="preset-btn" onclick="loadGHDB('filesfound')"><span class="p-icon">📁</span> Files
+                        with Info</button>
+                    <button class="preset-btn" onclick="loadGHDB('dirlist')"><span class="p-icon">📂</span> Directory
+                        Listings</button>
+                    <button class="preset-btn" onclick="loadGHDB('loginpages')"><span class="p-icon">🔐</span> Login
+                        Pages</button>
+                    <button class="preset-btn" onclick="loadGHDB('sensitiveinfo')"><span class="p-icon">⚠️</span>
+                        Sensitive Info</button>
+                    <button class="preset-btn" onclick="loadGHDB('vulnservers')"><span class="p-icon">🖥️</span>
+                        Vulnerable Servers</button>
+                    <button class="preset-btn" onclick="loadGHDB('errormsgs')"><span class="p-icon">❌</span> Error
+                        Messages</button>
+                    <button class="preset-btn" onclick="loadGHDB('webinfra')"><span class="p-icon">🌐</span> Web
+                        Infrastructure</button>
+                    <button class="preset-btn" onclick="loadGHDB('advisories')"><span class="p-icon">📋</span>
+                        Advisories</button>
+                    <button class="preset-btn" onclick="loadGHDB('passwords')"><span class="p-icon">🔑</span> Password
+                        Files</button>
+                    <button class="preset-btn" onclick="loadGHDB('devices')"><span class="p-icon">📡</span> Network
+                        Devices</button>
+                    <button class="preset-btn" onclick="loadGHDB('databases')"><span class="p-icon">🗃️</span> Database
+                        Files</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================================================================
+       TAB 3: REFERENCE (Operator Guide + Cheat Sheet)
+       ================================================================== -->
+        <div class="tab-panel" id="panel-reference">
+            <div class="grid-2">
+                <!-- GOOGLE SEARCH DIRECTIVES -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon blue">📘</div>
+                        <div>
+                            <div class="card-title">Google Search Engine Directives</div>
+                            <div class="card-desc">Complete operator reference for Google dorking</div>
+                        </div>
+                    </div>
+                    <div class="scroll-y-lg">
+                        <table class="ref-table">
+                            <thead>
+                                <tr>
+                                    <th>Operator</th>
+                                    <th>Description</th>
+                                    <th>Example</th>
+                                </tr>
+                            </thead>
+                            <tbody id="googleDirectivesTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- GOOGLE MODIFIERS -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon green">📗</div>
+                        <div>
+                            <div class="card-title">Google Modifiers & Bing Differences</div>
+                            <div class="card-desc">Search modifiers, wildcards, and Bing equivalents</div>
+                        </div>
+                    </div>
+                    <div class="scroll-y-lg">
+                        <div class="ref-card">
+                            <div class="ref-card-title">🔤 Google Modifiers</div>
+                            <table class="ref-table">
+                                <thead>
+                                    <tr>
+                                        <th>Modifier</th>
+                                        <th>Function</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>"double quotes"</code></td>
+                                        <td>Literal/exact match for the enclosed string</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>-</code> (hyphen)</td>
+                                        <td>Omits pages or pages with specific strings. Example:
+                                            <code>-site:www.domain.com</code> or <code>-omitted</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>*</code> (asterisk)</td>
+                                        <td>Used as a keyword wildcard. Example: <code>"best * tools"</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>..</code> (two periods)</td>
+                                        <td>Number range. Example: <code>price $100..$500</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>OR</code> / <code>|</code></td>
+                                        <td>Match either of two terms. Example: <code>hacking OR pentesting</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>()</code> (parentheses)</td>
+                                        <td>Group search terms. Example: <code>(inurl:admin OR inurl:login)</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="ref-card">
+                            <div class="ref-card-title">🔵 Bing Supported Directives</div>
+                            <p>Bing also supports: <code>site:</code>, <code>inurl:</code>, <code>intitle:</code>,
+                                <code>filetype:</code></p>
+                            <p style="margin-top:0.3rem;">Bing uses <code>NOT</code> instead of the <code>-</code>
+                                (hyphen) for exclusions.</p>
+                            <p>Bing also supports: <code>feed:</code>, <code>hasfeed:</code>, <code>url:</code>,
+                                <code>ip:</code>, <code>language:</code>, <code>loc:</code>/<code>location:</code>,
+                                <code>prefer:</code></p>
+                        </div>
+
+                        <div class="ref-card">
+                            <div class="ref-card-title">🦆 DuckDuckGo Directives</div>
+                            <p>DuckDuckGo supports: <code>site:</code>, <code>intitle:</code>, <code>filetype:</code>,
+                                <code>inurl:</code></p>
+                            <p style="margin-top:0.3rem;">Uses <code>-</code> for exclusions (same as Google). Supports
+                                <code>!</code> bang commands.</p>
+                        </div>
+
+                        <div class="ref-card">
+                            <div class="ref-card-title">💀 Google Hacking Database (GHDB)</div>
+                            <p>The GHDB is a repository for search syntax known as <strong>"Google Dorks"</strong>,
+                                which can find interesting and potentially sensitive information.</p>
+                            <p>Works with most search engines with proper syntax adjustments.</p>
+                            <p>Maintained by Offensive Security at <code>exploit-db.com/google-hacking-database</code>
+                            </p>
+                        </div>
+
+                        <div class="ref-card">
+                            <div class="ref-card-title">⚠️ Google Search Automation Warning</div>
+                            <p><strong>Google SOAP API:</strong> Key was required for some automation tools but Google
+                                stopped issuing new keys in December 2006.</p>
+                            <p><strong>Google Shunning:</strong> Begins with banning you from a particular search → 2
+                                hour ban → IP ban.</p>
+                            <p style="margin-top:0.3rem;color:var(--neon-red);">Excessive automated querying violates
+                                Google's ToS. Always use responsibly.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FULL OPERATOR TABLE -->
+            <div class="card" style="margin-top:1.25rem;">
+                <div class="card-header">
+                    <div class="card-icon purple">📖</div>
+                    <div>
+                        <div class="card-title">Complete Operator Reference Table</div>
+                        <div class="card-desc">All supported search operators with descriptions and examples</div>
+                    </div>
+                </div>
+                <div class="scroll-y-lg">
+                    <table class="ref-table" id="fullOperatorTable">
+                        <thead>
+                            <tr>
+                                <th>Operator</th>
+                                <th>Description</th>
+                                <th>Example</th>
+                                <th>Engines</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================================================================
+       TAB 4: OSINT TOOLS REFERENCE
+       ================================================================== -->
+        <div class="tab-panel" id="panel-tools">
+            <div class="grid-2">
+                <!-- SHODAN -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon cyan">🌊</div>
+                        <div>
+                            <div class="card-title">Shodan</div>
+                            <div class="card-desc">"The world's first search engine for Internet-connected devices"
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ref-card">
+                        <p>A plethora of devices can be found on Shodan including:</p>
+                        <ul>
+                            <li>Medical devices & Healthcare systems</li>
+                            <li>Traffic management systems</li>
+                            <li>Automotive controls</li>
+                            <li>Traffic light controls</li>
+                            <li>HVAC / Environment controls</li>
+                            <li>Power regulators / UPS systems</li>
+                            <li>Security/access controls (CCTV & webcams)</li>
+                            <li>Serial port servers & data radios</li>
+                            <li>Industrial Control Systems (ICS/SCADA)</li>
+                        </ul>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">Common Shodan Queries</div>
+                        <table class="ref-table">
+                            <tbody>
+                                <tr>
+                                    <td><code>port:22</code></td>
+                                    <td>Find SSH servers</td>
+                                </tr>
+                                <tr>
+                                    <td><code>port:3389</code></td>
+                                    <td>Find RDP servers</td>
+                                </tr>
+                                <tr>
+                                    <td><code>apache</code></td>
+                                    <td>Find Apache servers</td>
+                                </tr>
+                                <tr>
+                                    <td><code>webcam</code></td>
+                                    <td>Find webcams</td>
+                                </tr>
+                                <tr>
+                                    <td><code>country:US</code></td>
+                                    <td>Filter by country</td>
+                                </tr>
+                                <tr>
+                                    <td><code>org:"Microsoft"</code></td>
+                                    <td>Filter by organization</td>
+                                </tr>
+                                <tr>
+                                    <td><code>has_screenshot:true</code></td>
+                                    <td>Devices with screenshots</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- FOCA -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon orange">📑</div>
+                        <div>
+                            <div class="card-title">FOCA (Fingerprinting Organizations)</div>
+                            <div class="card-desc">Document metadata search and analysis tool</div>
+                        </div>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">What FOCA Does</div>
+                        <ul>
+                            <li>Searches all documents in a domain</li>
+                            <li>Downloads documents automatically</li>
+                            <li>Analyzes metadata from files</li>
+                            <li>Produces comprehensive list of metadata</li>
+                        </ul>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">Metadata Collected</div>
+                        <p>Users, folders, printers, software, emails, OS info, passwords, and server information.</p>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">Supported File Types</div>
+                        <div class="tool-features">
+                            <span class="tool-tag">DOC</span><span class="tool-tag">PPT</span><span
+                                class="tool-tag">PPS</span>
+                            <span class="tool-tag">XLS</span><span class="tool-tag">DOCX</span><span
+                                class="tool-tag">PPTX</span>
+                            <span class="tool-tag">PPSX</span><span class="tool-tag">XLSX</span><span
+                                class="tool-tag">SXW</span>
+                            <span class="tool-tag">SXC</span><span class="tool-tag">SXI</span><span
+                                class="tool-tag">ODT</span>
+                            <span class="tool-tag">ODS</span><span class="tool-tag">ODG</span><span
+                                class="tool-tag">ODP</span>
+                            <span class="tool-tag">PDF</span><span class="tool-tag">WPD</span><span
+                                class="tool-tag">SVG</span>
+                            <span class="tool-tag">SVGZ</span><span class="tool-tag">INDD</span><span
+                                class="tool-tag">RDP</span>
+                            <span class="tool-tag">ICA</span>
+                        </div>
+                    </div>
+                    <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;"><em>FOCA = Fingerprinting
+                            Organizations with Collected Archives. "Pro" is now called "Final Version."</em></p>
+                </div>
+
+                <!-- theHarvester -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon green">🌾</div>
+                        <div>
+                            <div class="card-title">theHarvester</div>
+                            <div class="card-desc">Domain intelligence gathering tool</div>
+                        </div>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">Capabilities</div>
+                        <p>Gathers information from target domains via public sources:</p>
+                        <ul>
+                            <li>Email addresses</li>
+                            <li>IP addresses and domain names</li>
+                            <li>Ports and banners</li>
+                            <li>Subdomains</li>
+                        </ul>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">Data Sources</div>
+                        <p>Uses search engines, PGP key servers, and Shodan.</p>
+                        <p>Employs screen scraping and API calls to pull results from various search engines.</p>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">Common Usage</div>
+                        <p><code>theHarvester -d target.com -b google -l 500</code></p>
+                        <p style="font-size:0.75rem;color:var(--text-muted);">-d = domain, -b = data source, -l = limit
+                            results</p>
+                    </div>
+                </div>
+
+                <!-- Maltego -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon purple">🕸️</div>
+                        <div>
+                            <div class="card-title">Maltego</div>
+                            <div class="card-desc">Information mapping and relationship tool</div>
+                        </div>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">What Maltego Does</div>
+                        <p>Information mapping tool that finds relationships among people, sites, and companies.</p>
+                        <p>Uses <strong>"transforms"</strong> to build a hierarchy of related information.</p>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">Starting Points / Transforms</div>
+                        <ul>
+                            <li>Domain → PGP keys</li>
+                            <li>Person → Email addresses</li>
+                            <li>Domain → Phone numbers</li>
+                            <li>Person's name → Social profiles</li>
+                            <li>Phone number → Owner info</li>
+                        </ul>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">Community Edition Limitations</div>
+                        <ul>
+                            <li>Not for commercial use</li>
+                            <li>Max 12 results per transform</li>
+                            <li>Must register on website to use</li>
+                            <li>API keys expire every couple days</li>
+                            <li>Runs slower</li>
+                            <li>No encryption</li>
+                            <li>Not updated until next major version</li>
+                            <li>No end user support</li>
+                            <li>Only discovers from Paterva servers</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Recon-ng -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon pink">🔬</div>
+                        <div>
+                            <div class="card-title">Recon-ng</div>
+                            <div class="card-desc">Web reconnaissance framework</div>
+                        </div>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">Module Categories</div>
+                        <table class="ref-table">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Recon</strong></td>
+                                    <td>50+ modules available for reconnaissance</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Mapping</strong></td>
+                                    <td>Modules for mapping phase</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Discovery</strong></td>
+                                    <td>Cache Snoop — checks DNS cache for previously resolved names. Interesting Files
+                                        — looks for files of interest.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Exploitation</strong></td>
+                                    <td>XPATH and Command Injection attacks available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">Key Features</div>
+                        <ul>
+                            <li>Dozens of modules that interact with Internet services</li>
+                            <li>Reporting modules to consolidate and export results</li>
+                            <li>Discovery and exploitation modules</li>
+                            <li>Some modules require API keys (may cost money)</li>
+                            <li>Use <code>show info</code> to get information about a module</li>
+                            <li>Version 4.x provides significant overhaul of layout and structure</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- SPUD / SensePost -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon yellow">🔧</div>
+                        <div>
+                            <div class="card-title">SPUD by SensePost & Other Tools</div>
+                            <div class="card-desc">Additional OSINT automation tools</div>
+                        </div>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">SPUD (SensePost)</div>
+                        <p>Converts Google SOAP API requests into general searches of the Google website.</p>
+                        <p>Uses <strong>"screen-scraping"</strong> to collect, parse, and return results.</p>
+                        <p style="color:var(--neon-red);">⚠️ Violates Google's Terms of Service.</p>
+                        <p style="font-size:0.75rem;color:var(--text-muted);">Originally SensePost's Aura, which was
+                            deprecated.</p>
+                    </div>
+                    <div class="ref-card">
+                        <div class="ref-card-title">Other Notable OSINT Tools</div>
+                        <table class="ref-table">
+                            <tbody>
+                                <tr>
+                                    <td><strong>SpiderFoot</strong></td>
+                                    <td>Automated OSINT collection with 200+ modules</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Amass</strong></td>
+                                    <td>In-depth subdomain enumeration</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Subfinder</strong></td>
+                                    <td>Fast subdomain discovery</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Photon</strong></td>
+                                    <td>Web crawler designed for OSINT</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Metagoofil</strong></td>
+                                    <td>Metadata extraction from public documents</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Exiftool</strong></td>
+                                    <td>Read/write metadata from files</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Creepy</strong></td>
+                                    <td>Geolocation OSINT tool</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================================================================
+       TAB 5: HISTORY
+       ================================================================== -->
+        <div class="tab-panel" id="panel-history">
+            <div class="grid-2">
+                <!-- QUERY HISTORY -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon blue">🕒</div>
+                        <div>
+                            <div class="card-title">Query History</div>
+                            <div class="card-desc">Recent searches stored locally in your browser</div>
+                        </div>
+                    </div>
+                    <div class="flex-between mb-1">
+                        <span style="font-size:0.78rem;color:var(--text-muted);" id="historyCount">0 entries</span>
+                        <button class="btn btn-danger btn-xs" onclick="clearAllHistory()">🗑️ Clear All History</button>
+                    </div>
+                    <div class="scroll-y-lg" id="historyContainer">
+                        <div style="color:var(--text-muted);font-size:0.8rem;text-align:center;padding:1rem;">No history
+                            yet</div>
+                    </div>
+                </div>
+
+                <!-- SAVED PRESETS -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon green">💾</div>
+                        <div>
+                            <div class="card-title">Saved Custom Presets</div>
+                            <div class="card-desc">Your saved query templates</div>
+                        </div>
+                    </div>
+                    <div class="flex-between mb-1">
+                        <span style="font-size:0.78rem;color:var(--text-muted);" id="savedCount">0 presets</span>
+                        <div class="btn-group">
+                            <button class="btn btn-secondary btn-xs" onclick="openImportExportModal()">📦
+                                Import/Export</button>
+                            <button class="btn btn-danger btn-xs" onclick="clearAllSaved()">🗑️ Clear All</button>
+                        </div>
+                    </div>
+                    <div class="scroll-y-lg" id="savedPresetsContainerFull">
+                        <div style="color:var(--text-muted);font-size:0.8rem;text-align:center;padding:1rem;">No saved
+                            presets yet</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================
+     FOOTER
+     ============================================ -->
+    <footer class="footer">
+        <div class="disclaimer">⚠️ For Educational &amp; Defensive Purposes Only</div>
+        <p>Shimba's Cyber Intelligence Dashboard v2.0 &bull; Built with vanilla HTML, CSS &amp; JavaScript</p>
+        <p style="margin-top:0.25rem;">All queries are generated client-side. No data is sent to any server. Zero
+            dependencies.</p>
+        <p style="margin-top:0.25rem;font-size:0.72rem;">OSINT Reference: Based on OSINT and Tools Cheat Sheet by binca
+            via cheatography.com/44948/cs/13288/</p>
+    </footer>
+
+    <!-- ============================================
+     JAVASCRIPT ENGINE
+     ============================================ -->
+    <script>
+        /**
+         * =====================================================
+         * Shimba's Cyber Intelligence Dashboard v2.0
+         * Advanced OSINT & Dorking Suite
+         * For Educational & Defensive Purposes Only
+         * =====================================================
+         */
+
+        /* =============================================
+           CONFIGURATION
+           ============================================= */
+        const CONFIG = {
+            FILETYPES: ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'txt', 'csv', 'zip', 'log', 'conf'],
+
+            OPERATORS: [
+                { value: 'intitle', label: 'intitle:', desc: 'Search in page title', example: 'intitle:dashboard', engines: 'Google, Bing, DDG' },
+                { value: 'allintitle', label: 'allintitle:', desc: 'All words must be in title', example: 'allintitle:cyber security', engines: 'Google' },
+                { value: 'inurl', label: 'inurl:', desc: 'Search in URL', example: 'inurl:admin', engines: 'Google, Bing, DDG' },
+                { value: 'allinurl', label: 'allinurl:', desc: 'All words must be in URL', example: 'allinurl:admin login', engines: 'Google' },
+                { value: 'intext', label: 'intext:', desc: 'Search in page body text', example: 'intext:password', engines: 'Google' },
+                { value: 'allintext', label: 'allintext:', desc: 'All words must be in body text', example: 'allintext:password reset', engines: 'Google' },
+                { value: 'site', label: 'site:', desc: 'Limit to specific domain', example: 'site:github.com', engines: 'Google, Bing, DDG' },
+                { value: 'filetype', label: 'filetype:', desc: 'Specific file type', example: 'filetype:pdf', engines: 'Google, Bing, DDG' },
+                { value: 'ext', label: 'ext:', desc: 'File extension (alias for filetype)', example: 'ext:sql', engines: 'Google' },
+                { value: 'link', label: 'link:', desc: 'Pages that link to a URL', example: 'link:example.com', engines: 'Google' },
+                { value: 'related', label: 'related:', desc: 'Related sites', example: 'related:github.com', engines: 'Google' },
+                { value: 'cache', label: 'cache:', desc: 'Cached version of a page', example: 'cache:example.com', engines: 'Google' },
+                { value: 'define', label: 'define:', desc: 'Definition of a term', example: 'define:phishing', engines: 'Google' },
+                { value: 'info', label: 'info:', desc: 'Info about a page', example: 'info:example.com', engines: 'Google' },
+                { value: 'exclude', label: '-keyword', desc: 'Exclude a term from results', example: '-pinterest', engines: 'Google, DDG' },
+                { value: 'or', label: 'OR', desc: 'Match either term', example: 'hacking OR pentesting', engines: 'Google, Bing, DDG' },
+                { value: 'before', label: 'before:', desc: 'Results before date', example: 'before:2024-01-01', engines: 'Google' },
+                { value: 'after', label: 'after:', desc: 'Results after date', example: 'after:2023-01-01', engines: 'Google' }
+            ],
+
+            GOOGLE_DIRECTIVES: [
+                { op: 'site:', desc: 'Limits results to a target site or domain', example: 'site:example.com' },
+                { op: 'inurl:', desc: 'Searches for keywords within the URL of a page', example: 'inurl:admin' },
+                { op: 'intitle:', desc: 'Searches for keywords within the title of a page', example: 'intitle:"login page"' },
+                { op: 'intext:', desc: 'Searches for keywords within the body text', example: 'intext:confidential' },
+                { op: 'link:', desc: 'Identifies sites that link to the target — useful for social engineering', example: 'link:target.com' },
+                { op: 'filetype:', desc: 'Searches for files with an identifiable extension', example: 'filetype:pdf' },
+                { op: 'ext:', desc: 'Alias for filetype — searches by extension', example: 'ext:sql' },
+                { op: 'cache:', desc: 'Shows Google\'s cached version of a page', example: 'cache:example.com' },
+                { op: 'related:', desc: 'Finds sites similar to the specified URL', example: 'related:github.com' },
+                { op: 'info:', desc: 'Shows information Google has about a URL', example: 'info:example.com' },
+                { op: 'define:', desc: 'Shows definition of a word or phrase', example: 'define:OSINT' },
+                { op: 'allintitle:', desc: 'All keywords must appear in the title', example: 'allintitle:open source intelligence' },
+                { op: 'allinurl:', desc: 'All keywords must appear in the URL', example: 'allinurl:admin panel' },
+                { op: 'allintext:', desc: 'All keywords must appear in body text', example: 'allintext:username password' },
+                { op: 'before:', desc: 'Results published before a date', example: 'before:2024-01-01' },
+                { op: 'after:', desc: 'Results published after a date', example: 'after:2023-06-01' }
+            ],
+
+            PRESETS: {
+                cyber: { keyword: 'cybersecurity', query: 'intitle:"cybersecurity tutorial" site:edu filetype:pdf OR filetype:ppt' },
+                programming: { keyword: 'programming', query: 'intitle:"programming guide" intext:beginner filetype:pdf OR filetype:doc' },
+                research: { keyword: 'research paper', query: 'site:scholar.google.com OR site:researchgate.net filetype:pdf "research paper"' },
+                public: { keyword: 'public documents', query: 'intitle:"index of" inurl:documents filetype:pdf OR filetype:doc' },
+                index: { keyword: '', query: 'intitle:"index of /" "parent directory"' },
+                gov: { keyword: 'government report', query: 'site:gov "government report" filetype:pdf OR filetype:doc' },
+                edu: { keyword: 'educational', query: 'site:edu intitle:"course materials" filetype:pdf OR filetype:ppt' },
+                tech: { keyword: 'technical documentation', query: 'intitle:"documentation" inurl:docs filetype:pdf "technical"' }
+            },
+
+            GHDB_PRESETS: {
+                footholds: 'intitle:"index of" "parent directory" "server at"',
+                filesfound: 'filetype:log inurl:password',
+                dirlist: 'intitle:"index of" "last modified" "parent directory"',
+                loginpages: 'inurl:"/admin/login" OR inurl:"/wp-login.php" OR intitle:"login"',
+                sensitiveinfo: 'filetype:sql "insert into" (pass|password|passwd)',
+                vulnservers: 'intitle:"Apache Status" "Apache Server Status for"',
+                errormsgs: 'intitle:"error" "warning" "mysql" filetype:php',
+                webinfra: '"powered by" inurl:"/phpinfo.php" OR intitle:"phpinfo()"',
+                advisories: 'site:cve.mitre.org OR site:nvd.nist.gov "vulnerability"',
+                passwords: 'filetype:txt inurl:password OR filetype:log inurl:password',
+                devices: 'intitle:"webcamXP 5" OR intitle:"Network Camera"',
+                databases: 'filetype:sql "CREATE TABLE" (email|password|user)'
+            },
+
+            SEARCH_URLS: {
+                google: 'https://www.google.com/search?q=',
+                bing: 'https://www.bing.com/search?q=',
+                duckduckgo: 'https://duckduckgo.com/?q='
+            },
+
+            SOCIAL_URLS: {
+                linkedin: q => `https://www.google.com/search?q=site:linkedin.com/in+${encodeURIComponent(q)}`,
+                twitter: q => `https://www.google.com/search?q=site:twitter.com+OR+site:x.com+${encodeURIComponent(q)}`,
+                github: q => `https://github.com/search?q=${encodeURIComponent(q)}&type=repositories`,
+                reddit: q => `https://www.google.com/search?q=site:reddit.com+${encodeURIComponent(q)}`,
+                instagram: q => `https://www.google.com/search?q=site:instagram.com+${encodeURIComponent(q)}`,
+                facebook: q => `https://www.google.com/search?q=site:facebook.com+${encodeURIComponent(q)}`
+            },
+
+            ARCHIVE_URLS: {
+                google: url => `https://webcache.googleusercontent.com/search?q=cache:${encodeURIComponent(url)}`,
+                wayback: url => `https://web.archive.org/web/*/${url}`,
+                archiveis: url => `https://archive.is/newest/${url}`,
+                '12ft': url => `https://12ft.io/${url}`
+            }
+        };
+
+        /* =============================================
+           APPLICATION STATE
+           ============================================= */
+        const state = {
+            filters: [],
+            selectedFiletypes: new Set(),
+            history: [],
+            savedPresets: [],
+            filterIdCounter: 0,
+            manualMode: false,
+            activeTab: 'dorking'
+        };
+
+        /* =============================================
+           INITIALIZATION
+           ============================================= */
+        document.addEventListener('DOMContentLoaded', () => {
+            initFiletypeGrid();
+            initGoogleDirectivesTable();
+            initFullOperatorTable();
+            initHelpContent();
+            loadFromStorage();
+            renderHistory();
+            renderSavedPresets();
+            updateAnalytics();
+            bindEvents();
+            updateQueryPreview();
+        });
+
+        /* =============================================
+           EVENT BINDINGS
+           ============================================= */
+        function bindEvents() {
+            const els = {
+                keyword: document.getElementById('mainKeyword'),
+                dateAfter: document.getElementById('dateAfter'),
+                dateBefore: document.getElementById('dateBefore'),
+                engine: document.getElementById('searchEngine'),
+                phrase: document.getElementById('phraseMode'),
+                manual: document.getElementById('manualQuery')
+            };
+
+            els.keyword.addEventListener('input', () => { state.manualMode = false; updateQueryPreview(); });
+            els.dateAfter.addEventListener('change', () => { state.manualMode = false; updateQueryPreview(); });
+            els.dateBefore.addEventListener('change', () => { state.manualMode = false; updateQueryPreview(); });
+            els.engine.addEventListener('change', updateAnalytics);
+            els.phrase.addEventListener('change', () => { state.manualMode = false; updateQueryPreview(); });
+            els.manual.addEventListener('input', () => {
+                state.manualMode = true;
+                updatePreviewFromManual();
+                updateAnalytics();
+            });
+
+            // Global Enter key shortcut
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    const a = document.activeElement;
+                    const skipIds = ['presetNameInput', 'importArea', 'exportArea'];
+                    if (skipIds.includes(a.id)) return;
+                    if (a.id === 'manualQuery' || a.id === 'mainKeyword') {
+                        e.preventDefault();
+                        executeSearch();
+                    }
+                    if (a.id === 'socialKeyword') {
+                        e.preventDefault();
+                        socialSearch('linkedin');
+                    }
+                    if (a.id === 'shodanQuery') {
+                        e.preventDefault();
+                        shodanSearch();
+                    }
+                }
+            });
+        }
+
+        /* =============================================
+           TAB NAVIGATION
+           ============================================= */
+        function switchTab(tabId, btnEl) {
+            // Update active tab button
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+
+            // Show/hide panels
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            const panel = document.getElementById(`panel-${tabId}`);
+            if (panel) panel.classList.add('active');
+
+            state.activeTab = tabId;
+        }
+
+        /* =============================================
+           FILETYPE GRID
+           ============================================= */
+        function initFiletypeGrid() {
+            const grid = document.getElementById('filetypeGrid');
+            grid.innerHTML = '';
+            CONFIG.FILETYPES.forEach(ft => {
+                const label = document.createElement('label');
+                label.className = 'ft-check';
+                label.id = `ft-${ft}`;
+                label.innerHTML = `<input type="checkbox" value="${ft}"><span>${ft.toUpperCase()}</span>`;
+                label.addEventListener('click', (e) => { e.preventDefault(); toggleFiletype(ft); });
+                grid.appendChild(label);
+            });
+        }
+
+        function toggleFiletype(ft) {
+            if (state.selectedFiletypes.has(ft)) {
+                state.selectedFiletypes.delete(ft);
+                document.getElementById(`ft-${ft}`).classList.remove('active');
+            } else {
+                state.selectedFiletypes.add(ft);
+                document.getElementById(`ft-${ft}`).classList.add('active');
+            }
+            state.manualMode = false;
+            updateQueryPreview();
+        }
+
+        /* =============================================
+           GOOGLE DIRECTIVES TABLE (Reference Tab)
+           ============================================= */
+        function initGoogleDirectivesTable() {
+            const tbody = document.getElementById('googleDirectivesTable');
+            tbody.innerHTML = '';
+            CONFIG.GOOGLE_DIRECTIVES.forEach(d => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+      <td><code>${d.op}</code></td>
+      <td>${d.desc}</td>
+      <td><code style="color:var(--neon-green)">${d.example}</code></td>
+    `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* =============================================
+           FULL OPERATOR TABLE (Reference Tab)
+           ============================================= */
+        function initFullOperatorTable() {
+            const tbody = document.querySelector('#fullOperatorTable tbody');
+            tbody.innerHTML = '';
+            CONFIG.OPERATORS.forEach(op => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+      <td><code>${escapeHtml(op.label)}</code></td>
+      <td>${op.desc}</td>
+      <td><code style="color:var(--neon-green)">${escapeHtml(op.example)}</code></td>
+      <td style="font-size:0.72rem;color:var(--text-muted)">${op.engines || ''}</td>
+    `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* =============================================
+           HELP MODAL CONTENT (How-To Guide)
+           ============================================= */
+        function initHelpContent() {
+            const container = document.getElementById('helpContent');
+            container.innerHTML = `
+    <div class="guide-section">
+      <div class="guide-title">🎯 What is This Dashboard?</div>
+      <div class="guide-text">
+        <strong>Shimba's Cyber Intelligence Dashboard</strong> is an advanced, all-in-one OSINT (Open Source Intelligence) and Google Dorking tool built entirely in a single HTML file. It helps security researchers, students, and ethical hackers build complex search queries without manually typing operators.
+      </div>
+      <div class="guide-tip">💡 Everything runs locally in your browser. No data is sent to any server. No dependencies required.</div>
+    </div>
+
+    <div class="guide-section">
+      <div class="guide-title">🔍 Tab 1: Dorking Engine — How to Build Queries</div>
+      <div class="guide-step"><div class="guide-num">1</div><div class="guide-text"><strong>Enter Keywords:</strong> Type your main search terms in the "Main Keywords" field. Example: <code>cybersecurity tutorial</code></div></div>
+      <div class="guide-step"><div class="guide-num">2</div><div class="guide-text"><strong>Select Search Engine:</strong> Choose Google, Bing, or DuckDuckGo from the dropdown. Your built query won't be erased when switching engines.</div></div>
+      <div class="guide-step"><div class="guide-num">3</div><div class="guide-text"><strong>Set Phrase Mode:</strong> Choose "Exact Phrase" to wrap your keywords in quotes <code>"like this"</code> for literal matching.</div></div>
+      <div class="guide-step"><div class="guide-num">4</div><div class="guide-text"><strong>Use Quick Operators:</strong> Click any blue chip (like <code>inurl:admin</code>) to instantly add that operator to your keyword field.</div></div>
+      <div class="guide-step"><div class="guide-num">5</div><div class="guide-text"><strong>Add Dynamic Filters:</strong> Click "➕ Add Filter" on the right panel. Select an operator (intitle, inurl, site, etc.) and type a value. Add unlimited filters!</div></div>
+      <div class="guide-step"><div class="guide-num">6</div><div class="guide-text"><strong>Select File Types:</strong> Click on file type buttons (PDF, DOC, XLS, etc.) to include <code>filetype:</code> operators. Multiple selections use OR logic.</div></div>
+      <div class="guide-step"><div class="guide-num">7</div><div class="guide-text"><strong>Set Date Range:</strong> Use the After/Before date fields to add <code>after:</code> and <code>before:</code> operators.</div></div>
+      <div class="guide-step"><div class="guide-num">8</div><div class="guide-text"><strong>Preview & Edit:</strong> Watch the real-time query preview update instantly. Use the manual edit box to fine-tune your query.</div></div>
+      <div class="guide-step"><div class="guide-num">9</div><div class="guide-text"><strong>Execute Search:</strong> Click 🔍 Search or press <kbd>Enter</kbd>. Results open in a new tab using safe URL encoding — no iframes!</div></div>
+      <div class="guide-tip">💡 Use 📋 Copy to copy query to clipboard, 📑 Duplicate to clone it for editing, and 💾 Save to create a custom preset.</div>
+    </div>
+
+    <div class="guide-section">
+      <div class="guide-title">📚 Preset Categories</div>
+      <div class="guide-text">Click any preset button to auto-fill a structured query template. Available presets include Cybersecurity Resources, Programming Guides, Research Papers, Public Documents, Index Listings, Government Reports, Educational Materials, and Technical Documentation.</div>
+    </div>
+
+    <div class="guide-section">
+      <div class="guide-title">🌐 Tab 2: OSINT Tools</div>
+      <div class="guide-step"><div class="guide-num">1</div><div class="guide-text"><strong>Social Media Search:</strong> Enter a name/keyword and click platform buttons (LinkedIn, Twitter, GitHub, Reddit, Instagram, Facebook) to search across those platforms using Google dorking.</div></div>
+      <div class="guide-step"><div class="guide-num">2</div><div class="guide-text"><strong>Advanced People Search:</strong> Enter a person's name with optional location and organization for a targeted multi-site OSINT search.</div></div>
+      <div class="guide-step"><div class="guide-num">3</div><div class="guide-text"><strong>Archive Access:</strong> Paste any URL and click Google Cache, Wayback Machine, Archive.is, or 12ft.io to access archived/cached versions.</div></div>
+      <div class="guide-step"><div class="guide-num">4</div><div class="guide-text"><strong>Shodan Search:</strong> Enter a Shodan query to search for IoT devices, servers, and network infrastructure. Use preset buttons for common searches.</div></div>
+      <div class="guide-step"><div class="guide-num">5</div><div class="guide-text"><strong>WHOIS/DNS:</strong> Enter a domain to perform WHOIS lookups, DNS queries, BuiltWith analysis, or Censys searches.</div></div>
+      <div class="guide-step"><div class="guide-num">6</div><div class="guide-text"><strong>GHDB Categories:</strong> Click GHDB preset buttons to load Google Hacking Database dork templates for finding specific types of exposed information.</div></div>
+    </div>
+
+    <div class="guide-section">
+      <div class="guide-title">📖 Tab 3: Reference</div>
+      <div class="guide-text">Complete reference guide for all Google search directives, Google modifiers, Bing differences, DuckDuckGo support, and the full operator table with engine compatibility information.</div>
+    </div>
+
+    <div class="guide-section">
+      <div class="guide-title">🛠️ Tab 4: Tools Reference</div>
+      <div class="guide-text">Detailed information about professional OSINT tools: <strong>Shodan</strong>, <strong>FOCA</strong>, <strong>theHarvester</strong>, <strong>Maltego</strong>, <strong>Recon-ng</strong>, <strong>SPUD</strong>, and more. Includes capabilities, usage examples, and limitations.</div>
+    </div>
+
+    <div class="guide-section">
+      <div class="guide-title">🕒 Tab 5: History</div>
+      <div class="guide-text">All your searches are automatically saved to browser localStorage. You can re-run, copy, or delete individual entries. Saved custom presets are also managed here.</div>
+    </div>
+
+    <div class="guide-section">
+      <div class="guide-title">📦 Import / Export</div>
+      <div class="guide-text">Click the 📦 I/O button to export all your history and saved presets as JSON. You can also import previously exported data to restore your queries on another device or browser.</div>
+    </div>
+
+    <div class="guide-section">
+      <div class="guide-title">🌙 Dark / Light Mode</div>
+      <div class="guide-text">Click the theme toggle button in the header to switch between dark and light mode. Your preference is saved automatically.</div>
+    </div>
+
+    <div class="guide-section">
+      <div class="guide-title">⌨️ Keyboard Shortcuts</div>
+      <div class="guide-text">
+        <table class="ref-table">
+          <tbody>
+            <tr><td><kbd>Enter</kbd></td><td>Execute search (when in keyword or manual edit field)</td></tr>
+            <tr><td><kbd>Enter</kbd> in Social field</td><td>Quick LinkedIn search</td></tr>
+            <tr><td><kbd>Enter</kbd> in Shodan field</td><td>Execute Shodan search</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="guide-section">
+      <div class="guide-title">🔐 What is OSINT?</div>
+      <div class="guide-text">
+        <strong>OSINT (Open Source Intelligence)</strong> is the collection and analysis of information from publicly available sources. This includes search engines, social media, public records, archived web pages, DNS records, WHOIS data, and more.
+      </div>
+      <div class="guide-text" style="margin-top:0.5rem;">
+        OSINT is used by security researchers, journalists, law enforcement, competitive intelligence analysts, and penetration testers for <strong>legal and ethical</strong> information gathering.
+      </div>
+      <div class="guide-warn">⚠️ Always ensure your activities comply with local laws, terms of service, and ethical guidelines. This tool is strictly for educational and defensive research purposes.</div>
+    </div>
+
+    <div class="guide-section">
+      <div class="guide-title">💀 What is Google Dorking?</div>
+      <div class="guide-text">
+        <strong>Google Dorking</strong> (also called Google Hacking) is the practice of using advanced search operators to find specific information that regular searches might miss. By combining operators like <code>site:</code>, <code>intitle:</code>, <code>filetype:</code>, and <code>inurl:</code>, you can pinpoint exactly what you're looking for.
+      </div>
+      <div class="guide-text" style="margin-top:0.5rem;">
+        The <strong>Google Hacking Database (GHDB)</strong> is a repository of these specialized search queries, maintained by Offensive Security. These "dorks" can help identify publicly exposed sensitive information, which is valuable for defensive security assessments.
+      </div>
+    </div>
+  `;
+        }
+
+        function openHelpModal() {
+            document.getElementById('helpModal').classList.add('active');
+        }
+        function closeHelpModal() {
+            document.getElementById('helpModal').classList.remove('active');
+        }
+
+        /* =============================================
+           FILTER BUILDER
+           ============================================= */
+        function addFilter() {
+            const id = ++state.filterIdCounter;
+            state.filters.push({ id, operator: 'intitle', value: '' });
+
+            const container = document.getElementById('filtersContainer');
+            const row = document.createElement('div');
+            row.className = 'filter-row';
+            row.id = `filter-${id}`;
+
+            const opOptions = CONFIG.OPERATORS
+                .filter(o => !['before', 'after'].includes(o.value))
+                .map(o => `<option value="${o.value}">${o.label}</option>`)
+                .join('');
+
+            row.innerHTML = `
+    <select onchange="updateFilterOp(${id}, this.value)" title="Select operator">${opOptions}</select>
+    <input type="text" placeholder="Enter value..." oninput="updateFilterVal(${id}, this.value)" title="Filter value">
+    <button class="remove-filter" onclick="removeFilter(${id})" title="Remove">&times;</button>
+  `;
+            container.appendChild(row);
+            state.manualMode = false;
+            updateQueryPreview();
+        }
+
+        function updateFilterOp(id, operator) {
+            const f = state.filters.find(f => f.id === id);
+            if (f) { f.operator = operator; state.manualMode = false; updateQueryPreview(); }
+        }
+
+        function updateFilterVal(id, value) {
+            const f = state.filters.find(f => f.id === id);
+            if (f) { f.value = value; state.manualMode = false; updateQueryPreview(); }
+        }
+
+        function removeFilter(id) {
+            state.filters = state.filters.filter(f => f.id !== id);
+            const row = document.getElementById(`filter-${id}`);
+            if (row) { row.style.opacity = '0'; row.style.transform = 'translateX(20px)'; row.style.transition = 'all 0.3s'; setTimeout(() => row.remove(), 300); }
+            state.manualMode = false;
+            updateQueryPreview();
+        }
+
+        function clearFilters() {
+            state.filters = [];
+            document.getElementById('filtersContainer').innerHTML = '';
+            state.manualMode = false;
+            updateQueryPreview();
+        }
+
+        /* =============================================
+           QUERY BUILDER
+           ============================================= */
+        function buildQuery() {
+            const parts = [];
+            const keyword = document.getElementById('mainKeyword').value.trim();
+            const pm = document.getElementById('phraseMode').value;
+
+            if (keyword) {
+                parts.push(pm === 'exact' ? `"${keyword}"` : keyword);
+            }
+
+            state.filters.forEach(f => {
+                if (!f.value.trim()) return;
+                const val = f.value.trim();
+                switch (f.operator) {
+                    case 'exclude': parts.push(`-${val}`); break;
+                    case 'or': parts.push(`OR ${val}`); break;
+                    default:
+                        const needsQuotes = val.includes(' ') && !['site', 'filetype', 'ext', 'related', 'cache', 'info', 'define'].includes(f.operator);
+                        parts.push(`${f.operator}:${needsQuotes ? '"' + val + '"' : val}`);
+                }
+            });
+
+            const ftArr = Array.from(state.selectedFiletypes);
+            if (ftArr.length === 1) parts.push(`filetype:${ftArr[0]}`);
+            else if (ftArr.length > 1) parts.push(`(${ftArr.map(ft => `filetype:${ft}`).join(' OR ')})`);
+
+            const dateAfter = document.getElementById('dateAfter').value;
+            const dateBefore = document.getElementById('dateBefore').value;
+            if (dateAfter) parts.push(`after:${dateAfter}`);
+            if (dateBefore) parts.push(`before:${dateBefore}`);
+
+            return parts.join(' ');
+        }
+
+        function getCurrentQuery() {
+            return state.manualMode ? document.getElementById('manualQuery').value.trim() : buildQuery();
+        }
+
+        function updateQueryPreview() {
+            const query = buildQuery();
+            const previewEl = document.getElementById('queryPreview');
+            const manualEl = document.getElementById('manualQuery');
+
+            if (!query) {
+                previewEl.innerHTML = '<span class="empty-msg">Start building your query above...</span>';
+                if (!state.manualMode) manualEl.value = '';
+            } else {
+                previewEl.innerHTML = colorizeQuery(query);
+                if (!state.manualMode) manualEl.value = query;
+            }
+            updateAnalytics();
+        }
+
+        function updatePreviewFromManual() {
+            const query = document.getElementById('manualQuery').value.trim();
+            const previewEl = document.getElementById('queryPreview');
+            previewEl.innerHTML = query ? colorizeQuery(query) : '<span class="empty-msg">Start building your query above...</span>';
+        }
+
+        function colorizeQuery(query) {
+            let safe = query.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const ops = ['allintitle:', 'allinurl:', 'allintext:', 'intitle:', 'inurl:', 'intext:', 'site:', 'filetype:', 'ext:', 'before:', 'after:', 'related:', 'cache:', 'define:', 'info:', 'link:'];
+            ops.forEach(op => {
+                const esc = op.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                safe = safe.replace(new RegExp(esc, 'gi'), `<span class="op">${op}</span>`);
+            });
+            safe = safe.replace(/\bOR\b/g, '<span class="op">OR</span>');
+            safe = safe.replace(/"([^"]*)"/g, '<span class="val">"$1"</span>');
+            safe = safe.replace(/(-\w+)/g, '<span style="color:var(--neon-red)">$1</span>');
+            return safe;
+        }
+
+        /* =============================================
+           SEARCH EXECUTION
+           ============================================= */
+        function executeSearch() {
+            const query = getCurrentQuery();
+            if (!query) {
+                showToast('Please enter a keyword or build a query first.', 'error');
+                document.getElementById('mainKeyword').focus();
+                return;
+            }
+            const stripped = query.replace(/(allintitle:|allinurl:|allintext:|intitle:|inurl:|intext:|site:|filetype:|ext:|before:|after:|related:|cache:|define:|info:|link:|OR|-)/gi, '').trim();
+            if (!stripped && !query.includes('"')) {
+                showToast('Query appears incomplete. Add some search terms.', 'error');
+                return;
+            }
+            const engine = document.getElementById('searchEngine').value;
+            const url = CONFIG.SEARCH_URLS[engine] + encodeURIComponent(query);
+            window.open(url, '_blank', 'noopener,noreferrer');
+            addToHistory(query, engine);
+            showToast(`Search opened in new tab (${engine})`, 'success');
+        }
+
+        /* =============================================
+           QUICK OPERATORS
+           ============================================= */
+        function insertQuickOp(op) {
+            const input = document.getElementById('mainKeyword');
+            const current = input.value.trim();
+            input.value = current ? `${current} ${op}` : op;
+            state.manualMode = false;
+            updateQueryPreview();
+            showToast(`Added: ${op}`, 'info');
+        }
+
+        /* =============================================
+           PRESET LOADING
+           ============================================= */
+        function loadPreset(key) {
+            const preset = CONFIG.PRESETS[key];
+            if (!preset) return;
+            document.getElementById('mainKeyword').value = preset.keyword || '';
+            document.getElementById('manualQuery').value = preset.query;
+            state.manualMode = true;
+            updatePreviewFromManual();
+            updateAnalytics();
+            if (state.activeTab !== 'dorking') switchTab('dorking', document.querySelector('.nav-tab'));
+            showToast(`Loaded preset: ${key}`, 'success');
+        }
+
+        function loadGHDB(key) {
+            const query = CONFIG.GHDB_PRESETS[key];
+            if (!query) return;
+            document.getElementById('manualQuery').value = query;
+            document.getElementById('mainKeyword').value = '';
+            state.manualMode = true;
+            updatePreviewFromManual();
+            updateAnalytics();
+            switchTab('dorking', document.querySelector('.nav-tab'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('.nav-tab').classList.add('active');
+            showToast(`Loaded GHDB: ${key}`, 'success');
+        }
+
+        /* =============================================
+           SOCIAL MEDIA OSINT SEARCH
+           ============================================= */
+        function socialSearch(platform) {
+            const keyword = document.getElementById('socialKeyword').value.trim();
+            if (!keyword) {
+                showToast('Enter a keyword for social media search.', 'error');
+                document.getElementById('socialKeyword').focus();
+                return;
+            }
+            const urlBuilder = CONFIG.SOCIAL_URLS[platform];
+            if (!urlBuilder) return;
+            window.open(urlBuilder(keyword), '_blank', 'noopener,noreferrer');
+            showToast(`Searching ${platform} for "${keyword}"`, 'success');
+        }
+
+        function advancedPeopleSearch() {
+            const name = document.getElementById('personName').value.trim();
+            if (!name) { showToast('Enter a person\'s name.', 'error'); return; }
+            const loc = document.getElementById('personLocation').value.trim();
+            const org = document.getElementById('personOrg').value.trim();
+            let q = `"${name}"`;
+            if (loc) q += ` "${loc}"`;
+            if (org) q += ` "${org}"`;
+            q += ' (site:linkedin.com OR site:twitter.com OR site:facebook.com OR site:github.com)';
+            const url = CONFIG.SEARCH_URLS.google + encodeURIComponent(q);
+            window.open(url, '_blank', 'noopener,noreferrer');
+            addToHistory(q, 'google');
+            showToast(`People search for "${name}"`, 'success');
+        }
+
+        /* =============================================
+           ARCHIVE ACCESS
+           ============================================= */
+        function openArchive(service) {
+            const url = document.getElementById('archiveUrl').value.trim();
+            if (!url) { showToast('Paste a URL to access its archive.', 'error'); return; }
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                showToast('Enter a valid URL starting with http:// or https://', 'error');
+                return;
+            }
+            const builder = CONFIG.ARCHIVE_URLS[service];
+            if (!builder) return;
+            window.open(builder(url), '_blank', 'noopener,noreferrer');
+            showToast(`Opening ${service} archive...`, 'success');
+        }
+
+        /* =============================================
+           SHODAN SEARCH
+           ============================================= */
+        function shodanSearch() {
+            const q = document.getElementById('shodanQuery').value.trim();
+            if (!q) { showToast('Enter a Shodan query.', 'error'); return; }
+            window.open(`https://www.shodan.io/search?query=${encodeURIComponent(q)}`, '_blank', 'noopener,noreferrer');
+            showToast(`Shodan search: ${q}`, 'success');
+        }
+
+        function shodanPreset(type) {
+            const presets = {
+                webcam: 'webcam has_screenshot:true',
+                database: 'product:MySQL OR product:MongoDB OR product:PostgreSQL',
+                industrial: '"Siemens" OR "SCADA" OR "PLC" port:102'
+            };
+            document.getElementById('shodanQuery').value = presets[type] || '';
+            shodanSearch();
+        }
+
+        /* =============================================
+           WHOIS / DNS LOOKUP
+           ============================================= */
+        function whoisLookup(type) {
+            const domain = document.getElementById('whoisDomain').value.trim();
+            if (!domain) { showToast('Enter a domain name.', 'error'); return; }
+            const urls = {
+                whois: `https://www.whois.com/whois/${encodeURIComponent(domain)}`,
+                dns: `https://www.nslookup.io/domains/${encodeURIComponent(domain)}/dns-records/`,
+                builtwith: `https://builtwith.com/${encodeURIComponent(domain)}`,
+                censys: `https://search.censys.io/search?resource=hosts&q=${encodeURIComponent(domain)}`
+            };
+            window.open(urls[type], '_blank', 'noopener,noreferrer');
+            showToast(`${type} lookup for ${domain}`, 'success');
+        }
+
+        /* =============================================
+           QUERY ACTIONS
+           ============================================= */
+        function copyQuery() {
+            const q = getCurrentQuery();
+            if (!q) { showToast('No query to copy.', 'error'); return; }
+            copyToClipboard(q);
+            showToast('Query copied to clipboard!', 'success');
+        }
+
+        function duplicateQuery() {
+            const q = getCurrentQuery();
+            if (!q) { showToast('No query to duplicate.', 'error'); return; }
+            const el = document.getElementById('manualQuery');
+            el.value = q + ' ';
+            state.manualMode = true;
+            el.focus();
+            el.setSelectionRange(el.value.length, el.value.length);
+            showToast('Query duplicated — edit below.', 'info');
+        }
+
+        function clearAll() {
+            document.getElementById('mainKeyword').value = '';
+            document.getElementById('manualQuery').value = '';
+            document.getElementById('dateAfter').value = '';
+            document.getElementById('dateBefore').value = '';
+            document.getElementById('phraseMode').value = 'normal';
+            clearFilters();
+            state.selectedFiletypes.clear();
+            CONFIG.FILETYPES.forEach(ft => document.getElementById(`ft-${ft}`).classList.remove('active'));
+            state.manualMode = false;
+            updateQueryPreview();
+            showToast('All fields cleared.', 'info');
+        }
+
+        /* =============================================
+           HISTORY MANAGEMENT
+           ============================================= */
+        function addToHistory(query, engine) {
+            const entry = {
+                query, engine,
+                timestamp: Date.now(),
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                date: new Date().toLocaleDateString()
+            };
+            if (state.history.length > 0 && state.history[0].query === query) return;
+            state.history.unshift(entry);
+            if (state.history.length > 100) state.history.pop();
+            saveToStorage();
+            renderHistory();
+            updateAnalytics();
+        }
+
+        function renderHistory() {
+            const containers = [document.getElementById('historyContainer')];
+            const countEl = document.getElementById('historyCount');
+            if (countEl) countEl.textContent = `${state.history.length} entries`;
+
+            containers.forEach(container => {
+                if (!container) return;
+                if (state.history.length === 0) {
+                    container.innerHTML = '<div style="color:var(--text-muted);font-size:0.8rem;text-align:center;padding:1rem;">No history yet</div>';
+                    return;
+                }
+                container.innerHTML = state.history.map((h, i) => `
+      <div class="history-item">
+        <span class="history-query" onclick="loadHistoryQuery(${i})" title="Click to load">${escapeHtml(truncate(h.query, 70))}</span>
+        <span class="history-time">${h.time}</span>
+        <div class="history-actions">
+          <button class="btn btn-xs btn-secondary" onclick="rerunHistory(${i})" title="Re-run">🔄</button>
+          <button class="btn btn-xs btn-secondary" onclick="copyHistoryQuery(${i})" title="Copy">📋</button>
+          <button class="btn btn-xs btn-secondary" onclick="deleteHistory(${i})" title="Delete">✕</button>
+        </div>
+      </div>
+    `).join('');
+            });
+        }
+
+        function loadHistoryQuery(i) {
+            const h = state.history[i];
+            if (!h) return;
+            document.getElementById('manualQuery').value = h.query;
+            state.manualMode = true;
+            updatePreviewFromManual();
+            switchTab('dorking', document.querySelector('.nav-tab'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('.nav-tab').classList.add('active');
+            showToast('Query loaded from history.', 'info');
+        }
+
+        function rerunHistory(i) {
+            const h = state.history[i];
+            if (!h) return;
+            window.open((CONFIG.SEARCH_URLS[h.engine] || CONFIG.SEARCH_URLS.google) + encodeURIComponent(h.query), '_blank', 'noopener,noreferrer');
+            showToast('Search re-opened.', 'success');
+        }
+
+        function copyHistoryQuery(i) {
+            const h = state.history[i];
+            if (!h) return;
+            copyToClipboard(h.query);
+            showToast('History query copied!', 'success');
+        }
+
+        function deleteHistory(i) {
+            state.history.splice(i, 1);
+            saveToStorage(); renderHistory(); updateAnalytics();
+        }
+
+        function clearAllHistory() {
+            if (!state.history.length) { showToast('No history to clear.', 'info'); return; }
+            state.history = [];
+            saveToStorage(); renderHistory(); updateAnalytics();
+            showToast('History cleared.', 'info');
+        }
+
+        /* =============================================
+           SAVED PRESETS
+           ============================================= */
+        function openSaveModal() {
+            const q = getCurrentQuery();
+            if (!q) { showToast('Build a query before saving.', 'error'); return; }
+            document.getElementById('presetQueryInput').value = q;
+            document.getElementById('presetNameInput').value = '';
+            document.getElementById('savePresetModal').classList.add('active');
+            setTimeout(() => document.getElementById('presetNameInput').focus(), 100);
+        }
+        function closeSaveModal() { document.getElementById('savePresetModal').classList.remove('active'); }
+
+        function confirmSavePreset() {
+            const name = document.getElementById('presetNameInput').value.trim();
+            const query = document.getElementById('presetQueryInput').value.trim();
+            if (!name) { showToast('Enter a preset name.', 'error'); return; }
+            if (!query) { showToast('No query to save.', 'error'); return; }
+            if (state.savedPresets.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+                showToast('A preset with that name already exists.', 'error'); return;
+            }
+            state.savedPresets.push({ name, query, engine: document.getElementById('searchEngine').value, timestamp: Date.now() });
+            saveToStorage(); renderSavedPresets(); updateAnalytics(); closeSaveModal();
+            showToast(`Preset "${name}" saved!`, 'success');
+        }
+
+        function renderSavedPresets() {
+            const containers = [document.getElementById('savedPresetsContainer'), document.getElementById('savedPresetsContainerFull')];
+            const countEl = document.getElementById('savedCount');
+            if (countEl) countEl.textContent = `${state.savedPresets.length} presets`;
+
+            containers.forEach(container => {
+                if (!container) return;
+                if (!state.savedPresets.length) {
+                    container.innerHTML = '<div style="color:var(--text-muted);font-size:0.8rem;text-align:center;padding:0.75rem;">No saved presets yet</div>';
+                    return;
+                }
+                container.innerHTML = state.savedPresets.map((p, i) => `
+      <div class="history-item">
+        <span class="history-query" onclick="loadSavedPreset(${i})" title="Click to load">
+          <strong style="color:var(--neon-blue);">${escapeHtml(p.name)}</strong>: ${escapeHtml(truncate(p.query, 45))}
+        </span>
+        <div class="history-actions">
+          <button class="btn btn-xs btn-green" onclick="loadSavedPreset(${i})" title="Load">📂</button>
+          <button class="btn btn-xs btn-secondary" onclick="deleteSavedPreset(${i})" title="Delete">✕</button>
+        </div>
+      </div>
+    `).join('');
+            });
+        }
+
+        function loadSavedPreset(i) {
+            const p = state.savedPresets[i];
+            if (!p) return;
+            document.getElementById('manualQuery').value = p.query;
+            if (p.engine) document.getElementById('searchEngine').value = p.engine;
+            state.manualMode = true;
+            updatePreviewFromManual(); updateAnalytics();
+            switchTab('dorking', document.querySelector('.nav-tab'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('.nav-tab').classList.add('active');
+            showToast(`Loaded: ${p.name}`, 'success');
+        }
+
+        function deleteSavedPreset(i) {
+            const name = state.savedPresets[i]?.name || '';
+            state.savedPresets.splice(i, 1);
+            saveToStorage(); renderSavedPresets(); updateAnalytics();
+            showToast(`Deleted: ${name}`, 'info');
+        }
+
+        function clearAllSaved() {
+            if (!state.savedPresets.length) { showToast('No presets to clear.', 'info'); return; }
+            state.savedPresets = [];
+            saveToStorage(); renderSavedPresets(); updateAnalytics();
+            showToast('All saved presets cleared.', 'info');
+        }
+
+        /* =============================================
+           IMPORT / EXPORT
+           ============================================= */
+        function openImportExportModal() {
+            document.getElementById('exportArea').value = JSON.stringify({
+                history: state.history,
+                savedPresets: state.savedPresets,
+                exportedAt: new Date().toISOString(),
+                version: '2.0'
+            }, null, 2);
+            document.getElementById('importArea').value = '';
+            document.getElementById('importExportModal').classList.add('active');
+        }
+        function closeImportExportModal() { document.getElementById('importExportModal').classList.remove('active'); }
+
+        function copyExportData() {
+            copyToClipboard(document.getElementById('exportArea').value);
+            showToast('Export data copied!', 'success');
+        }
+
+        function importData() {
+            const raw = document.getElementById('importArea').value.trim();
+            if (!raw) { showToast('Paste JSON data to import.', 'error'); return; }
+            try {
+                const data = JSON.parse(raw);
+                if (data.history && Array.isArray(data.history)) {
+                    const existing = new Set(state.history.map(h => h.query));
+                    data.history.forEach(h => { if (!existing.has(h.query)) state.history.push(h); });
+                }
+                if (data.savedPresets && Array.isArray(data.savedPresets)) {
+                    const existing = new Set(state.savedPresets.map(p => p.name.toLowerCase()));
+                    data.savedPresets.forEach(p => { if (!existing.has(p.name.toLowerCase())) state.savedPresets.push(p); });
+                }
+                saveToStorage(); renderHistory(); renderSavedPresets(); updateAnalytics();
+                closeImportExportModal();
+                showToast('Data imported successfully!', 'success');
+            } catch (e) {
+                showToast('Invalid JSON format.', 'error');
+                console.error('Import error:', e);
+            }
+        }
+
+        /* =============================================
+           THEME TOGGLE
+           ============================================= */
+        function toggleTheme() {
+            const html = document.documentElement;
+            const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            document.getElementById('themeIcon').textContent = next === 'dark' ? '🌙' : '☀️';
+            document.getElementById('themeLabel').textContent = next === 'dark' ? 'Dark' : 'Light';
+            localStorage.setItem('shimba_theme', next);
+        }
+
+        /* =============================================
+           ANALYTICS
+           ============================================= */
+        function updateAnalytics() {
+            const q = getCurrentQuery();
+            document.getElementById('statFilters').textContent = state.filters.length;
+            document.getElementById('statFiletypes').textContent = state.selectedFiletypes.size;
+            document.getElementById('statLength').textContent = q.length;
+            document.getElementById('statHistory').textContent = state.history.length;
+            document.getElementById('statSaved').textContent = state.savedPresets.length;
+            const eng = document.getElementById('searchEngine');
+            document.getElementById('statEngine').textContent = eng.options[eng.selectedIndex].text;
+        }
+
+        /* =============================================
+           LOCAL STORAGE
+           ============================================= */
+        function saveToStorage() {
+            try {
+                localStorage.setItem('shimba_history', JSON.stringify(state.history));
+                localStorage.setItem('shimba_presets', JSON.stringify(state.savedPresets));
+            } catch (e) { console.warn('Save failed:', e); }
+        }
+
+        function loadFromStorage() {
+            try {
+                const h = localStorage.getItem('shimba_history');
+                if (h) state.history = JSON.parse(h);
+                const p = localStorage.getItem('shimba_presets');
+                if (p) state.savedPresets = JSON.parse(p);
+                const theme = localStorage.getItem('shimba_theme');
+                if (theme) {
+                    document.documentElement.setAttribute('data-theme', theme);
+                    document.getElementById('themeIcon').textContent = theme === 'dark' ? '🌙' : '☀️';
+                    document.getElementById('themeLabel').textContent = theme === 'dark' ? 'Dark' : 'Light';
+                }
+            } catch (e) { console.warn('Load failed:', e); }
+        }
+
+        /* =============================================
+           UTILITY FUNCTIONS
+           ============================================= */
+        function copyToClipboard(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+            } else { fallbackCopy(text); }
+        }
+        function fallbackCopy(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); } catch (e) { }
+            document.body.removeChild(ta);
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+            toast.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span>${escapeHtml(message)}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3200);
+        }
+
+        function escapeHtml(str) {
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+
+        function truncate(str, max) {
+            if (!str) return '';
+            return str.length > max ? str.substring(0, max) + '…' : str;
+        }
+    </script>
+</body>
+
+</html>
