@@ -1,125 +1,140 @@
-<div align="center">
-
-<!-- Animated Header -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=00F2FE&height=280&section=header&text=Shimba's%20Cyber%20Intelligence&fontSize=60&animation=fadeIn&fontAlignY=38">
-
-<!-- Multi-Line Typing SVG -->
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=25&pause=1000&color=36BCF7&center=true&vCenter=true&width=600&lines=Real-time+Threat+Visualization;SOC+Level+Intelligence+Dashboard;Monitoring+Global+Cyber+Attacks;Built+with+Precision+and+Security">
-
-<!-- Themed Badges -->
 <p align="center">
-<img src="https://img.shields.io/badge/Status-Live_Project-brightgreen?style=for-the-badge&logo=github" alt="Status">
-<img src="https://img.shields.io/badge/Level-Advanced-orange?style=for-the-badge&logo=rocket" alt="Level">
-<img src="https://img.shields.io/badge/Maintained%3F-Yes-blue?style=for-the-badge" alt="Maintained">
-<img src="https://img.shields.io/badge/Documentation-V3--Ultra-9C27B0?style=for-the-badge" alt="Doc">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=00c8ff&height=280&section=header&text=Shimba's%20Cyber%20Intel&fontSize=50&animation=fadeIn" alt="Header" />
+</p>
+
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=22&pause=1000&color=00F080&center=true&vCenter=true&width=500&lines=Ultimate+OSINT+Suite+v5.1;Advanced+Google+Dorking+Engine;Real-time+Cyber+Recon+Dashboard;100%+Client-Side+Intelligence" alt="Typing SVG" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Version-5.1-00c8ff?style=for-the-badge" alt="Version" />
+  <img src="https://img.shields.io/badge/Security-Advanced-00f080?style=for-the-badge" alt="Security" />
+  <img src="https://img.shields.io/badge/Logic-Zero--Dependency-b06cf5?style=for-the-badge" alt="Logic" />
+  <img src="https://img.shields.io/badge/Maintenance-Active-ff7040?style=for-the-badge" alt="Maintenance" />
+</p>
+
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=html,css,javascript,github,linux,cloudflare" alt="Tech Stack" />
 </p>
 
 <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png" width="100%">
-</div>
 
-## 🌐 Project Overview: Shimba's Cyber Intelligence Dashboard
-
-**Shimba's Cyber Intelligence Dashboard** ek cutting-edge, real-time security monitoring interface hai. Ye project basically ek **Security Operations Center (SOC)** dashboard ki vibes deta hai, jahan aap global threat levels, attack vectors, aur network traffic ko visualize kar sakte ho ek single window mein.
+## 🚀 Overview
+**Shimba's Cyber Intelligence Dashboard** is a world-class, single-file OSINT (Open Source Intelligence) and Dorking ecosystem. Designed for security researchers, penetration testers, and OSINT enthusiasts, this tool transforms complex search operators into a high-speed, visual command center.
 
 > [!IMPORTANT]
-> **Live Demo:** [Click here to view the Dashboard](https://sudhirdevops1.github.io/Shimba-s-Cyber-Intelligence-Dashboard/)
-
-> [!TIP]
-> This dashboard is designed for Cyber Security enthusiasts and Network Administrators who want to see their data in a high-tech, futuristic layout.
+> **LEGAL DISCLAIMER:** This suite is built strictly for Educational & Defensive Research purposes. Unauthorized use against systems you do not own is illegal.
 
 ---
 
-## 🚀 Key Features
+## 💎 Core Architecture (Mental Model)
 
-| Feature | Description | Benefit |
-| :--- | :--- | :--- |
-| **Global Threat Map** | Interactive visualization of attacks happening globally. | Geo-location based threat tracking. |
-| **Real-time Metrics** | Live counters for total attacks, blocked threats, and active users. | Instant situational awareness. |
-| **Interactive Charts** | Line and Bar charts for traffic analysis. | Deep-dive into historical data trends. |
-| **Log Monitor** | A scrolling feed of system events and alerts. | Audit trail for security incidents. |
-| **Cyberpunk UI** | Dark-themed, high-contrast interface. | Reduced eye strain for 24/7 monitoring. |
+The dashboard operates on a **Linear Intelligence Pipeline**:
 
----
-
-## 🛠️ Tech Stack & Architecture
-
-<div align="center">
-<img src="https://skillicons.dev/icons?i=html,css,js,chartjs,git,github" />
-</div>
-
-### 🏗️ Mental Model: How it Works
 ```mermaid
-graph TD
-    A[Global Threat Data] --> B{Intelligence Engine}
-    B --> C[Map Visualization]
-    B --> D[Traffic Charts]
-    B --> E[Live Activity Logs]
-    C & D & E --> F[User Dashboard]
+graph LR
+    A[Input: Keywords] --> B{Filter Builder}
+    B --> C[Real-Time Logic Engine]
+    C --> D[Multi-Engine Execution]
+    D --> E((Intelligence Output))
 ```
 
----
+1.  **Input Layer**: Accepts raw keywords and phrases.
+2.  **Logic Layer**: Injects advanced operators (`intitle`, `inurl`, `filetype`) dynamically.
+3.  **Transport Layer**: Bridges to Google, Bing, or DuckDuckGo.
+4.  **History/Persistence**: LocalStorage-based memory to track recon paths.
 
-## 🔍 Technical Deep-Dive
-
-### 1️⃣ The Visualization Layer (Charts)
-Project mein **Chart.js** (ya similar library) ka use kiya gaya hai to show:
-- **Attack Types:** Pie charts breaking down DDoS, Malware, and Phishing.
-- **Network Load:** Real-time line graphs monitoring bandwidth.
-
-### 2️⃣ The Mapping System
-Dashboard ek central map use karta hai jo "Hotspots" highlight karta hai. 
-- **Red Zones:** High-risk areas.
-- **Green Zones:** Secure/Low-activity areas.
-
-### 3️⃣ Responsive Grid System
-Layout ko **CSS Grid aur Flexbox** se design kiya gaya hai taki SOC screens se lekar personal laptops tak, sab jagah perfect dikhe.
-
----
-
-## 🧪 Real-Life Analogy
-> "Imagine a **Traffic Police Control Room**. Wahan bade screens pe dikhta hai kahan jam hai, kahan accident hua hai, aur kahan se traffic smooth nikal raha hai. Shimba's Dashboard bilkul wahi hai, bas **Vehicles ki jagah Internet Data Packages** aur **Accidents ki jagah Cyber Attacks** dikhata hai."
-
----
-
-## 🛠️ Installation & Usage
-
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/sudhirdevops1/Shimba-s-Cyber-Intelligence-Dashboard.git
-   ```
-2. **Navigate to Directory:**
-   ```bash
-   cd Shimba-s-Cyber-Intelligence-Dashboard
-   ```
-3. **Run Locally:**
-   Simply open `index.html` in your favorite browser.
-
----
-
-## ⚡ Line-by-Line Logic (Simplified)
-- **Data Fetching:** Logic is written to simulate or fetch threat feeds.
-- **DOM Manipulation:** JavaScript dynamically updates the numbers (Total Attacks) bina page refresh kiye.
-- **Event Listeners:** Buttons aur charts interactive hain—hover karne par details milti hain.
-
----
-
-## 🚧 Roadmap & Future Challenges
-
-> [!WARNING]
-> Currently, the data might be simulated for UI/UX purposes. The next step is connecting it to a real-time API.
-
-**Try these challenges to upgrade the project:**
-*   **Challenge 1:** Integrate a real-world Cyber Threat API (like AlienVault or ThreatCrowd).
-*   **Challenge 2:** Add a "Dark/Light Mode" toggle for different environment preferences.
-*   **Challenge 3:** Implement a login system to save specific dashboard layouts for different users.
-
-<div align="center">
 <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png" width="100%">
 
-### 🤝 Connect with the Developer
-**Sudhir DevOps** - *Building the future of Cyber Monitoring.*
+## 🛠️ Feature Deep-Dive
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/)
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sudhirdevops1)
+### 1️⃣ Advanced Dorking Engine
+*   **Dynamic Filter Builder**: Add unlimited operators without typing a single colon.
+*   **Phrase Control**: Toggle between Normal and Exact (`"..."`) matching instantly.
+*   **Filetype Matrix**: One-click selection for PDF, SQL, ENV, LOG, and more.
+*   **Real-Time Preview**: Watch your query build line-by-line with syntax highlighting.
 
-</div>
+### 2️⃣ OSINT Command Center
+The suite integrates specialized reconnaissance modules:
+*   **Social Media**: Targeted deep-dives into LinkedIn, GitHub, Twitter/X, and Reddit.
+*   **Archive Intel**: Bypass paywalls and view deleted content via Wayback Machine and 12ft.io.
+*   **Infrastructure Recon**: Shodan integration for IoT, WHOIS lookups, and DNS mapping.
+
+### 3️⃣ The "Cheat Sheet" Vault
+A pre-loaded library of lethal dorks and commands:
+| Category | Purpose | Example Operator |
+| :--- | :--- | :--- |
+| 🕵️ **Footholds** | Finding open directories | `intitle:"index of" "parent directory"` |
+| 🔑 **Credentials** | Finding exposed passwords | `filetype:env "DB_PASSWORD"` |
+| 💻 **SysAdmin** | Network/Bash audit | `ss -tulpn` |
+| 🛡️ **Bypass** | Paywall/JS removal | `Google Cache + &strip=1` |
+
+---
+
+## 🔍 Code Deep-Dive: The Logic Engine
+
+```javascript
+// The heart of the Query Builder
+function bldQ() {
+  const p = [], kw = $("kwI").value.trim();
+  if (kw) p.push($("pS").value === "exact" ? `"${kw}"` : kw);
+  
+  S.filters.forEach((f) => {
+    if (!f.val.trim()) return;
+    // Handles special cases like OR and Exclusions
+    if (f.op === "exclude") p.push(`-${f.val}`);
+    else if (f.op === "or") p.push(`OR ${f.val}`);
+    else p.push(`${f.op}:${f.val}`);
+  });
+  return p.join(" ");
+}
+```
+
+### 🔍 Line-by-Line Analysis:
+*   **Array Aggregation**: Uses a `p` array to collect logic fragments, ensuring clean spacing.
+*   **Conditional Logic**: Checks if "Exact Match" is selected to wrap keywords in quotes.
+*   **Dynamic Operators**: Maps UI filter IDs directly to Google Dorking syntax.
+*   **Join Operation**: Flattens the logic into a URI-ready string.
+
+---
+
+## 💡 Real-Life Analogy
+> Imagine you are in a massive library (The Internet) with billions of books. 
+> *   **Keywords** are like looking for "History". 
+> *   **Dorks** are like asking the librarian for "Only red leather-bound books, published in 1994, located in the restricted basement section."
+> **Shimba's Dashboard** is the high-tech tablet that writes that request for you perfectly every time.
+
+---
+
+## 🛡️ Shimba's Security Golden Rules
+> [!WARNING]
+> 1. **Virtual Machine Rule**: Always test unknown scripts/downloads in a VM.
+> 2. **Double Extension Check**: Never trust `report.pdf.exe`.
+> 3. **VPN for OSINT**: Always mask your IP during active research.
+> 4. **No Real Passwords**: Never enter credentials on a bypassed site.
+
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png" width="100%">
+
+## 📥 Installation & Usage
+1.  **Clone/Download**: Save the code as `index.html`.
+2.  **No Server Needed**: Open it directly in any modern browser (Chrome/Brave/Firefox).
+3.  **Zero Dependencies**: Works offline (except for the actual search redirects).
+4.  **Dark Mode**: Optimized for night-ops with a single-click theme toggle.
+
+---
+
+## 🎯 Learning Challenges
+1.  **The Hidden File**: Use the "Index Of" dork to find a public directory containing `.log` files.
+2.  **The Social Ghost**: Use the People Search module to find a developer's GitHub and LinkedIn using only their name and city.
+3.  **IoT Discovery**: Use the Shodan module to find an open Apache server in a specific country.
+
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png" width="100%">
+
+<p align="center">
+  <b>Shimba's Cyber Intelligence Dashboard v5.1</b><br>
+  <i>"In the world of OSINT, the right question is more powerful than the loudest tool."</i>
+</p>
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&color=060b14&height=30&section=footer" alt="Footer" />
+</p>
